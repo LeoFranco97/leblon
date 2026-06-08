@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Leblon — Se você tem tempo, pode ganhar dinheiro | Marketplace de serviços</title>
+<meta name="description" content="O Leblon conecta quem precisa de serviços a profissionais verificados perto de você. Passeio com cães, limpeza, montagem, reparos e muito mais — com pagamento protegido. Ganhe dinheiro com seu tempo ou contrate em minutos." />
+<meta property="og:title" content="Leblon — Se você tem tempo, pode ganhar dinheiro" />
+<meta property="og:description" content="Marketplace de serviços do Brasil. Transforme seu tempo em renda ou contrate em minutos, com pagamento protegido." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#03014C; --ink-2:#0A0838; --brand:#FF4800; --brand-600:#E03F00;
+    --brand-tint:#FFF1EC; --paper:#fff; --mist:#F6F7FB; --line:#E7E8F0;
+    --muted:#5B5B73; --text:#15132E;
+    --container:1200px;
+    --shadow-sm:0 1px 2px rgba(3,1,76,.06);
+    --shadow:0 1px 2px rgba(3,1,76,.06), 0 12px 32px rgba(3,1,76,.08);
+    --shadow-lg:0 24px 60px rgba(3,1,76,.18);
+    --r:22px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3,h4,.display{font-family:'Inter Tight','Inter',sans-serif;letter-spacing:-.02em;line-height:1.05;color:var(--ink)}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:var(--container);margin:0 auto;padding:0 24px}
+  section{padding:96px 0}
+  .eyebrow{display:inline-block;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);background:var(--brand-tint);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+  .section-head{max-width:680px;margin:0 auto 56px;text-align:center}
+  .section-head h2{font-size:clamp(30px,4.5vw,48px);font-weight:700;margin-bottom:14px}
+  .section-head p{font-size:18px;color:var(--muted)}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:'Inter Tight';font-weight:600;font-size:16px;padding:15px 28px;border-radius:999px;border:0;cursor:pointer;transition:transform .18s var(--ease),box-shadow .18s var(--ease),background .18s var(--ease);white-space:nowrap}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 8px 24px rgba(255,72,0,.35)}
+  .btn-primary:hover{background:var(--brand-600);transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,72,0,.45)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ink);transform:translateY(-2px)}
+  .btn-light{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.25)}
+  .btn-light:hover{background:rgba(255,255,255,.22);transform:translateY(-2px)}
+  .btn-white{background:#fff;color:var(--ink)}
+  .btn-white:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+
+  /* Nav */
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .3s,box-shadow .3s,backdrop-filter .3s}
+  header.nav.scrolled{background:rgba(255,255,255,.85);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{font-family:'Inter Tight';font-weight:800;font-size:24px;letter-spacing:-.03em;color:#fff;display:flex;align-items:center;gap:8px}
+  .scrolled .logo{color:var(--ink)}
+  .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--brand);display:inline-block}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a.link{font-weight:500;font-size:15px;color:rgba(255,255,255,.85);transition:color .2s}
+  .nav-links a.link:hover{color:#fff}
+  .scrolled .nav-links a.link{color:var(--muted)}
+  .scrolled .nav-links a.link:hover{color:var(--ink)}
+  .nav-cta{display:flex;align-items:center;gap:14px}
+  .menu-btn{display:none;background:none;border:0;cursor:pointer;width:44px;height:44px;flex-direction:column;justify-content:center;gap:5px}
+  .menu-btn span{display:block;height:2px;width:24px;background:#fff;border-radius:2px;transition:.2s}
+  .scrolled .menu-btn span{background:var(--ink)}
+
+  /* Hero */
+  .hero{position:relative;background:radial-gradient(120% 120% at 80% 0%, #14104f 0%, var(--ink) 45%, var(--ink-2) 100%);color:#fff;padding:150px 0 110px;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-10%;right:-5%;width:480px;height:480px;background:var(--brand);filter:blur(140px);opacity:.45;border-radius:50%;pointer-events:none}
+  .hero::after{content:"";position:absolute;bottom:-30%;left:-10%;width:420px;height:420px;background:#2a1f9e;filter:blur(150px);opacity:.5;border-radius:50%;pointer-events:none}
+  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  .hero h1{color:#fff;font-size:clamp(40px,6vw,76px);font-weight:800;margin-bottom:22px}
+  .hero h1 .hl{color:var(--brand)}
+  .hero p.sub{font-size:20px;color:rgba(255,255,255,.78);max-width:540px;margin-bottom:34px}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:30px}
+  .hero-proof{display:flex;align-items:center;gap:22px;flex-wrap:wrap;color:rgba(255,255,255,.7);font-size:14px;font-weight:500}
+  .hero-proof .stars{color:#FFC83D}
+  .hero-proof .sep{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.3)}
+
+  /* Phone mockup */
+  .phone-wrap{position:relative;display:flex;justify-content:center;animation:float 6s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  .phone{width:300px;background:#0c0a2e;border-radius:42px;padding:12px;box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,.08)}
+  .phone-screen{background:linear-gradient(180deg,#fff,#f4f4fb);border-radius:32px;overflow:hidden;height:600px;padding:20px 16px}
+  .ps-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px}
+  .ps-greet{font-family:'Inter Tight';font-weight:700;font-size:19px;color:var(--ink);margin-bottom:4px}
+  .ps-greet small{display:block;font-family:'Inter';font-weight:400;font-size:13px;color:var(--muted)}
+  .ps-bal{background:var(--ink);color:#fff;border-radius:18px;padding:16px;margin:14px 0;box-shadow:var(--shadow)}
+  .ps-bal small{opacity:.7;font-size:12px}
+  .ps-bal .v{font-family:'Inter Tight';font-weight:700;font-size:26px;margin-top:2px}
+  .ps-bal .up{color:#34d399;font-size:12px;font-weight:600;margin-top:4px}
+  .ps-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 10px}
+  .job{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px;display:flex;gap:12px;align-items:center;margin-bottom:10px;box-shadow:var(--shadow-sm)}
+  .job .ic{width:42px;height:42px;border-radius:12px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .job .info{flex:1;min-width:0}
+  .job .info b{font-family:'Inter Tight';font-size:14px;color:var(--ink);display:block}
+  .job .info span{font-size:12px;color:var(--muted)}
+  .job .price{font-family:'Inter Tight';font-weight:700;color:var(--brand);font-size:15px}
+  .float-card{position:absolute;background:#fff;border-radius:14px;padding:12px 14px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--ink)}
+  .float-card .badge{width:30px;height:30px;border-radius:50%;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;font-size:15px}
+  .fc1{top:40px;left:-20px;animation:float 5s ease-in-out infinite}
+  .fc2{bottom:80px;right:-26px;animation:float 7s ease-in-out infinite .5s}
+
+  /* Logo bar */
+  .logobar{background:var(--mist);padding:34px 0;border-bottom:1px solid var(--line)}
+  .logobar p{text-align:center;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;font-weight:600}
+  .badges{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+  .tbadge{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-size:14px;font-weight:600;color:var(--ink)}
+  .tbadge .ck{color:var(--brand)}
+
+  /* How it works */
+  .toggle{display:flex;justify-content:center;margin-bottom:44px}
+  .seg{display:inline-flex;background:var(--mist);border-radius:999px;padding:5px;gap:4px}
+  .seg button{border:0;background:transparent;font-family:'Inter Tight';font-weight:600;font-size:15px;padding:11px 24px;border-radius:999px;cursor:pointer;color:var(--muted);transition:.2s}
+  .seg button.active{background:#fff;color:var(--ink);box-shadow:var(--shadow-sm)}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .step{position:relative;padding:34px 28px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+  .step:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .step .num{font-family:'Inter Tight';font-weight:800;font-size:18px;width:42px;height:42px;border-radius:12px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+  .step h3{font-size:21px;margin-bottom:10px}
+  .step p{color:var(--muted);font-size:15px}
+
+  /* Categories */
+  .cat-search{max-width:520px;margin:0 auto 36px;position:relative}
+  .cat-search input{width:100%;padding:16px 20px 16px 50px;border-radius:16px;border:1.5px solid var(--line);font-size:16px;font-family:'Inter';outline:none;transition:.2s}
+  .cat-search input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(255,72,0,.12)}
+  .cat-search .si{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:18px;opacity:.5}
+  .cat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+  .cat{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 14px;text-align:center;cursor:pointer;transition:.2s var(--ease)}
+  .cat:hover{transform:translateY(-4px);border-color:var(--brand);box-shadow:var(--shadow)}
+  .cat .emoji{width:52px;height:52px;border-radius:14px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px}
+  .cat span{font-size:13px;font-weight:600;color:var(--ink);display:block}
+  .cat-note{text-align:center;color:var(--muted);font-size:14px;margin-top:24px}
+
+  /* Split sections */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+  .split.rev .split-visual{order:2}
+  .split h2{font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:18px}
+  .split>div>p.lead{font-size:18px;color:var(--muted);margin-bottom:24px}
+  .checks{list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:30px}
+  .checks li{display:flex;gap:12px;align-items:flex-start;font-size:16px;color:var(--text)}
+  .checks .ck{width:24px;height:24px;border-radius:50%;background:var(--brand-tint);color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:1px}
+  .bg-mist{background:var(--mist)}
+
+  /* Calculator */
+  .calc{background:var(--ink);color:#fff;border-radius:var(--r);padding:36px;box-shadow:var(--shadow-lg)}
+  .calc h3{color:#fff;font-size:22px;margin-bottom:6px}
+  .calc p.cs{color:rgba(255,255,255,.65);font-size:14px;margin-bottom:26px}
+  .calc label{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin:18px 0 8px}
+  .calc label span{color:var(--brand)}
+  .calc input[type=range]{width:100%;-webkit-appearance:none;height:6px;border-radius:6px;background:rgba(255,255,255,.18);outline:none}
+  .calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--brand);cursor:pointer;box-shadow:0 2px 8px rgba(255,72,0,.5)}
+  .calc .result{text-align:center;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12)}
+  .calc .result small{color:rgba(255,255,255,.6);font-size:13px}
+  .calc .result .big{font-family:'Inter Tight';font-weight:800;font-size:44px;color:var(--brand);margin-top:4px}
+
+  /* Stats */
+  .stats{background:var(--ink);color:#fff}
+  .stats .section-head h2{color:#fff}
+  .stats .section-head p{color:rgba(255,255,255,.6)}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+  .stat{text-align:center;padding:24px}
+  .stat .v{font-family:'Inter Tight';font-weight:800;font-size:clamp(40px,6vw,60px);color:var(--brand);line-height:1}
+  .stat .l{color:rgba(255,255,255,.7);font-size:15px;margin-top:10px}
+  .stats .disclaimer{text-align:center;color:rgba(255,255,255,.4);font-size:13px;margin-top:40px}
+
+  /* Differentiators */
+  .diff-table{max-width:860px;margin:0 auto;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .diff-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+  .diff-row:last-child{border-bottom:0}
+  .diff-head{background:var(--mist);font-family:'Inter Tight';font-weight:700;font-size:16px}
+  .diff-head .old{color:var(--muted)}
+  .diff-head .new{color:var(--brand)}
+  .diff-cell{padding:18px 24px;font-size:15px}
+  .diff-cell.old{color:var(--muted);border-right:1px solid var(--line)}
+  .diff-cell.new{color:var(--ink);font-weight:500;border-right:1px solid var(--line);background:#fffaf8}
+  .diff-cell.new::before{content:"✓ ";color:var(--brand);font-weight:700}
+
+  /* Security */
+  .sec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:12px}
+  .sec-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:30px 24px;transition:.2s var(--ease)}
+  .sec-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .sec-card .ic{width:54px;height:54px;border-radius:15px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:18px}
+  .sec-card h3{font-size:18px;margin-bottom:8px}
+  .sec-card p{font-size:14px;color:var(--muted)}
+
+  /* Testimonials */
+  .test-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+  .test{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:32px;box-shadow:var(--shadow-sm)}
+  .test .stars{color:#FFC83D;margin-bottom:14px}
+  .test q{font-family:'Inter Tight';font-size:20px;color:var(--ink);line-height:1.4;display:block;margin-bottom:22px;font-weight:500}
+  .test .who{display:flex;align-items:center;gap:12px}
+  .test .av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--brand),#ff8a5c);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Inter Tight';font-weight:700}
+  .test .who b{display:block;font-size:15px;color:var(--ink)}
+  .test .who span{font-size:13px;color:var(--muted)}
+
+  /* Final CTA */
+  .final{background:var(--brand);color:#fff;text-align:center}
+  .final h2{color:#fff;font-size:clamp(32px,5vw,52px);font-weight:800;margin-bottom:16px;max-width:760px;margin-left:auto;margin-right:auto}
+  .final p{font-size:19px;color:rgba(255,255,255,.9);margin-bottom:32px}
+  .store-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+  .store{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);padding:13px 24px;border-radius:14px;font-weight:600;transition:transform .2s var(--ease)}
+  .store:hover{transform:translateY(-3px)}
+  .store .em{font-size:24px}
+  .store small{display:block;font-size:11px;font-weight:500;opacity:.6}
+  .store b{font-family:'Inter Tight';font-size:16px}
+  .waitlist{display:flex;gap:10px;justify-content:center;max-width:440px;margin:0 auto;flex-wrap:wrap}
+  .waitlist input{flex:1;min-width:220px;padding:14px 18px;border-radius:12px;border:0;font-size:15px;font-family:'Inter'}
+
+  /* FAQ */
+  .faq-wrap{max-width:780px;margin:0 auto}
+  .faq-cat{font-family:'Inter Tight';font-weight:700;font-size:15px;color:var(--brand);text-transform:uppercase;letter-spacing:.06em;margin:32px 0 8px}
+  .faq-cat:first-child{margin-top:0}
+  .faq{border-bottom:1px solid var(--line)}
+  .faq summary{list-style:none;cursor:pointer;padding:20px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;font-family:'Inter Tight';font-weight:600;font-size:17px;color:var(--ink)}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary .plus{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--brand);transition:.2s}
+  .faq[open] summary .plus{transform:rotate(45deg);background:var(--brand);color:#fff}
+  .faq p{padding:0 0 22px;color:var(--muted);font-size:15px;max-width:680px}
+
+  /* Footer */
+  footer{background:var(--ink);color:#fff;padding:72px 0 32px}
+  .foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;gap:32px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.1)}
+  .foot-brand .logo{margin-bottom:14px}
+  .foot-brand p{color:rgba(255,255,255,.6);font-size:14px;max-width:240px;margin-bottom:18px}
+  .socials{display:flex;gap:10px}
+  .socials a{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:16px;transition:.2s}
+  .socials a:hover{background:var(--brand)}
+  .foot-col h4{font-family:'Inter Tight';font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5);margin-bottom:16px;font-weight:600}
+  .foot-col a{display:block;color:rgba(255,255,255,.8);font-size:14px;margin-bottom:11px;transition:.2s}
+  .foot-col a:hover{color:#fff;padding-left:3px}
+  .foot-bot{display:flex;justify-content:space-between;align-items:center;padding-top:28px;flex-wrap:wrap;gap:16px}
+  .foot-bot p{color:rgba(255,255,255,.5);font-size:13px}
+  .foot-bot .stores{display:flex;gap:10px}
+  .foot-bot .stores a{font-size:13px;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2);padding:7px 14px;border-radius:8px}
+
+  /* Reveal animation */
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.phone-wrap,.fc1,.fc2{animation:none}}
+
+  /* Mobile */
+  .mobile-drawer{display:none}
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;text-align:center}
+    .hero-ctas,.hero-proof{justify-content:center}
+    .hero p.sub{margin-left:auto;margin-right:auto}
+    .phone-wrap{margin-top:40px}
+    .steps,.stat-grid,.sec-grid{grid-template-columns:1fr}
+    .cat-grid{grid-template-columns:repeat(3,1fr)}
+    .split{grid-template-columns:1fr;gap:36px}
+    .split.rev .split-visual{order:0}
+    .test-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:680px){
+    section{padding:64px 0}
+    .nav-links{display:none}
+    .nav-cta .btn{display:none}
+    .menu-btn{display:flex}
+    .hero{padding:120px 0 80px}
+    .hero-ctas{flex-direction:column}
+    .hero-ctas .btn{width:100%;justify-content:center}
+    .cat-grid{grid-template-columns:repeat(2,1fr)}
+    .sec-grid{grid-template-columns:1fr 1fr}
+    .stat-grid{grid-template-columns:1fr 1fr}
+    .diff-cell{padding:14px 16px;font-size:13px}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    .foot-brand{grid-column:1/-1}
+    .mobile-drawer.open{display:flex;flex-direction:column;position:fixed;inset:0;background:var(--ink);z-index:200;padding:80px 28px 28px;gap:8px}
+    .mobile-drawer a{color:#fff;font-family:'Inter Tight';font-weight:600;font-size:22px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+    .mobile-drawer .btn{margin-top:20px;justify-content:center}
+    .mobile-close{position:absolute;top:24px;right:24px;background:none;border:0;color:#fff;font-size:32px;cursor:pointer}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo"><span class="dot"></span>Leblon</a>
+    <nav class="nav-links">
+      <a class="link" href="#como">Como funciona</a>
+      <a class="link" href="#categorias">Categorias</a>
+      <a class="link" href="#ganhar">Ganhar</a>
+      <a class="link" href="#seguranca">Segurança</a>
+      <a class="link" href="#faq">Ajuda</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-primary" href="#baixar">Baixar o app</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-drawer" id="drawer">
+  <button class="mobile-close" id="closeBtn" aria-label="Fechar">&times;</button>
+  <a href="#como">Como funciona</a>
+  <a href="#categorias">Categorias</a>
+  <a href="#ganhar">Ganhar dinheiro</a>
+  <a href="#contratar">Contratar</a>
+  <a href="#seguranca">Segurança</a>
+  <a href="#faq">Ajuda</a>
+  <a class="btn btn-primary" href="#baixar">Baixar o app</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="reveal in">
+      <span class="eyebrow">O marketplace de serviços do Brasil</span>
+      <h1>Se você tem tempo, pode <span class="hl">ganhar dinheiro.</span></h1>
+      <p class="sub">O Leblon conecta quem precisa de ajuda com quem está pronto para ajudar. Do passeio com o cachorro à montagem do guarda-roupa — peça, faça e receba com segurança, em poucos toques.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#ganhar">Quero ganhar dinheiro →</a>
+        <a class="btn btn-light" href="#contratar">Preciso contratar</a>
+      </div>
+      <div class="hero-proof">
+        <span><span class="stars">★</span> 4,9 de avaliação</span>
+        <span class="sep"></span>
+        <span>+120 mil pessoas</span>
+        <span class="sep"></span>
+        <span>Pagamento 100% protegido</span>
+      </div>
+    </div>
+    <div class="phone-wrap">
+      <div class="float-card fc1"><span class="badge">✓</span> Identidade verificada</div>
+      <div class="float-card fc2"><span class="badge">💰</span> Você recebeu R$ 240 hoje</div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ps-top"><span>9:41</span><span>📶 🔋</span></div>
+          <div class="ps-greet">Olá, Marina 👋<small>Pedidos perto de você</small></div>
+          <div class="ps-bal">
+            <small>Ganhos do mês</small>
+            <div class="v">R$ 2.480,00</div>
+            <div class="up">↑ 18% vs. mês passado</div>
+          </div>
+          <div class="ps-label">Disponíveis agora</div>
+          <div class="job"><div class="ic">🐕</div><div class="info"><b>Passear com cachorro</b><span>a 800 m · hoje 16h</span></div><div class="price">R$ 45</div></div>
+          <div class="job"><div class="ic">🛠️</div><div class="info"><b>Montar guarda-roupa</b><span>a 1,2 km · amanhã</span></div><div class="price">R$ 120</div></div>
+          <div class="job"><div class="ic">🛒</div><div class="info"><b>Compras de mercado</b><span>a 500 m · hoje 18h</span></div><div class="price">R$ 38</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGO BAR -->
+<div class="logobar">
+  <div class="container">
+    <p>Confiado por pessoas em todo o Brasil</p>
+    <div class="badges">
+      <span class="tbadge"><span class="ck">✓</span> Pagamento protegido</span>
+      <span class="tbadge"><span class="ck">✓</span> Identidade verificada</span>
+      <span class="tbadge"><span class="ck">✓</span> Suporte 7 dias por semana</span>
+      <span class="tbadge"><span class="ck">✓</span> Avaliações reais</span>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="como">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Como funciona</span>
+      <h2>Tão simples quanto pedir um carro.</h2>
+      <p>Dois lados, três passos, zero complicação.</p>
+    </div>
+    <div class="toggle reveal">
+      <div class="seg">
+        <button class="active" data-mode="contratar">Quero contratar</button>
+        <button data-mode="ganhar">Quero ganhar</button>
+      </div>
+    </div>
+    <div class="steps reveal" id="steps"></div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="categorias" class="bg-mist">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Categorias</span>
+      <h2>Praticamente tudo cabe no Leblon.</h2>
+      <p>Centenas de serviços. Um só app.</p>
+    </div>
+    <div class="cat-search reveal">
+      <span class="si">🔍</span>
+      <input type="text" id="catSearch" placeholder="O que você precisa?" />
+    </div>
+    <div class="cat-grid reveal" id="catGrid"></div>
+    <p class="cat-note reveal">Qualquer serviço legal e legítimo. Você define o que oferece.</p>
+  </div>
+</section>
+
+<!-- GANHAR -->
+<section id="ganhar">
+  <div class="container split">
+    <div class="reveal">
+      <span class="eyebrow">Para você que tem tempo</span>
+      <h2>Sua agenda, suas regras, seu dinheiro.</h2>
+      <p class="lead">Quer uma renda extra no fim de semana ou um novo trabalho em tempo integral? No Leblon, você escolhe o que faz, quando faz e por quanto. Sem chefe, sem horário fixo, sem mensalidade para começar.</p>
+      <ul class="checks">
+        <li><span class="ck">✓</span> Comece de graça — sem taxa de cadastro.</li>
+        <li><span class="ck">✓</span> Receba pedidos perto de você, no seu horário.</li>
+        <li><span class="ck">✓</span> Defina seus próprios preços.</li>
+        <li><span class="ck">✓</span> Pagamento garantido antes de você começar.</li>
+        <li><span class="ck">✓</span> Construa reputação e cobre mais a cada 5 estrelas.</li>
+      </ul>
+      <a class="btn btn-primary" href="#baixar">Começar a ganhar →</a>
+    </div>
+    <div class="split-visual reveal">
+      <div class="calc">
+        <h3>Quanto você pode ganhar?</h3>
+        <p class="cs">Estimativa com base no seu tempo disponível.</p>
+        <label>Horas por semana <span id="hoursVal">15h</span></label>
+        <input type="range" id="hours" min="2" max="40" value="15" />
+        <label>Valor médio por serviço <span id="ticketVal">R$ 60</span></label>
+        <input type="range" id="ticket" min="20" max="200" value="60" step="5" />
+        <div class="result">
+          <small>Você pode ganhar até</small>
+          <div class="big" id="earnResult">R$ 2.400</div>
+          <small>por mês</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRATAR -->
+<section id="contratar" class="bg-mist">
+  <div class="container split rev">
+    <div class="split-visual reveal">
+      <div class="phone" style="margin:0 auto;max-width:280px">
+        <div class="phone-screen" style="height:520px">
+          <div class="ps-greet" style="margin-bottom:14px">Pedir um serviço</div>
+          <div class="job"><div class="ic">🧹</div><div class="info"><b>Limpeza completa</b><span>★ 4,9 · 320 serviços</span></div><div class="price">R$ 130</div></div>
+          <div class="job"><div class="ic">👤</div><div class="info"><b>Carla M. · Verificada ✓</b><span>responde em ~8 min</span></div><div class="price">★4,9</div></div>
+          <div class="job"><div class="ic">👤</div><div class="info"><b>João P. · Verificado ✓</b><span>responde em ~15 min</span></div><div class="price">★4,8</div></div>
+          <div class="ps-bal" style="margin-top:16px"><small>Pagamento protegido</small><div class="v" style="font-size:20px">Liberado só na conclusão</div></div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px">Confirmar pedido</button>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Para você que precisa de ajuda</span>
+      <h2>Resolva qualquer coisa sem sair do sofá.</h2>
+      <p class="lead">Aquela lista de pendências que nunca acaba? O Leblon resolve. Encontre pessoas verificadas e bem avaliadas perto de você, compare preços na hora e contrate com a segurança de só pagar quando o serviço estiver feito.</p>
+      <ul class="checks">
+        <li><span class="ck">✓</span> Profissionais com identidade verificada.</li>
+        <li><span class="ck">✓</span> Orçamentos em minutos — você compara e escolhe.</li>
+        <li><span class="ck">✓</span> Pagamento liberado só quando você aprova.</li>
+        <li><span class="ck">✓</span> Suporte humano se algo sair do esperado.</li>
+      </ul>
+      <a class="btn btn-primary" href="#baixar">Pedir um serviço →</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Tração</span>
+      <h2>Uma nova economia, ganhando escala.</h2>
+      <p>Metas e projeções da plataforma para o lançamento.</p>
+    </div>
+    <div class="stat-grid reveal">
+      <div class="stat"><div class="v" data-count="120" data-suffix=" mil">0</div><div class="l">pessoas na lista de espera</div></div>
+      <div class="stat"><div class="v" data-prefix="R$ " data-count="2400">0</div><div class="l">ganho médio mensal do prestador</div></div>
+      <div class="stat"><div class="v" data-count="4.9" data-decimals="1">0</div><div class="l">avaliação média dos serviços</div></div>
+      <div class="stat"><div class="v" data-count="180" data-suffix="+">0</div><div class="l">cidades no lançamento</div></div>
+      <div class="stat"><div class="v" data-count="12" data-prefix="< " data-suffix=" min">0</div><div class="l">para o primeiro orçamento</div></div>
+      <div class="stat"><div class="v" data-count="98" data-suffix="%">0</div><div class="l">serviços sem intercorrência</div></div>
+    </div>
+    <p class="disclaimer">Números de meta e lista de espera durante o pré-lançamento. Transparência acima de tudo.</p>
+  </div>
+</section>
+
+<!-- DIFFERENTIATORS -->
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Diferenciais</span>
+      <h2>Por que o Leblon é diferente.</h2>
+      <p>Pegamos o melhor dos serviços sob demanda e tiramos o que ninguém aguenta mais.</p>
+    </div>
+    <div class="diff-table reveal">
+      <div class="diff-row diff-head">
+        <div class="diff-cell old">O jeito antigo</div>
+        <div class="diff-cell new" style="background:var(--brand-tint)">O jeito Leblon</div>
+      </div>
+      <div class="diff-row"><div class="diff-cell old">Pagar por "leads" sem garantia de fechar</div><div class="diff-cell new">Você só ganha quando faz o trabalho</div></div>
+      <div class="diff-row"><div class="diff-cell old">Ficar no escuro sobre quem vai aparecer</div><div class="diff-cell new">Perfis verificados, avaliações e fotos reais</div></div>
+      <div class="diff-row"><div class="diff-cell old">Combinar pagamento por fora, no risco</div><div class="diff-cell new">Pagamento protegido dentro do app</div></div>
+      <div class="diff-row"><div class="diff-cell old">Categorias limitadas e burocracia</div><div class="diff-cell new">Praticamente qualquer serviço, em minutos</div></div>
+      <div class="diff-row"><div class="diff-cell old">Suporte inexistente quando dá problema</div><div class="diff-cell new">Gente de verdade pra te ajudar</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="seguranca" class="bg-mist">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Confiança em primeiro lugar</span>
+      <h2>Segurança não é um recurso. É a fundação.</h2>
+      <p>Para deixar alguém entrar na sua casa — ou entrar na casa de alguém — a confiança vem antes de tudo.</p>
+    </div>
+    <div class="sec-grid reveal">
+      <div class="sec-card"><div class="ic">🪪</div><h3>Identidade verificada</h3><p>Documento, selfie e checagem antes de qualquer perfil ficar ativo.</p></div>
+      <div class="sec-card"><div class="ic">⭐</div><h3>Avaliações reais</h3><p>Só quem contratou de verdade avalia. Reputação que não se compra.</p></div>
+      <div class="sec-card"><div class="ic">🔒</div><h3>Pagamento protegido</h3><p>Seu dinheiro fica retido e só é liberado quando o serviço é concluído.</p></div>
+      <div class="sec-card"><div class="ic">🛟</div><h3>Suporte e proteção</h3><p>Equipe 7 dias por semana e cobertura para imprevistos.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Histórias reais</span>
+      <h2>Histórias dos dois lados.</h2>
+    </div>
+    <div class="test-grid reveal">
+      <div class="test">
+        <div class="stars">★★★★★</div>
+        <q>Comecei passeando com cães no meu bairro. Hoje pago minha faculdade com o Leblon.</q>
+        <div class="who"><div class="av">M</div><div><b>Marina S.</b><span>Prestadora · São Paulo, SP</span></div></div>
+      </div>
+      <div class="test">
+        <div class="stars">★★★★★</div>
+        <q>Montei a casa inteira em um fim de semana sem levantar do sofá. Profissional impecável.</q>
+        <div class="who"><div class="av">R</div><div><b>Rafael T.</b><span>Cliente · Rio de Janeiro, RJ</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="baixar">
+  <div class="container reveal">
+    <h2>Seu tempo vale mais do que você imagina.</h2>
+    <p>Baixe o Leblon e comece hoje — para ganhar, para contratar, ou os dois.</p>
+    <div class="store-btns">
+      <a class="store" href="#"><span class="em"></span><span><small>Baixar na</small><b>App Store</b></span></a>
+      <a class="store" href="#"><span class="em">▶</span><span><small>Disponível no</small><b>Google Play</b></span></a>
+    </div>
+    <form class="waitlist" onsubmit="return false">
+      <input type="email" placeholder="Seu melhor e-mail" />
+      <button class="btn btn-white" type="submit">Avise-me no lançamento</button>
+    </form>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Perguntas frequentes</span>
+      <h2>Tudo o que você precisa saber.</h2>
+    </div>
+    <div class="faq-wrap reveal" id="faqWrap"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="logo"><span class="dot"></span>Leblon</a>
+        <p>Tempo transformado em dinheiro. O marketplace de serviços do Brasil.</p>
+        <div class="socials"><a href="#">📷</a><a href="#">𝕏</a><a href="#">in</a><a href="#">▶</a></div>
+      </div>
+      <div class="foot-col"><h4>Contratar</h4><a href="#como">Como funciona</a><a href="#categorias">Categorias</a><a href="#seguranca">Segurança</a><a href="#">Preços</a><a href="#contratar">Pedir um serviço</a></div>
+      <div class="foot-col"><h4>Ganhar</h4><a href="#ganhar">Seja um prestador</a><a href="#ganhar">Calculadora</a><a href="#">Histórias</a><a href="#">Centro do prestador</a></div>
+      <div class="foot-col"><h4>Empresa</h4><a href="#">Sobre</a><a href="#">Carreiras</a><a href="#">Imprensa</a><a href="#">Blog</a><a href="#">Contato</a></div>
+      <div class="foot-col"><h4>Legal</h4><a href="#">Termos de uso</a><a href="#">Privacidade (LGPD)</a><a href="#">Pagamentos</a><a href="#">Cookies</a></div>
+    </div>
+    <div class="foot-bot">
+      <p>© 2026 Leblon Tecnologia Ltda. · Feito no Brasil 🇧🇷</p>
+      <div class="stores"><a href="#">App Store</a><a href="#">Google Play</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Data
+const steps = {
+  contratar:[
+    {n:1,t:"Descreva o que precisa.",p:"Conte a tarefa, escolha data e local. Leva 60 segundos."},
+    {n:2,t:"Escolha quem vai fazer.",p:"Compare perfis verificados, avaliações e preços. Você decide."},
+    {n:3,t:"Relaxe e avalie.",p:"O serviço é feito e o pagamento só é liberado quando você confirma."}
+  ],
+  ganhar:[
+    {n:1,t:"Crie seu perfil.",p:"Diga o que você sabe fazer e onde. Verificação rápida e gratuita."},
+    {n:2,t:"Receba pedidos perto de você.",p:"Aceite o que combina com seu tempo e seu preço."},
+    {n:3,t:"Faça e receba.",p:"Conclua o serviço e receba direto na conta, sem dor de cabeça."}
+  ]
+};
+function renderSteps(mode){
+  document.getElementById('steps').innerHTML = steps[mode].map(s=>
+    `<div class="step"><div class="num">${s.n}</div><h3>${s.t}</h3><p>${s.p}</p></div>`).join('');
+}
+renderSteps('contratar');
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.seg button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); renderSteps(b.dataset.mode);
+});
+
+// Categories
+const cats=[
+  ["🐕","Passear com cachorro"],["🧹","Limpeza"],["🛠️","Montagem de móveis"],["🌱","Jardinagem"],
+  ["🛒","Compras e mercado"],["📦","Entregas"],["🚚","Mudanças e fretes"],["🔧","Pequenos reparos"],
+  ["🎨","Design"],["💻","Programação"],["📈","Marketing"],["📚","Aulas particulares"],
+  ["👶","Babá e cuidados"],["👵","Cuidador de idosos"],["🍳","Cozinheiro(a)"],["💅","Beleza em casa"],
+  ["📸","Fotografia"],["🎉","Festas e eventos"],["🧰","Elétrica e hidráulica"],["🚗","Lavagem de carro"],
+  ["📝","Assistência pessoal"],["🖥️","Suporte técnico"],["🏋️","Personal trainer"],["🐈","Pet sitter"]
+];
+function renderCats(filter=""){
+  const f=filter.toLowerCase();
+  const html=cats.filter(c=>c[1].toLowerCase().includes(f)).map(c=>
+    `<div class="cat"><div class="emoji">${c[0]}</div><span>${c[1]}</span></div>`).join('');
+  document.getElementById('catGrid').innerHTML = html || '<p style="grid-column:1/-1;text-align:center;color:var(--muted)">Nenhuma categoria encontrada — mas você pode oferecer qualquer serviço legal.</p>';
+}
+renderCats();
+document.getElementById('catSearch').oninput=e=>renderCats(e.target.value);
+
+// Calculator
+const hours=document.getElementById('hours'),ticket=document.getElementById('ticket');
+function calc(){
+  const h=+hours.value,t=+ticket.value;
+  document.getElementById('hoursVal').textContent=h+"h";
+  document.getElementById('ticketVal').textContent="R$ "+t;
+  // assume ~1 serviço por 1.5h trabalhada, 4.3 semanas
+  const monthly=Math.round((h/1.5)*t*4.3/10)*10;
+  document.getElementById('earnResult').textContent="R$ "+monthly.toLocaleString('pt-BR');
+}
+hours.oninput=calc;ticket.oninput=calc;calc();
+
+// FAQ
+const faqs=[
+  ["Gerais",[
+    ["O que é o Leblon?","Um marketplace que conecta quem precisa de um serviço a quem pode realizá-lo, com pagamento protegido e profissionais verificados."],
+    ["O Leblon é gratuito?","Baixar e se cadastrar é grátis. Cobramos uma taxa de serviço apenas quando uma contratação acontece."],
+    ["Em quais cidades funciona?","Estamos lançando nas principais capitais e expandindo rápido. Cadastre-se para saber quando chegamos à sua cidade."],
+    ["Preciso de CNPJ para usar?","Não. Qualquer pessoa física maior de 18 anos pode oferecer ou contratar serviços."]
+  ]],
+  ["Para quem quer ganhar",[
+    ["Como começo a ganhar dinheiro?","Baixe o app, crie seu perfil, passe pela verificação gratuita e comece a receber pedidos perto de você."],
+    ["Quanto posso ganhar?","Depende de quantas horas você dedica e do tipo de serviço. Para muitos é renda extra; para outros, a renda principal."],
+    ["Eu defino meus preços?","Sim. Você controla o que cobra e quais pedidos aceita."],
+    ["Quando e como recebo?","O pagamento fica protegido antes do serviço e é liberado para sua conta após a conclusão, em poucos dias úteis."],
+    ["Pago alguma mensalidade?","Não. Você só paga uma taxa quando ganha — sem assinatura, sem compra de leads."]
+  ]],
+  ["Para quem contrata",[
+    ["Como contrato alguém?","Descreva o serviço, receba orçamentos de profissionais verificados, compare e escolha."],
+    ["Como sei que a pessoa é confiável?","Todo perfil passa por verificação de identidade e exibe avaliações de clientes reais."],
+    ["Quando eu pago?","Você autoriza o pagamento ao contratar, mas o valor só é liberado quando confirma que o serviço foi concluído."],
+    ["E se o serviço não for bem feito?","Você pode acionar o suporte antes de liberar o pagamento. Mediação e proteção fazem parte do Leblon."],
+    ["Posso cancelar?","Sim, conforme nossa política de cancelamento, com regras claras para os dois lados."]
+  ]],
+  ["Segurança e pagamento",[
+    ["Meu dinheiro fica seguro?","Sim. Usamos pagamento protegido (escrow): o valor fica retido e só é liberado na conclusão."],
+    ["Quais formas de pagamento são aceitas?","Cartão de crédito, Pix e outras formas digitais, tudo dentro do app."],
+    ["Meus dados estão protegidos?","Sim, seguimos a LGPD e usamos criptografia para proteger suas informações."],
+    ["E se houver um problema durante o serviço?","Nosso suporte atua 7 dias por semana e oferecemos cobertura para imprevistos."],
+    ["Como funcionam as avaliações?","Só quem realmente contratou ou prestou um serviço pode avaliar, garantindo notas honestas."]
+  ]],
+  ["Sobre a empresa",[
+    ["Quem está por trás do Leblon?","Um time apaixonado por destravar oportunidade e tempo para milhões de brasileiros."],
+    ["O Leblon está contratando?","Sim! Confira nossas vagas na página de Carreiras."],
+    ["Como falo com vocês?","Pelo suporte no app ou pela nossa Central de Ajuda."]
+  ]]
+];
+document.getElementById('faqWrap').innerHTML = faqs.map(([cat,items])=>
+  `<div class="faq-cat">${cat}</div>`+items.map(([q,a])=>
+    `<details class="faq"><summary>${q}<span class="plus">+</span></summary><p>${a}</p></details>`).join('')
+).join('');
+
+// Nav scroll
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));
+
+// Mobile drawer
+const drawer=document.getElementById('drawer');
+document.getElementById('menuBtn').onclick=()=>drawer.classList.add('open');
+document.getElementById('closeBtn').onclick=()=>drawer.classList.remove('open');
+drawer.querySelectorAll('a').forEach(a=>a.onclick=()=>drawer.classList.remove('open'));
+
+// Reveal on scroll
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Counters
+const co=new IntersectionObserver((es)=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  const el=e.target,target=+el.dataset.count,dec=+(el.dataset.decimals||0),
+    pre=el.dataset.prefix||"",suf=el.dataset.suffix||"";
+  let cur=0,steps=50,inc=target/steps;
+  const tick=()=>{cur+=inc;if(cur>=target)cur=target;
+    el.textContent=pre+(dec?cur.toFixed(dec):Math.round(cur).toLocaleString('pt-BR'))+suf;
+    if(cur<target)requestAnimationFrame(tick)};
+  tick();co.unobserve(el);
+}),{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
+</script>
+</body>
+</html>
