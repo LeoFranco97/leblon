@@ -1,0 +1,14 @@
+{
+  "name": "Leblon",
+  "short_name": "Leblon",
+  "description": "Marketplace de serviços do Brasil. Encontre profissionais ou ganhe dinheiro com seu tempo.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#03014C",
+  "theme_color": "#FF4800",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
