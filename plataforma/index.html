@@ -90,13 +90,14 @@ header{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:1
   .mobile-menu .btn{margin-top:16px}
 }
 
-.hero{background:radial-gradient(120% 120% at 85% 0%,var(--navy2),var(--ink) 55%,var(--navy));color:#fff;padding:60px 0 70px;position:relative;overflow:hidden}
+.hero{background:radial-gradient(125% 125% at 82% -10%,#221a6a 0%,#0c0935 48%,#070528 100%);color:#fff;padding:60px 0 70px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;top:-20%;right:-5%;width:460px;height:460px;background:var(--brand);filter:blur(150px);opacity:.4;border-radius:50%}
 .hero-in{position:relative;z-index:2;max-width:760px}
 .hero h1{color:#fff;font-size:clamp(34px,5vw,56px);font-weight:800;margin-bottom:16px}
 .hero h1 .hl{color:var(--brand)}
 .hero p{font-size:19px;color:rgba(255,255,255,.8);margin-bottom:24px;max-width:560px}
-.livebar{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:500;margin-bottom:18px}
+.livebar{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(8px);border-radius:999px;padding:8px 16px 8px 13px;font-size:13px;font-weight:500;margin-bottom:20px;color:rgba(255,255,255,.92)}
+.livebar .dot{width:8px;height:8px;border-radius:50%;background:#34d39a;box-shadow:0 0 0 4px rgba(52,211,154,.22);flex-shrink:0;animation:pulse 1.8s infinite}
 .searchwrap{position:relative;max-width:620px}
 .searchbox{background:var(--paper);border-radius:16px;padding:8px;display:flex;gap:8px;box-shadow:var(--shadow-lg);align-items:center}
 .searchbox .si{color:var(--muted);margin-left:10px}
@@ -174,7 +175,7 @@ h2.title{font-size:clamp(26px,3.5vw,40px);font-weight:700;margin-bottom:10px}
   linear-gradient(135deg,#e8edff,#f3f1ff)}
 .pin{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .pin .b{background:var(--brand);color:#fff;font-family:'Inter Tight';font-weight:700;font-size:12px;padding:5px 10px;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
-.pin .b.alt{background:var(--ink)}
+.pin .b.alt{background:var(--navy)}
 .pin .tip{width:0;height:0;border:6px solid transparent;border-top-color:var(--brand);margin-top:-1px}
 
 .pricehint{background:var(--tint);border:0;display:flex;gap:12px;align-items:center}
@@ -268,7 +269,7 @@ footer{background:var(--navy);color:#fff;padding:56px 0 28px}
 .ratepick button.on,.ratepick button.hover{color:var(--star)}
 .ratepick .ic{width:38px;height:38px}
 
-.comparetray{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:14px;padding:12px 18px;display:none;align-items:center;gap:14px;z-index:150;box-shadow:var(--shadow-lg)}
+.comparetray{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;border-radius:14px;padding:12px 18px;display:none;align-items:center;gap:14px;z-index:150;box-shadow:var(--shadow-lg)}
 .comparetray.show{display:flex}
 .comptable{width:100%;border-collapse:collapse}
 .comptable td,.comptable th{border-bottom:1px solid var(--line);padding:10px;font-size:13.5px;text-align:left}
@@ -549,7 +550,7 @@ function oppHTML(o){return `
 ROUTES.home=()=>`
  <section class="hero">
   <div class="container hero-in">
-    <div class="livebar"><span class="chip live" style="background:transparent;padding:0;color:#fff">&nbsp;</span> 312 pedidos feitos em Itapema esta semana</div>
+    <div class="livebar"><span class="dot"></span> 312 pedidos feitos em Itapema esta semana</div>
     <h1>Encontre o profissional certo, ou <span class="hl">ganhe dinheiro</span> com seu tempo.</h1>
     <p>Peça orçamentos de profissionais verificados perto de você e contrate com pagamento protegido. Tudo em um só lugar.</p>
     <div class="searchwrap">
