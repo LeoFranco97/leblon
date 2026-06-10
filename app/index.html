@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Leblon — Protótipo do app</title>
+<meta name="description" content="Protótipo navegável do marketplace de serviços Leblon."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#03014C;--ink2:#0A0838;--brand:#FF4800;--brand6:#E03F00;--tint:#FFF1EC;
+  --paper:#fff;--mist:#F6F7FB;--line:#ECEDF4;--muted:#6A6A82;--text:#15132E;
+  --ok:#1FB67A;--star:#FFB400;--r:18px;--ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',system-ui,sans-serif;background:#22203f;color:var(--text);
+  display:flex;justify-content:center;min-height:100vh}
+h1,h2,h3,h4,.dp{font-family:'Inter Tight','Inter',sans-serif;letter-spacing:-.02em;color:var(--ink)}
+button{font-family:inherit;cursor:pointer;border:0;background:none}
+img{max-width:100%}
+
+/* Phone shell */
+.phone{width:100%;max-width:430px;background:var(--paper);min-height:100vh;position:relative;
+  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.5)}
+@media(min-width:480px){body{padding:24px 0}.phone{min-height:auto;height:calc(100vh - 48px);max-height:920px;border-radius:42px;border:10px solid #0c0a26}}
+
+/* Status bar */
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:10px 22px 4px;font-size:13px;font-weight:600;color:var(--ink);flex-shrink:0;background:var(--paper)}
+.statusbar.dark{color:#fff;background:transparent;position:absolute;left:0;right:0;top:0;z-index:5}
+
+/* Screen area */
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:90px;animation:fade .25s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.screen.noscroll{overflow:hidden}
+.pad{padding:0 20px}
+
+/* Top bar */
+.topbar{display:flex;align-items:center;gap:12px;padding:8px 16px 14px;position:sticky;top:0;background:var(--paper);z-index:4}
+.topbar .back{width:38px;height:38px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--ink);flex-shrink:0}
+.topbar h2{font-size:19px;font-weight:700;flex:1}
+.topbar .act{width:38px;height:38px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+
+/* Generic */
+.row{display:flex;align-items:center;gap:12px}
+.between{justify-content:space-between}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--tint);color:var(--brand);font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;white-space:nowrap}
+.chip.gray{background:var(--mist);color:var(--muted)}
+.verified{color:#2563eb;font-size:13px}
+.stars{color:var(--star);font-size:13px;letter-spacing:-1px}
+.muted{color:var(--muted)}
+.sm{font-size:13px}.xs{font-size:11px}
+.b{font-weight:700}
+.divider{height:1px;background:var(--line);margin:16px 0}
+.sec-title{font-size:17px;font-weight:700;margin:22px 0 12px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:0 1px 2px rgba(3,1,76,.05)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter Tight';font-weight:600;font-size:16px;padding:15px 20px;border-radius:14px;width:100%;transition:transform .15s var(--ease),background .15s}
+.btn:active{transform:scale(.97)}
+.btn-pri{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(255,72,0,.3)}
+.btn-pri:active{background:var(--brand6)}
+.btn-out{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-sm{padding:10px 16px;font-size:14px;width:auto;border-radius:11px}
+
+/* Avatars */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Inter Tight';font-weight:700;flex-shrink:0;background:linear-gradient(135deg,var(--brand),#ff9466)}
+.av.lg{width:64px;height:64px;font-size:24px}
+.av.md{width:48px;height:48px;font-size:18px}
+.av.sm{width:40px;height:40px;font-size:15px}
+.av.b1{background:linear-gradient(135deg,#03014C,#3b34c4)}
+.av.b2{background:linear-gradient(135deg,#1FB67A,#5fd6a8)}
+.av.b3{background:linear-gradient(135deg,#7c3aed,#b388ff)}
+.av.b4{background:linear-gradient(135deg,#2563eb,#6aa0ff)}
+
+/* Bottom nav */
+.botnav{position:absolute;left:0;right:0;bottom:0;height:74px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-around;padding:0 8px 6px;z-index:20}
+.navitem{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--muted);flex:1;padding-top:8px}
+.navitem.active{color:var(--brand)}
+.navitem .ic{font-size:21px;line-height:1}
+.navfab{width:56px;height:56px;border-radius:20px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;margin-top:-22px;box-shadow:0 8px 20px rgba(255,72,0,.45);flex-shrink:0}
+
+/* Mode toggle */
+.modeseg{display:flex;background:var(--mist);border-radius:999px;padding:4px;gap:4px;margin:4px 0 18px}
+.modeseg button{flex:1;font-family:'Inter Tight';font-weight:600;font-size:14px;padding:10px;border-radius:999px;color:var(--muted)}
+.modeseg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(3,1,76,.12)}
+
+/* Search */
+.searchbar{display:flex;align-items:center;gap:10px;background:var(--mist);border-radius:14px;padding:13px 16px;font-size:15px;color:var(--muted)}
+.searchbar input{border:0;background:none;outline:none;flex:1;font-size:15px;font-family:inherit;color:var(--text)}
+
+/* Category grid */
+.catgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.catitem{display:flex;flex-direction:column;align-items:center;gap:7px;padding:6px 2px}
+.catitem .e{width:54px;height:54px;border-radius:16px;background:var(--tint);display:flex;align-items:center;justify-content:center;font-size:25px;transition:transform .15s}
+.catitem:active .e{transform:scale(.92)}
+.catitem span{font-size:11px;font-weight:600;text-align:center;color:var(--text);line-height:1.2}
+
+/* Provider card */
+.pcard{display:flex;gap:12px;padding:14px;border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;background:#fff;transition:transform .15s}
+.pcard:active{transform:scale(.985)}
+.pcard .meta{flex:1;min-width:0}
+.pcard .nm{font-family:'Inter Tight';font-weight:700;font-size:15px;color:var(--ink);display:flex;align-items:center;gap:5px}
+.pcard .price{text-align:right;flex-shrink:0}
+.pcard .price b{font-family:'Inter Tight';color:var(--ink);font-size:15px;display:block}
+
+/* Hero gradient (home) */
+.homehead{background:linear-gradient(160deg,#14104f,var(--ink));padding:46px 20px 24px;color:#fff;border-radius:0 0 26px 26px}
+.homehead .loc{font-size:13px;opacity:.85;display:flex;align-items:center;gap:5px}
+.homehead h1{color:#fff;font-size:23px;margin:4px 0 16px;font-weight:800}
+.homehead .searchbar{background:rgba(255,255,255,.14);color:rgba(255,255,255,.7)}
+.homehead .searchbar input{color:#fff}
+.homehead .searchbar input::placeholder{color:rgba(255,255,255,.6)}
+
+/* Earnings card */
+.earn{background:linear-gradient(135deg,var(--ink),#241c6e);color:#fff;border-radius:20px;padding:20px;margin-bottom:6px}
+.earn .v{font-family:'Inter Tight';font-weight:800;font-size:32px;margin:4px 0}
+.earn .up{color:#7ee9b8;font-size:12px;font-weight:600}
+.statrow{display:flex;gap:10px;margin-top:14px}
+.statrow .s{flex:1;background:rgba(255,255,255,.1);border-radius:12px;padding:10px;text-align:center}
+.statrow .s b{font-family:'Inter Tight';font-size:16px;display:block}
+.statrow .s span{font-size:10px;opacity:.7}
+
+/* Opportunity card */
+.opp{border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:12px;background:#fff}
+.opp .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.opp h3{font-size:15px;font-weight:700}
+.match{background:#E9FBF3;color:var(--ok);font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;white-space:nowrap}
+.opp .info{display:flex;gap:14px;margin:8px 0 12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 -20px;padding:0 20px;position:sticky;top:0;background:#fff;z-index:3}
+.tabs button{padding:13px 4px;font-family:'Inter Tight';font-weight:600;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;flex:1}
+.tabs button.on{color:var(--brand);border-bottom-color:var(--brand)}
+
+/* Wizard */
+.progress{height:5px;background:var(--mist);border-radius:5px;margin:0 0 22px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--brand);border-radius:5px;transition:width .3s var(--ease)}
+.opt{border:1.5px solid var(--line);border-radius:14px;padding:15px;margin-bottom:10px;display:flex;align-items:center;gap:12px;font-weight:500;font-size:15px;transition:.15s}
+.opt:active{transform:scale(.98)}
+.opt.sel{border-color:var(--brand);background:var(--tint)}
+.opt .e{font-size:22px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.field input,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px;font-size:15px;font-family:inherit;outline:none}
+.field input:focus,.field textarea:focus{border-color:var(--brand)}
+
+/* Chat */
+.convitem{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.convitem .meta{flex:1;min-width:0}
+.convitem .nm{font-family:'Inter Tight';font-weight:700;font-size:14.5px}
+.convitem .prev{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{background:var(--brand);color:#fff;font-size:11px;font-weight:700;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.msgs{display:flex;flex-direction:column;gap:8px;padding:16px 16px 8px}
+.bub{max-width:76%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.4}
+.bub.them{background:var(--mist);align-self:flex-start;border-bottom-left-radius:5px}
+.bub.me{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+.bub.sys{align-self:center;background:var(--tint);color:var(--brand);font-size:12px;font-weight:600;border-radius:10px;text-align:center}
+.chatbar{position:absolute;bottom:0;left:0;right:0;display:flex;gap:8px;padding:12px 14px;background:#fff;border-top:1px solid var(--line);align-items:center}
+.chatbar input{flex:1;border:1.5px solid var(--line);border-radius:999px;padding:11px 16px;font-size:14px;outline:none;font-family:inherit}
+.chatbar .send{width:42px;height:42px;border-radius:50%;background:var(--brand);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.safebanner{background:#FFF8E6;color:#8a6d00;font-size:12px;padding:8px 16px;text-align:center}
+
+/* Wallet */
+.walletbox{background:linear-gradient(135deg,var(--brand),#ff7a40);border-radius:22px;padding:22px;color:#fff;margin-bottom:16px}
+.walletbox .lbl{font-size:13px;opacity:.9}
+.walletbox .v{font-family:'Inter Tight';font-weight:800;font-size:34px;margin:2px 0 4px}
+.walletbox .pend{font-size:12px;opacity:.85}
+.wact{display:flex;gap:10px;margin:16px 0}
+.wact button{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--ink)}
+.wact button .e{font-size:20px}
+.tx{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.tx .ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;background:var(--mist)}
+.tx .meta{flex:1}
+.tx .amt{font-family:'Inter Tight';font-weight:700;font-size:15px}
+.tx .amt.in{color:var(--ok)}.tx .amt.out{color:var(--text)}
+
+/* Settings */
+.setgrp{margin-bottom:22px}
+.setgrp .h{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px 4px}
+.setitem{display:flex;align-items:center;gap:14px;padding:14px;background:#fff;border:1px solid var(--line);border-bottom:0;font-size:15px;font-weight:500}
+.setgrp .setitem:first-child{border-radius:14px 14px 0 0}
+.setgrp .setitem:last-child{border-radius:0 0 14px 14px;border-bottom:1px solid var(--line)}
+.setitem .e{width:34px;height:34px;border-radius:10px;background:var(--mist);display:flex;align-items:center;justify-content:center;font-size:16px}
+.setitem .arr{margin-left:auto;color:var(--muted)}
+.switch{margin-left:auto;width:44px;height:26px;border-radius:999px;background:var(--brand);position:relative;flex-shrink:0}
+.switch::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+
+/* Toast */
+.toast{position:absolute;bottom:90px;left:20px;right:20px;background:var(--ink);color:#fff;padding:13px 16px;border-radius:13px;font-size:14px;text-align:center;z-index:50;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;box-shadow:var(--shadow-lg)}
+.toast.show{opacity:1;transform:none}
+
+/* Success */
+.success{text-align:center;padding:60px 24px}
+.success .big{width:90px;height:90px;border-radius:50%;background:var(--tint);color:var(--brand);font-size:46px;display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+.success h2{font-size:24px;margin-bottom:10px}
+.success p{color:var(--muted);margin-bottom:28px}
+
+.demo-pill{position:fixed;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:3px 10px;border-radius:999px;z-index:200;font-weight:600;letter-spacing:.04em}
+@media(min-width:480px){.demo-pill{top:14px}}
+</style>
+</head>
+<body>
+<div class="demo-pill">PROTÓTIPO · dados de exemplo</div>
+<div class="phone">
+  <div id="statusbar" class="statusbar"><span>9:41</span><span>📶 &nbsp; 🔋</span></div>
+  <div id="screen" class="screen"></div>
+  <nav id="botnav" class="botnav"></nav>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+/* ============ DADOS (mock) ============ */
+const CATS=[["🧹","Limpeza"],["🛠️","Montagem"],["🐕","Pet"],["🔧","Reparos"],["🌱","Jardim"],["🛒","Compras"],["📚","Aulas"],["💅","Beleza"],["🎨","Design"],["💻","Tech"],["📦","Entregas"],["📈","Marketing"]];
+const PROVIDERS=[
+  {id:1,name:"Carla Mendes",ini:"C",av:"b2",cat:"Limpeza",rating:4.9,reviews:312,price:"R$ 130",unit:"/diária",dist:"800 m",resp:"~8 min",level:"Top",verified:true,bio:"Diarista profissional há 8 anos. Capricho, pontualidade e produtos próprios. Atendo residências e escritórios.",services:[["Faxina completa","R$ 130"],["Limpeza pós-obra","R$ 220"],["Passar roupa (3h)","R$ 90"]],portfolio:6},
+  {id:2,name:"João Pereira",ini:"J",av:"b1",cat:"Montagem",rating:4.8,reviews:198,price:"R$ 90",unit:"/serviço",dist:"1,2 km",resp:"~15 min",level:"Pro",verified:true,bio:"Montador de móveis. Guarda-roupas, estantes, cozinhas planejadas. Ferramentas profissionais.",services:[["Montar guarda-roupa","R$ 120"],["Montar estante","R$ 70"],["Instalar prateleiras","R$ 60"]],portfolio:9},
+  {id:3,name:"Marina Souza",ini:"M",av:"b3",cat:"Pet",rating:5.0,reviews:87,price:"R$ 45",unit:"/passeio",dist:"500 m",resp:"~5 min",level:"Pro",verified:true,bio:"Apaixonada por cães. Passeios, pet sitting e cuidados. Envio fotos durante o passeio.",services:[["Passeio (1h)","R$ 45"],["Pet sitting (diária)","R$ 120"],["Banho em casa","R$ 70"]],portfolio:12},
+  {id:4,name:"Rafael Lima",ini:"R",av:"b4",cat:"Reparos",rating:4.7,reviews:241,price:"R$ 80",unit:"/visita",dist:"2,1 km",resp:"~20 min",level:"Top",verified:true,bio:"Eletricista e encanador. Reparos rápidos, instalações e emergências. Orçamento sem compromisso.",services:[["Reparo elétrico","R$ 80"],["Conserto hidráulico","R$ 90"],["Instalar chuveiro","R$ 70"]],portfolio:5},
+];
+const OPPS=[
+  {id:1,title:"Montar guarda-roupa 6 portas",cat:"Montagem",dist:"800 m",budget:"R$ 100–150",urg:"Hoje",ago:"há 4 min",match:96},
+  {id:2,title:"Faxina completa apê 2 quartos",cat:"Limpeza",dist:"1,5 km",budget:"R$ 120–160",urg:"Amanhã",ago:"há 12 min",match:91},
+  {id:3,title:"Passear com cachorro porte médio",cat:"Pet",dist:"600 m",budget:"R$ 40–50",urg:"Hoje 16h",ago:"há 20 min",match:88},
+  {id:4,title:"Instalar 3 prateleiras na sala",cat:"Reparos",dist:"2,3 km",budget:"R$ 80–120",urg:"Esta semana",ago:"há 35 min",match:82},
+];
+const CHATS=[
+  {id:1,name:"Carla Mendes",ini:"C",av:"b2",unread:2,status:"Proposta enviada",msgs:[
+    {t:"them",b:"Oi! Vi seu pedido de faxina. Posso atender amanhã de manhã 😊"},
+    {t:"them",b:"Cobro R$ 130 pela diária completa, levo meus produtos."},
+    {t:"sys",b:"Carla enviou uma proposta: R$ 130 · amanhã 8h"},
+  ]},
+  {id:2,name:"João Pereira",ini:"J",av:"b1",unread:0,status:"Pagamento protegido",msgs:[
+    {t:"me",b:"Boa! Consegue montar o guarda-roupa hoje?"},
+    {t:"them",b:"Consigo sim, chego às 15h. Fica R$ 120."},
+    {t:"sys",b:"Pagamento de R$ 120 retido com segurança 🔒"},
+    {t:"them",b:"Perfeito, já estou a caminho!"},
+  ]},
+  {id:3,name:"Marina Souza",ini:"M",av:"b3",unread:0,status:"Serviço concluído",msgs:[
+    {t:"sys",b:"Serviço concluído ✓ Avalie a Marina"},
+    {t:"them",b:"Obrigada! O Thor é um amor 🐕"},
+  ]},
+];
+const TXS=[
+  {ic:"💰",in:true,t:"Pagamento — Faxina completa",d:"Hoje · de Ana P.",a:"+ R$ 117,00"},
+  {ic:"🔒",in:false,t:"Em garantia — Montagem",d:"Hoje · liberará na conclusão",a:"R$ 120,00",pend:true},
+  {ic:"🏦",in:false,t:"Saque via Pix",d:"Ontem · conta •••4321",a:"− R$ 300,00"},
+  {ic:"💰",in:true,t:"Pagamento — Passeio com cão",d:"2 dias atrás · de Lucas M.",a:"+ R$ 40,50"},
+  {ic:"🎁",in:true,t:"Bônus de indicação",d:"3 dias atrás",a:"+ R$ 20,00"},
+];
+
+/* ============ ESTADO + ROUTER ============ */
+const S={mode:'contratar',screen:'home',stack:[],params:{}};
+const elScreen=document.getElementById('screen');
+const elNav=document.getElementById('botnav');
+const elStatus=document.getElementById('statusbar');
+
+function go(screen,params={},push=true){
+  if(push && S.screen) S.stack.push({screen:S.screen,params:S.params});
+  S.screen=screen;S.params=params;render();elScreen.scrollTop=0;
+}
+function back(){const p=S.stack.pop();if(p){S.screen=p.screen;S.params=p.params;render();}else go('home',{},false);}
+function setMode(m){S.mode=m;go('home',{},false);}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* ============ RENDER ============ */
+function render(){
+  const dark = S.screen==='home' && S.mode==='contratar';
+  elStatus.className='statusbar'+(dark?' dark':'');
+  const fn=SCREENS[S.screen]||SCREENS.home;
+  elScreen.className='screen'+(['chat'].includes(S.screen)?' noscroll':'');
+  elScreen.innerHTML=fn(S.params);
+  renderNav();
+  bind();
+}
+
+function renderNav(){
+  const hideNav=['request','chat','login'].includes(S.screen);
+  elNav.style.display=hideNav?'none':'flex';
+  if(hideNav)return;
+  const isWork=S.mode==='trabalhar';
+  const items = isWork ? [
+    {id:'home',ic:'🏠',l:'Início'},
+    {id:'feed',ic:'⚡',l:'Oportunidades'},
+    {fab:true},
+    {id:'chats',ic:'💬',l:'Mensagens'},
+    {id:'wallet',ic:'👛',l:'Carteira'},
+  ] : [
+    {id:'home',ic:'🏠',l:'Início'},
+    {id:'search',ic:'🔍',l:'Buscar'},
+    {fab:true},
+    {id:'chats',ic:'💬',l:'Mensagens'},
+    {id:'account',ic:'👤',l:'Conta'},
+  ];
+  elNav.innerHTML=items.map(it=>{
+    if(it.fab)return `<button class="navfab" data-act="${isWork?'feed':'request'}">+</button>`;
+    const active=(S.screen===it.id)?' active':'';
+    return `<button class="navitem${active}" data-nav="${it.id}"><span class="ic">${it.ic}</span>${it.l}</button>`;
+  }).join('');
+}
+
+/* ===== Telas ===== */
+const SCREENS={};
+
+SCREENS.home=()=>{
+  if(S.mode==='trabalhar')return homeWork();
+  return `
+  <div class="homehead">
+    <div class="loc">📍 Itapema, SC ▾</div>
+    <h1>O que você precisa hoje?</h1>
+    <div class="searchbar" data-nav="search">🔍<input placeholder="Buscar serviço (ex.: faxina)" readonly></div>
+  </div>
+  <div class="pad">
+    <div class="modeseg">
+      <button class="on" data-mode="contratar">Contratar</button>
+      <button data-mode="trabalhar">Trabalhar</button>
+    </div>
+    <div class="catgrid">
+      ${CATS.map((c,i)=>`<div class="catitem" data-cat="${c[1]}"><div class="e">${c[0]}</div><span>${c[1]}</span></div>`).join('')}
+    </div>
+    <div class="card" style="margin-top:20px;background:var(--ink);border:0;color:#fff;display:flex;align-items:center;gap:14px" data-act="request">
+      <div style="font-size:30px">⚡</div>
+      <div style="flex:1"><div class="dp" style="color:#fff;font-weight:700;font-size:16px">Peça um serviço em 1 minuto</div><div class="sm" style="opacity:.8">Receba propostas de profissionais perto de você</div></div>
+      <div style="font-size:22px">→</div>
+    </div>
+    <div class="row between"><div class="sec-title">Bem avaliados perto de você</div><span class="sm b" style="color:var(--brand)" data-nav="search">Ver todos</span></div>
+    ${PROVIDERS.slice(0,3).map(pcard).join('')}
+    <div class="card" style="display:flex;gap:12px;align-items:center;background:var(--tint);border:0;margin-top:6px">
+      <div style="font-size:24px">🔒</div>
+      <div class="sm"><b class="dp">Pagamento protegido</b><div class="muted">Seu dinheiro só é liberado quando o serviço é concluído.</div></div>
+    </div>
+  </div>`;
+};
+
+function homeWork(){return `
+  <div class="topbar"><h2>Olá, você 👋</h2><div class="act" data-nav="account">⚙️</div></div>
+  <div class="pad">
+    <div class="modeseg">
+      <button data-mode="contratar">Contratar</button>
+      <button class="on" data-mode="trabalhar">Trabalhar</button>
+    </div>
+    <div class="earn">
+      <div class="lbl" style="opacity:.8;font-size:13px">Ganhos do mês</div>
+      <div class="v">R$ 2.480</div>
+      <div class="up">↑ 18% vs. mês passado</div>
+      <div class="statrow">
+        <div class="s"><b>23</b><span>serviços</span></div>
+        <div class="s"><b>4,9★</b><span>avaliação</span></div>
+        <div class="s"><b>96%</b><span>conclusão</span></div>
+      </div>
+    </div>
+    <div class="row between"><div class="sec-title">Oportunidades para você</div><span class="sm b" style="color:var(--brand)" data-nav="feed">Ver feed</span></div>
+    ${OPPS.slice(0,2).map(oppCard).join('')}
+    <div class="card" style="display:flex;gap:12px;align-items:center;background:var(--tint);border:0">
+      <div style="font-size:24px">⚡</div>
+      <div class="sm"><b class="dp">Sem compra de leads</b><div class="muted">Enviar proposta é grátis. Você só paga uma taxa quando ganha.</div></div>
+    </div>
+  </div>`;}
+
+function pcard(p){return `
+  <div class="pcard" data-prov="${p.id}">
+    <div class="av md ${p.av}">${p.ini}</div>
+    <div class="meta">
+      <div class="nm">${p.name} ${p.verified?'<span class="verified">✔</span>':''}</div>
+      <div class="sm muted">${p.cat} · ${p.dist}</div>
+      <div class="sm"><span class="stars">★</span> <b>${p.rating.toFixed(1)}</b> <span class="muted">(${p.reviews}) · responde ${p.resp}</span></div>
+    </div>
+    <div class="price"><b>${p.price}</b><span class="xs muted">${p.unit}</span></div>
+  </div>`;}
+
+function oppCard(o){return `
+  <div class="opp" data-opp="${o.id}">
+    <div class="top"><h3>${o.title}</h3><span class="match">${o.match}% match</span></div>
+    <div class="info"><span>📍 ${o.dist}</span><span>💰 ${o.budget}</span><span>🕒 ${o.urg}</span></div>
+    <div class="row between">
+      <span class="xs muted">${o.ago}</span>
+      <button class="btn btn-pri btn-sm" data-act="propose">Enviar proposta →</button>
+    </div>
+  </div>`;}
+
+SCREENS.search=(p)=>{
+  const q=p.cat||'';
+  const list = q? PROVIDERS.filter(x=>x.cat===q) : PROVIDERS;
+  const shown = list.length?list:PROVIDERS;
+  return `
+  <div class="topbar"><div class="back" data-back>←</div><h2>${q||'Buscar'}</h2><div class="act">🗺️</div></div>
+  <div class="pad">
+    <div class="searchbar" style="margin-bottom:14px">🔍<input placeholder="${q||'O que você precisa?'}"></div>
+    <div class="row" style="gap:8px;overflow-x:auto;padding-bottom:14px;margin:0 -20px;padding-left:20px;padding-right:20px">
+      <span class="chip">⚲ Mais próximos</span><span class="chip gray">★ Avaliação</span><span class="chip gray">R$ Preço</span><span class="chip gray">✔ Verificado</span>
+    </div>
+    <div class="sm muted" style="margin-bottom:12px">${shown.length} profissionais encontrados</div>
+    ${shown.map(pcard).join('')}
+  </div>`;
+};
+
+SCREENS.profile=(p)=>{
+  const pr=PROVIDERS.find(x=>x.id==p.id)||PROVIDERS[0];
+  const tab=p.tab||'sobre';
+  let content='';
+  if(tab==='sobre')content=`<p class="sm" style="line-height:1.6;margin-bottom:16px">${pr.bio}</p>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><span class="chip">✔ Identidade verificada</span><span class="chip">⚡ Responde ${pr.resp}</span><span class="chip">🏅 Nível ${pr.level}</span></div>`;
+  if(tab==='servicos')content=pr.services.map(s=>`<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span class="b dp">${s[0]}</span><span class="b" style="color:var(--brand)">${s[1]}</span></div>`).join('');
+  if(tab==='portfolio')content=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${Array.from({length:pr.portfolio}).map((_,i)=>`<div style="aspect-ratio:1;border-radius:14px;background:linear-gradient(135deg,var(--tint),#ffd9c9);display:flex;align-items:center;justify-content:center;font-size:30px">${['🛠️','✨','🏠','📸','🎨','🌱','🧹','🐕','🔧'][i%9]}</div>`).join('')}</div>`;
+  if(tab==='aval')content=[["Ana P.","Excelente! Pontual e caprichosa, super recomendo.",5],["Lucas M.","Ótimo trabalho, ficou tudo perfeito.",5],["Bia R.","Muito profissional, voltarei a contratar.",4]].map(r=>`<div class="card" style="margin-bottom:10px"><div class="row between"><b class="dp sm">${r[0]}</b><span class="stars">${'★'.repeat(r[2])}</span></div><p class="sm muted" style="margin-top:6px">${r[1]}</p></div>`).join('');
+  return `
+  <div class="topbar"><div class="back" data-back>←</div><h2>Perfil</h2><div class="act">♡</div></div>
+  <div class="pad">
+    <div class="row" style="gap:14px;margin-bottom:14px">
+      <div class="av lg ${pr.av}">${pr.ini}</div>
+      <div style="flex:1">
+        <div class="dp" style="font-size:20px;font-weight:700;display:flex;align-items:center;gap:6px">${pr.name} <span class="verified">✔</span></div>
+        <div class="sm muted">${pr.cat} · ${pr.dist}</div>
+        <div class="sm"><span class="stars">★</span> <b>${pr.rating.toFixed(1)}</b> <span class="muted">(${pr.reviews} avaliações)</span></div>
+      </div>
+    </div>
+    <div class="row" style="text-align:center;background:var(--mist);border-radius:14px;padding:12px;margin-bottom:6px">
+      <div style="flex:1"><b class="dp">${pr.reviews}</b><div class="xs muted">serviços</div></div>
+      <div style="flex:1"><b class="dp">${pr.resp}</b><div class="xs muted">resposta</div></div>
+      <div style="flex:1"><b class="dp">${pr.level}</b><div class="xs muted">nível</div></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="${tab==='sobre'?'on':''}" data-tab="sobre">Sobre</button>
+    <button class="${tab==='servicos'?'on':''}" data-tab="servicos">Serviços</button>
+    <button class="${tab==='portfolio'?'on':''}" data-tab="portfolio">Portfólio</button>
+    <button class="${tab==='aval'?'on':''}" data-tab="aval">Avaliações</button>
+  </div>
+  <div class="pad" style="padding-top:16px">${content}</div>
+  <div class="pad" style="position:sticky;bottom:84px;display:flex;gap:10px;padding-bottom:8px">
+    <button class="btn btn-out" style="flex:1" data-act="openchat">Mensagem</button>
+    <button class="btn btn-pri" style="flex:1.4" data-act="request">Pedir orçamento</button>
+  </div>`;
+};
+
+/* ===== Wizard de pedido ===== */
+const WIZ=[
+  {q:"Qual serviço você precisa?",type:"opts",opts:[["🧹","Limpeza / faxina"],["🛠️","Montagem de móveis"],["🐕","Passear com pet"],["🔧","Reparos em casa"]]},
+  {q:"Quando você precisa?",type:"opts",opts:[["⚡","Hoje / urgente"],["📅","Esta semana"],["🗓️","Sem pressa, agendar"]]},
+  {q:"Conte um pouco mais",type:"form"},
+  {q:"Onde será o serviço?",type:"loc"},
+  {q:"Como prefere contratar?",type:"opts",opts:[["💬","Receber propostas"],["🏷️","Preço fechado"]]},
+];
+SCREENS.request=(p)=>{
+  const step=p.step||0;
+  if(step>=WIZ.length)return wizSuccess();
+  const w=WIZ[step];const pct=Math.round(((step)/WIZ.length)*100);
+  let body='';
+  if(w.type==='opts')body=w.opts.map((o,i)=>`<div class="opt ${p.sel===i?'sel':''}" data-sel="${i}"><span class="e">${o[0]}</span>${o[1]}</div>`).join('');
+  if(w.type==='form')body=`
+    <div class="field"><label>Descreva o que precisa</label><textarea rows="4" placeholder="Ex.: montar 1 guarda-roupa de 6 portas"></textarea></div>
+    <div class="field"><label>Adicionar fotos (opcional)</label><div class="opt" style="justify-content:center;color:var(--muted)">📷 Tirar ou enviar foto</div></div>`;
+  if(w.type==='loc')body=`
+    <div style="height:160px;border-radius:14px;background:linear-gradient(135deg,#dfe7ff,#eef2ff);display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:14px">📍</div>
+    <div class="field"><label>Endereço</label><input value="Rua das Flores, 123 — Itapema/SC"></div>
+    <div class="sm muted">🔒 Seu endereço exato só é liberado após a contratação.</div>`;
+  return `
+  <div class="topbar"><div class="back" data-act="wizback">←</div><h2>Pedir serviço</h2><div class="act" data-nav="home">✕</div></div>
+  <div class="pad">
+    <div class="progress"><i style="width:${pct}%"></i></div>
+    <h2 style="font-size:22px;margin-bottom:18px">${w.q}</h2>
+    ${body}
+  </div>
+  <div class="pad" style="position:absolute;bottom:16px;left:0;right:0">
+    <button class="btn btn-pri" data-act="wiznext">${step===WIZ.length-1?'Publicar pedido':'Continuar'}</button>
+  </div>`;
+};
+function wizSuccess(){return `
+  <div class="success">
+    <div class="big">✓</div>
+    <h2>Pedido publicado!</h2>
+    <p>Profissionais perto de você já estão recebendo seu pedido. Você deve receber as primeiras propostas em <b>poucos minutos</b>.</p>
+    <button class="btn btn-pri" data-nav="proposals">Ver propostas recebidas</button>
+    <button class="btn btn-out" style="margin-top:10px" data-nav="home">Voltar ao início</button>
+  </div>`;}
+
+/* ===== Propostas recebidas (comparação) ===== */
+SCREENS.proposals=()=>`
+  <div class="topbar"><div class="back" data-back>←</div><h2>Propostas (3)</h2><div class="act">⇅</div></div>
+  <div class="pad">
+    <div class="card" style="background:var(--tint);border:0;margin-bottom:14px;display:flex;gap:10px;align-items:center">
+      <span style="font-size:20px">💡</span><span class="sm">Compare e escolha. O pagamento fica protegido até a conclusão.</span>
+    </div>
+    ${PROVIDERS.slice(0,3).map((p,i)=>`
+    <div class="card" style="margin-bottom:12px" data-prov="${p.id}">
+      <div class="row" style="gap:12px;margin-bottom:10px">
+        <div class="av sm ${p.av}">${p.ini}</div>
+        <div style="flex:1"><div class="nm dp b">${p.name} <span class="verified">✔</span></div>
+        <div class="sm"><span class="stars">★</span> ${p.rating.toFixed(1)} <span class="muted">(${p.reviews})</span></div></div>
+        <div style="text-align:right"><b class="dp" style="font-size:18px;color:var(--brand)">${['R$ 120','R$ 135','R$ 110'][i]}</b><div class="xs muted">${['hoje 15h','amanhã 9h','hoje 18h'][i]}</div></div>
+      </div>
+      <p class="sm muted" style="margin-bottom:12px">"${['Posso atender hoje mesmo, levo as ferramentas.','Faço com garantia e capricho, disponível amanhã.','Atendo rápido, preço justo, qualquer dúvida chame.'][i]}"</p>
+      <div class="row" style="gap:8px"><button class="btn btn-out btn-sm" style="flex:1" data-act="openchat">Conversar</button><button class="btn btn-pri btn-sm" style="flex:1" data-act="hire">Contratar</button></div>
+    </div>`).join('')}
+  </div>`;
+
+/* ===== Feed do prestador ===== */
+SCREENS.feed=()=>`
+  <div class="topbar"><h2>Oportunidades</h2><div class="act">⚙️</div></div>
+  <div class="pad">
+    <div class="row" style="gap:8px;overflow-x:auto;padding-bottom:14px">
+      <span class="chip">⚲ 5 km</span><span class="chip gray">Todas categorias</span><span class="chip gray">Hoje</span><span class="chip gray">R$</span>
+    </div>
+    ${OPPS.map(oppCard).join('')}
+  </div>`;
+
+/* ===== Lista de conversas ===== */
+SCREENS.chats=()=>`
+  <div class="topbar"><h2>Mensagens</h2><div class="act">🔍</div></div>
+  <div class="pad">
+    ${CHATS.map(c=>`
+    <div class="convitem" data-chat="${c.id}">
+      <div class="av md ${c.av}">${c.ini}</div>
+      <div class="meta">
+        <div class="row between"><div class="nm">${c.name}</div><span class="xs muted">${c.unread?'':'9:32'}</span></div>
+        <div class="row between"><div class="prev">${c.msgs[c.msgs.length-1].b}</div>${c.unread?`<span class="badge">${c.unread}</span>`:''}</div>
+        <span class="chip gray xs" style="margin-top:5px">${c.status}</span>
+      </div>
+    </div>`).join('')}
+  </div>`;
+
+/* ===== Conversa ===== */
+SCREENS.chat=(p)=>{
+  const c=CHATS.find(x=>x.id==p.id)||CHATS[0];
+  return `
+  <div class="topbar"><div class="back" data-back>←</div>
+    <div class="av sm ${c.av}">${c.ini}</div>
+    <div style="flex:1"><div class="dp b" style="font-size:15px">${c.name} <span class="verified">✔</span></div><div class="xs muted">online agora</div></div>
+    <div class="act">⋮</div>
+  </div>
+  <div class="safebanner">🔒 Mantenha pagamento e conversa no Leblon. Não compartilhe telefone.</div>
+  <div class="msgs" id="msgs">
+    ${c.msgs.map(m=>`<div class="bub ${m.t}">${m.b}</div>`).join('')}
+  </div>
+  <div class="chatbar">
+    <button class="act" style="background:var(--mist)">＋</button>
+    <input id="chatinput" placeholder="Mensagem...">
+    <button class="send" data-act="sendmsg">↑</button>
+  </div>`;
+};
+
+/* ===== Carteira ===== */
+SCREENS.wallet=()=>`
+  <div class="topbar"><h2>Carteira</h2><div class="act">📄</div></div>
+  <div class="pad">
+    <div class="walletbox">
+      <div class="lbl">Saldo disponível</div>
+      <div class="v">R$ 1.847,50</div>
+      <div class="pend">+ R$ 120,00 a liberar (em garantia)</div>
+    </div>
+    <div class="wact">
+      <button data-act="toast"><span class="e">⬇️</span>Sacar Pix</button>
+      <button data-act="toast"><span class="e">⚡</span>Antecipar</button>
+      <button data-act="toast"><span class="e">📊</span>Extrato</button>
+    </div>
+    <div class="sec-title">Transações</div>
+    ${TXS.map(t=>`
+    <div class="tx">
+      <div class="ic">${t.ic}</div>
+      <div class="meta"><div class="b sm dp">${t.t}</div><div class="xs muted">${t.d}</div></div>
+      <div class="amt ${t.in?'in':'out'}" style="${t.pend?'color:var(--muted)':''}">${t.a}</div>
+    </div>`).join('')}
+  </div>`;
+
+/* ===== Conta / Configurações ===== */
+SCREENS.account=()=>`
+  <div class="topbar"><h2>Conta</h2><div class="act">🔔</div></div>
+  <div class="pad">
+    <div class="row" style="gap:14px;margin-bottom:20px">
+      <div class="av lg">L</div>
+      <div style="flex:1"><div class="dp b" style="font-size:19px">Leonardo Franco</div><div class="sm muted">Itapema/SC · membro desde 2026</div>
+      <span class="chip" style="margin-top:6px">✔ Identidade verificada</span></div>
+    </div>
+    <div class="setgrp">
+      <div class="h">Conta</div>
+      <div class="setitem"><span class="e">👤</span>Dados pessoais<span class="arr">›</span></div>
+      <div class="setitem"><span class="e">📍</span>Endereços<span class="arr">›</span></div>
+      <div class="setitem"><span class="e">💳</span>Pagamento e Pix<span class="arr">›</span></div>
+      <div class="setitem"><span class="e">🪪</span>Verificação<span class="arr">›</span></div>
+    </div>
+    <div class="setgrp">
+      <div class="h">Modo prestador</div>
+      <div class="setitem"><span class="e">💼</span>Ativar perfil de prestador<span class="switch"></span></div>
+      <div class="setitem"><span class="e">🗂️</span>Minhas categorias<span class="arr">›</span></div>
+      <div class="setitem"><span class="e">📅</span>Disponibilidade<span class="arr">›</span></div>
+    </div>
+    <div class="setgrp">
+      <div class="h">Preferências</div>
+      <div class="setitem"><span class="e">🔔</span>Notificações<span class="arr">›</span></div>
+      <div class="setitem"><span class="e">🔒</span>Privacidade e segurança<span class="arr">›</span></div>
+      <div class="setitem"><span class="e">❓</span>Ajuda e suporte<span class="arr">›</span></div>
+    </div>
+    <button class="btn btn-out" style="color:var(--brand)">Sair</button>
+  </div>`;
+
+/* ============ EVENTOS ============ */
+function bind(){
+  // navegação por data-attrs (delegação)
+  elScreen.querySelectorAll('[data-nav]').forEach(e=>e.onclick=()=>go(e.dataset.nav));
+  elScreen.querySelectorAll('[data-back]').forEach(e=>e.onclick=back);
+  elScreen.querySelectorAll('[data-mode]').forEach(e=>e.onclick=()=>setMode(e.dataset.mode));
+  elScreen.querySelectorAll('[data-cat]').forEach(e=>e.onclick=()=>go('search',{cat:e.dataset.cat}));
+  elScreen.querySelectorAll('[data-prov]').forEach(e=>e.onclick=(ev)=>{if(ev.target.closest('[data-act]'))return;go('profile',{id:e.dataset.prov})});
+  elScreen.querySelectorAll('[data-tab]').forEach(e=>e.onclick=()=>go('profile',{...S.params,tab:e.dataset.tab},false));
+  elScreen.querySelectorAll('[data-chat]').forEach(e=>e.onclick=()=>go('chat',{id:e.dataset.chat}));
+  elScreen.querySelectorAll('[data-opp]').forEach(e=>e.onclick=(ev)=>{if(ev.target.closest('[data-act]'))return;});
+  // seleção no wizard
+  elScreen.querySelectorAll('[data-sel]').forEach(e=>e.onclick=()=>go('request',{...S.params,sel:+e.dataset.sel},false));
+  // ações
+  elScreen.querySelectorAll('[data-act]').forEach(e=>e.onclick=(ev)=>{ev.stopPropagation();act(e.dataset.act,e)});
+}
+elNav.onclick=(ev)=>{
+  const n=ev.target.closest('[data-nav]');const a=ev.target.closest('[data-act]');
+  if(n)go(n.dataset.nav);else if(a)act(a.dataset.act);
+};
+
+function act(a,el){
+  switch(a){
+    case 'request':go('request',{step:0});break;
+    case 'wiznext':{const st=(S.params.step||0)+1;go('request',{step:st},false);break;}
+    case 'wizback':{const st=(S.params.step||0)-1;if(st<0){back();}else go('request',{step:st},false);break;}
+    case 'propose':toast('Proposta enviada! Você será avisado se for aceita.');break;
+    case 'openchat':go('chat',{id:1});break;
+    case 'hire':go('chat',{id:2});toast('Pagamento protegido ativado 🔒');break;
+    case 'sendmsg':sendMsg();break;
+    case 'feed':go('feed');break;
+    case 'toast':toast('Função disponível no app completo 🙂');break;
+  }
+}
+function sendMsg(){
+  const inp=document.getElementById('chatinput');if(!inp||!inp.value.trim())return;
+  const c=CHATS.find(x=>x.id==S.params.id)||CHATS[0];
+  c.msgs.push({t:'me',b:inp.value.trim()});
+  setTimeout(()=>{c.msgs.push({t:'them',b:'Perfeito! Combinado então 👍'});if(S.screen==='chat')render();},900);
+  render();
+}
+
+/* boot */
+render();
+</script>
+</body>
+</html>
