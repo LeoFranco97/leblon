@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Leblon — Encontre profissionais ou ganhe dinheiro com seu tempo</title>
+<meta name="description" content="Leblon é o marketplace de serviços do Brasil. Peça orçamentos de profissionais verificados, contrate com pagamento protegido, ou ofereça seus serviços e ganhe dinheiro."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#03014C;--ink2:#0A0838;--brand:#FF4800;--brand6:#E03F00;--tint:#FFF1EC;
+  --paper:#fff;--mist:#F6F7FB;--line:#E7E8F0;--muted:#5B5B73;--text:#15132E;
+  --ok:#1FB67A;--star:#FFB400;--blue:#2563eb;--r:16px;--ease:cubic-bezier(.22,.61,.36,1);
+  --shadow:0 1px 2px rgba(3,1,76,.05),0 10px 28px rgba(3,1,76,.07);
+  --shadow-lg:0 24px 60px rgba(3,1,76,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.dp{font-family:'Inter Tight','Inter',sans-serif;letter-spacing:-.02em;color:var(--ink);line-height:1.15}
+a{color:inherit;text-decoration:none;cursor:pointer}
+button{font-family:inherit;cursor:pointer;border:0;background:none}
+img{max-width:100%}
+.container{max-width:1180px;margin:0 auto;padding:0 22px}
+.muted{color:var(--muted)}.sm{font-size:14px}.xs{font-size:12px}.b{font-weight:700}.center{text-align:center}
+.stars{color:var(--star);letter-spacing:-1px}
+.verified{color:var(--blue)}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--tint);color:var(--brand);font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.chip.gray{background:var(--mist);color:var(--muted)}
+.chip.ok{background:#E9FBF3;color:var(--ok)}
+.divider{height:1px;background:var(--line);margin:20px 0}
+.grid{display:grid;gap:18px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter Tight';font-weight:600;font-size:15px;padding:13px 22px;border-radius:12px;transition:transform .15s var(--ease),background .15s,box-shadow .15s;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn-pri{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(255,72,0,.28)}
+.btn-pri:hover{background:var(--brand6)}
+.btn-out{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn-out:hover{border-color:var(--ink)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-ghost{background:var(--mist);color:var(--ink)}
+.btn-lg{padding:16px 28px;font-size:16px}
+.btn-sm{padding:9px 15px;font-size:13px;border-radius:10px}
+.btn-block{width:100%}
+
+/* Avatar */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Inter Tight';font-weight:700;flex-shrink:0;background:linear-gradient(135deg,var(--brand),#ff9466)}
+.av.xl{width:84px;height:84px;font-size:32px}.av.lg{width:60px;height:60px;font-size:22px}
+.av.md{width:46px;height:46px;font-size:17px}.av.sm{width:38px;height:38px;font-size:14px}
+.av.b1{background:linear-gradient(135deg,#03014C,#3b34c4)}.av.b2{background:linear-gradient(135deg,#1FB67A,#5fd6a8)}
+.av.b3{background:linear-gradient(135deg,#7c3aed,#b388ff)}.av.b4{background:linear-gradient(135deg,#2563eb,#6aa0ff)}
+.av.b5{background:linear-gradient(135deg,#db2777,#f57ab6)}.av.b6{background:linear-gradient(135deg,#ea580c,#fdba74)}
+
+/* ===== HEADER ===== */
+header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:22px;height:68px}
+.logo{font-family:'Inter Tight';font-weight:800;font-size:24px;letter-spacing:-.03em;color:var(--ink);display:flex;align-items:center;gap:8px}
+.logo .dot{width:10px;height:10px;border-radius:50%;background:var(--brand)}
+.nav .links{display:flex;align-items:center;gap:20px;flex:1}
+.nav .links a{font-weight:500;font-size:14.5px;color:var(--text)}
+.nav .links a:hover{color:var(--brand)}
+.nav .right{display:flex;align-items:center;gap:12px}
+.menu-btn{display:none;font-size:26px;color:var(--ink);width:42px;height:42px}
+.mobile-menu{display:none}
+@media(max-width:900px){
+  .nav .links{display:none}
+  .nav .right .btn-ghost{display:none}
+  .menu-btn{display:flex;align-items:center;justify-content:center}
+  .mobile-menu.open{display:flex;flex-direction:column;position:fixed;inset:68px 0 0;background:#fff;z-index:99;padding:18px 22px;gap:4px;overflow-y:auto}
+  .mobile-menu a{padding:15px 0;border-bottom:1px solid var(--line);font-family:'Inter Tight';font-weight:600;font-size:18px}
+  .mobile-menu .btn{margin-top:16px}
+}
+
+/* ===== HERO ===== */
+.hero{background:radial-gradient(120% 120% at 85% 0%,#16124f,var(--ink) 55%,var(--ink2));color:#fff;padding:64px 0 72px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;top:-20%;right:-5%;width:460px;height:460px;background:var(--brand);filter:blur(150px);opacity:.4;border-radius:50%}
+.hero-in{position:relative;z-index:2;max-width:760px}
+.hero h1{color:#fff;font-size:clamp(34px,5vw,56px);font-weight:800;margin-bottom:16px}
+.hero h1 .hl{color:var(--brand)}
+.hero p{font-size:19px;color:rgba(255,255,255,.8);margin-bottom:28px;max-width:560px}
+.searchbox{background:#fff;border-radius:16px;padding:8px;display:flex;gap:8px;box-shadow:var(--shadow-lg);max-width:620px}
+.searchbox input{flex:1;border:0;outline:none;font-size:16px;padding:14px 16px;font-family:inherit;min-width:0}
+.hero-proof{display:flex;gap:22px;margin-top:22px;flex-wrap:wrap;color:rgba(255,255,255,.75);font-size:14px;font-weight:500}
+@media(max-width:560px){.searchbox{flex-direction:column}.searchbox .btn{width:100%}}
+
+/* ===== Sections ===== */
+section{padding:60px 0}
+.sec-head{margin-bottom:34px}
+.sec-head.center{text-align:center;max-width:640px;margin-left:auto;margin-right:auto}
+.eyebrow{display:inline-block;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);background:var(--tint);padding:5px 13px;border-radius:999px;margin-bottom:14px}
+h2.title{font-size:clamp(26px,3.5vw,40px);font-weight:700;margin-bottom:10px}
+.sec-head p{font-size:17px;color:var(--muted)}
+.bg-mist{background:var(--mist)}
+
+/* Category grid */
+.catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.cat{display:flex;flex-direction:column;gap:10px;padding:20px 16px;border:1px solid var(--line);border-radius:var(--r);background:#fff;transition:.18s var(--ease)}
+.cat:hover{transform:translateY(-3px);border-color:var(--brand);box-shadow:var(--shadow)}
+.cat .e{width:52px;height:52px;border-radius:14px;background:var(--tint);display:flex;align-items:center;justify-content:center;font-size:25px}
+.cat .nm{font-family:'Inter Tight';font-weight:700;font-size:15px;color:var(--ink)}
+.cat .ct{font-size:12px;color:var(--muted)}
+
+/* Steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.step{padding:28px;background:#fff;border:1px solid var(--line);border-radius:var(--r)}
+.step .n{width:40px;height:40px;border-radius:11px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Inter Tight';font-weight:800;margin-bottom:16px}
+.step h3{font-size:18px;margin-bottom:8px}
+.step p{font-size:14.5px;color:var(--muted)}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+
+/* Provider card */
+.pcard{display:flex;gap:14px;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:#fff;transition:.15s;align-items:flex-start}
+.pcard:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.pcard .meta{flex:1;min-width:0}
+.pcard .nm{font-family:'Inter Tight';font-weight:700;font-size:16px;color:var(--ink);display:flex;align-items:center;gap:6px}
+.pcard .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pcard .price{text-align:right;flex-shrink:0}
+.pcard .price b{font-family:'Inter Tight';color:var(--ink);font-size:17px;display:block}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.cards3{grid-template-columns:1fr}}
+
+/* Card */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+
+/* Two column layout (account/dashboard) */
+.layout{display:grid;grid-template-columns:240px 1fr;gap:28px;padding:32px 0}
+.sidebar{display:flex;flex-direction:column;gap:4px}
+.sidebar a{padding:12px 14px;border-radius:11px;font-weight:600;font-size:14.5px;color:var(--text);display:flex;align-items:center;gap:10px}
+.sidebar a.on{background:var(--tint);color:var(--brand)}
+.sidebar a:hover{background:var(--mist)}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.sidebar{flex-direction:row;overflow-x:auto;padding-bottom:8px}.sidebar a{white-space:nowrap}}
+
+/* Filters bar */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.filters .f{border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600;color:var(--text);background:#fff}
+.filters .f.on{border-color:var(--brand);color:var(--brand);background:var(--tint)}
+
+/* Wizard */
+.wizwrap{max-width:620px;margin:0 auto;padding:40px 0}
+.progress{height:6px;background:var(--mist);border-radius:6px;margin-bottom:28px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--brand);transition:width .3s var(--ease)}
+.opt{border:1.5px solid var(--line);border-radius:13px;padding:16px;margin-bottom:11px;display:flex;align-items:center;gap:13px;font-weight:500;font-size:15px;transition:.15s;background:#fff}
+.opt:hover{border-color:var(--brand)}
+.opt.sel{border-color:var(--brand);background:var(--tint)}
+.opt .e{font-size:23px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.field input,.field textarea,.field select{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:13px;font-size:15px;font-family:inherit;outline:none}
+.field input:focus,.field textarea:focus{border-color:var(--brand)}
+
+/* Chat */
+.chatlayout{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 68px)}
+.chatlist{border-right:1px solid var(--line);overflow-y:auto}
+.convitem{display:flex;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);cursor:pointer}
+.convitem:hover,.convitem.on{background:var(--mist)}
+.convitem .meta{flex:1;min-width:0}
+.convitem .prev{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chatmain{display:flex;flex-direction:column;height:100%}
+.chathead{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.msgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:9px;background:var(--mist)}
+.bub{max-width:62%;padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.45}
+.bub.them{background:#fff;align-self:flex-start;border:1px solid var(--line);border-bottom-left-radius:5px}
+.bub.me{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+.bub.sys{align-self:center;background:var(--tint);color:var(--brand);font-size:12.5px;font-weight:600;border-radius:10px}
+.chatbar{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--line);background:#fff;flex-shrink:0}
+.chatbar input{flex:1;border:1.5px solid var(--line);border-radius:999px;padding:12px 18px;font-size:14.5px;outline:none;font-family:inherit}
+.chatbar .send{width:46px;height:46px;border-radius:50%;background:var(--brand);color:#fff;font-size:19px;flex-shrink:0}
+.safebar{background:#FFF8E6;color:#8a6d00;font-size:12.5px;padding:9px 18px;text-align:center}
+@media(max-width:820px){.chatlayout{grid-template-columns:1fr}.chatlist.hide-m{display:none}}
+
+/* Wallet */
+.walletbox{background:linear-gradient(135deg,var(--brand),#ff7a40);border-radius:20px;padding:26px;color:#fff}
+.walletbox .v{font-family:'Inter Tight';font-weight:800;font-size:38px;margin:4px 0}
+.tx{display:flex;align-items:center;gap:13px;padding:15px 0;border-bottom:1px solid var(--line)}
+.tx .ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--mist);flex-shrink:0}
+.tx .amt{font-family:'Inter Tight';font-weight:700;margin-left:auto}
+.tx .amt.in{color:var(--ok)}
+
+/* Pricing plans */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.plan{border:1.5px solid var(--line);border-radius:var(--r);padding:26px;background:#fff;position:relative}
+.plan.feat{border-color:var(--brand);box-shadow:var(--shadow)}
+.plan .pop{position:absolute;top:-12px;left:24px;background:var(--brand);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px}
+.plan .pr{font-family:'Inter Tight';font-weight:800;font-size:34px;color:var(--ink);margin:6px 0}
+.plan ul{list-style:none;margin:18px 0;display:flex;flex-direction:column;gap:10px}
+.plan li{font-size:14px;display:flex;gap:8px}.plan li::before{content:"✓";color:var(--brand);font-weight:700}
+@media(max-width:820px){.plans{grid-template-columns:1fr}}
+
+/* FAQ */
+.faq{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:18px 0;display:flex;justify-content:space-between;gap:16px;font-family:'Inter Tight';font-weight:600;font-size:16px;color:var(--ink)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .p{color:var(--brand);font-size:20px;transition:.2s}.faq[open] summary .p{transform:rotate(45deg)}
+.faq p{padding:0 0 18px;color:var(--muted);font-size:15px}
+
+/* Footer */
+footer{background:var(--ink);color:#fff;padding:56px 0 28px}
+.foot{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;gap:30px;padding-bottom:38px;border-bottom:1px solid rgba(255,255,255,.1)}
+.foot .logo{color:#fff;margin-bottom:12px}
+.foot p{color:rgba(255,255,255,.6);font-size:13.5px;max-width:230px}
+.foot h4{font-family:'Inter Tight';font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.5);margin-bottom:14px}
+.foot a{display:block;color:rgba(255,255,255,.8);font-size:13.5px;margin-bottom:10px}
+.foot a:hover{color:#fff}
+.foot-bot{padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:rgba(255,255,255,.5);font-size:13px}
+@media(max-width:820px){.foot{grid-template-columns:1fr 1fr}.foot .brand{grid-column:1/-1}}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(3,1,76,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:20px;padding:30px;max-width:420px;width:100%;box-shadow:var(--shadow-lg)}
+.modal h3{font-size:22px;margin-bottom:6px}
+.tab2{display:flex;background:var(--mist);border-radius:11px;padding:4px;margin:18px 0}
+.tab2 button{flex:1;padding:10px;border-radius:8px;font-weight:600;font-size:14px;color:var(--muted)}
+.tab2 button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;padding:14px 22px;border-radius:13px;font-size:14px;z-index:300;opacity:0;transition:.25s;pointer-events:none;box-shadow:var(--shadow-lg)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+.banner-demo{background:var(--ink2);color:rgba(255,255,255,.8);font-size:12px;text-align:center;padding:6px}
+.pagehead{background:var(--mist);padding:40px 0;border-bottom:1px solid var(--line)}
+.pagehead h1{font-size:clamp(28px,4vw,42px)}
+.breadcrumb{font-size:13px;color:var(--muted);margin-bottom:10px}
+.breadcrumb a:hover{color:var(--brand)}
+</style>
+</head>
+<body>
+<div class="banner-demo">⚡ Protótipo navegável do Leblon · dados de exemplo · identidade e conteúdo originais</div>
+
+<header>
+  <div class="container nav">
+    <a class="logo" data-go="home"><span class="dot"></span>Leblon</a>
+    <div class="links">
+      <a data-go="categorias">Encontrar profissionais</a>
+      <a data-go="precofechado">Serviços com preço fechado</a>
+      <a data-go="sejaprofissional">Ganhe dinheiro</a>
+      <a data-go="comofunciona">Como funciona</a>
+      <a data-go="seguranca">Segurança</a>
+    </div>
+    <div class="right">
+      <button class="btn btn-ghost btn-sm" data-act="login">Entrar</button>
+      <button class="btn btn-pri btn-sm" data-go="pedido">Pedir orçamento</button>
+      <button class="menu-btn" id="menuBtn">☰</button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a data-go="categorias">Encontrar profissionais</a>
+    <a data-go="precofechado">Serviços com preço fechado</a>
+    <a data-go="sejaprofissional">Ganhe dinheiro</a>
+    <a data-go="comofunciona">Como funciona</a>
+    <a data-go="seguranca">Segurança</a>
+    <a data-go="painelprestador">Painel do prestador</a>
+    <a data-go="meuspedidos">Meus pedidos</a>
+    <a data-go="ajuda">Ajuda</a>
+    <button class="btn btn-out" data-act="login">Entrar</button>
+    <button class="btn btn-pri" data-go="pedido">Pedir orçamento</button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<!-- Login modal -->
+<div class="modal-bg" id="loginModal">
+  <div class="modal">
+    <h3 id="loginTitle">Entrar no Leblon</h3>
+    <p class="sm muted">Acesse para pedir serviços, conversar e contratar com segurança.</p>
+    <div class="tab2"><button class="on" data-ltab="entrar">Entrar</button><button data-ltab="cadastrar">Criar conta</button></div>
+    <div class="field"><label>Telefone ou e-mail</label><input placeholder="(48) 99999-9999"></div>
+    <div class="field" id="nameField" style="display:none"><label>Nome completo</label><input placeholder="Seu nome"></div>
+    <div class="field"><label>Senha</label><input type="password" placeholder="••••••••"></div>
+    <button class="btn btn-pri btn-block" data-act="doLogin">Continuar</button>
+    <div class="center sm muted" style="margin:16px 0 6px">ou</div>
+    <button class="btn btn-out btn-block" data-act="doLogin">Continuar com Google</button>
+    <div class="center" style="margin-top:14px"><button class="sm muted" data-act="closeModal" style="text-decoration:underline">Fechar</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================ DADOS ============================ */
+const CATS=[
+ {icon:"🔧",name:"Reformas e Reparos",slug:"reformas",subs:["Pintor","Pedreiro / Alvenaria","Eletricista","Encanador / Hidráulica","Marceneiro","Gesso e Drywall","Vidraceiro","Serralheiro","Impermeabilização","Telhados e calhas","Pisos e azulejos","Montagem de móveis","Chaveiro","Dedetização","Limpeza de caixa d'água"]},
+ {icon:"🧹",name:"Serviços Domésticos",slug:"domesticos",subs:["Diarista / faxina","Limpeza pós-obra","Passadeira","Cozinheira","Lavanderia","Jardinagem","Piscineiro","Personal organizer","Limpeza de estofados"]},
+ {icon:"🛠️",name:"Assistência Técnica",slug:"assistencia",subs:["Celular e tablet","Computador / notebook","TV","Geladeira","Máquina de lavar","Ar-condicionado","Micro-ondas","Fogão","Eletrônicos em geral","Conserto de móveis"]},
+ {icon:"📚",name:"Aulas e Cursos",slug:"aulas",subs:["Inglês","Espanhol","Reforço escolar","Violão e guitarra","Piano","Canto","Dança","Yoga","Informática","ENEM e concursos","Matemática","Artes"]},
+ {icon:"💻",name:"Tecnologia e Design",slug:"tecnologia",subs:["Criação de sites","Desenvolvimento de apps","Logo e identidade visual","Social media","Tráfego pago / ADS","SEO","Edição de vídeo","Ilustração","UX/UI Design","Suporte de TI","E-commerce"]},
+ {icon:"🎉",name:"Eventos",slug:"eventos",subs:["Fotografia","Filmagem","Buffet","DJ","Banda / música ao vivo","Decoração","Cerimonial","Bartender","Garçom","Segurança de eventos","Doces e salgados","Aluguel de equipamentos"]},
+ {icon:"💅",name:"Moda e Beleza",slug:"beleza",subs:["Cabeleireiro","Manicure e pedicure","Maquiagem","Design de sobrancelha","Depilação","Estética facial","Massagem","Barbeiro","Personal stylist","Costureira"]},
+ {icon:"🩺",name:"Saúde e Bem-estar",slug:"saude",subs:["Personal trainer","Nutricionista","Fisioterapeuta","Psicólogo","Cuidador de idosos","Enfermagem","Fonoaudiólogo","Pilates","Acupuntura","Terapeuta"]},
+ {icon:"🐕",name:"Pets",slug:"pets",subs:["Passeador de cães","Pet sitter","Banho e tosa em casa","Adestrador","Veterinário em casa","Creche para pets"]},
+ {icon:"🚗",name:"Autos",slug:"autos",subs:["Mecânico","Funilaria e pintura","Elétrica automotiva","Lavagem e estética","Guincho","Vidros automotivos","Som automotivo","Borracharia móvel"]},
+ {icon:"📊",name:"Consultoria e Negócios",slug:"consultoria",subs:["Contador","Advogado","Consultor financeiro","Consultor de marketing","RH e recrutamento","Tradução","Despachante","Redação e copywriting","Abertura de empresa"]},
+ {icon:"📦",name:"Logística e Transporte",slug:"logistica",subs:["Frete e mudanças","Motoboy / entregas","Carreto","Montador de mudança","Transporte executivo","Compras e mercado"]},
+ {icon:"👶",name:"Cuidados e Família",slug:"familia",subs:["Babá","Recreação infantil","Cuidador de crianças","Professor particular infantil"]},
+ {icon:"🏗️",name:"Construção e Projetos",slug:"projetos",subs:["Arquiteto","Engenheiro civil","Designer de interiores","Projeto elétrico","Paisagismo","Marmoraria"]},
+];
+const totalSubs=CATS.reduce((a,c)=>a+c.subs.length,0);
+
+const PROVIDERS=[
+ {id:1,name:"Carla Mendes",ini:"C",av:"b2",cat:"Serviços Domésticos",sub:"Diarista",city:"Itapema/SC",rating:4.9,reviews:312,jobs:340,price:"R$ 130",unit:"diária",resp:"~8 min",level:"Top Pro",verified:true,bio:"Diarista profissional há 8 anos. Capricho, pontualidade e produtos próprios inclusos. Atendo residências e escritórios com a mesma dedicação.",services:[["Faxina completa","R$ 130"],["Limpeza pós-obra","R$ 220"],["Passar roupa (3h)","R$ 90"]],portfolio:["✨","🏠","🧼","🪟","🛋️","🧺"],revs:[["Ana P.",5,"Excelente! Pontual e caprichosa. Recomendo demais."],["Lucas M.",5,"Deixou tudo impecável, voltarei a contratar."],["Bia R.",4,"Muito profissional e atenciosa."]]},
+ {id:2,name:"João Pereira",ini:"J",av:"b1",cat:"Reformas e Reparos",sub:"Montador de móveis",city:"Itapema/SC",rating:4.8,reviews:198,jobs:210,price:"R$ 90",unit:"serviço",resp:"~15 min",level:"Pro",verified:true,bio:"Montador e marceneiro. Guarda-roupas, cozinhas planejadas, estantes e reparos. Ferramentas profissionais e garantia no serviço.",services:[["Montar guarda-roupa","R$ 120"],["Montar cozinha planejada","R$ 350"],["Instalar prateleiras","R$ 60"]],portfolio:["🛠️","🪚","🚪","🗄️","🔩"],revs:[["Pedro H.",5,"Rápido e organizado, montou tudo perfeito."],["Marta L.",5,"Profissional excelente."]]},
+ {id:3,name:"Marina Souza",ini:"M",av:"b3",cat:"Pets",sub:"Passeador de cães",city:"Itapema/SC",rating:5.0,reviews:87,jobs:95,price:"R$ 45",unit:"passeio",resp:"~5 min",level:"Pro",verified:true,bio:"Apaixonada por animais. Passeios, pet sitting e cuidados especiais. Envio fotos e localização durante todo o passeio.",services:[["Passeio (1h)","R$ 45"],["Pet sitting (diária)","R$ 120"],["Banho em casa","R$ 70"]],portfolio:["🐕","🦮","🐈","🐾","🦴","🎾"],revs:[["Thais G.",5,"O Thor ama a Marina! Super confiável."],["Rafa B.",5,"Manda foto o tempo todo, fico tranquilo."]]},
+ {id:4,name:"Rafael Lima",ini:"R",av:"b4",cat:"Reformas e Reparos",sub:"Eletricista",city:"Balneário Camboriú/SC",rating:4.7,reviews:241,jobs:260,price:"R$ 80",unit:"visita",resp:"~20 min",level:"Top Pro",verified:true,bio:"Eletricista e encanador. Reparos rápidos, instalações e emergências 24h. Orçamento transparente, sem surpresas.",services:[["Reparo elétrico","R$ 80"],["Instalar chuveiro","R$ 70"],["Troca de tomadas","R$ 50"]],portfolio:["⚡","🔌","💡","🔧"],revs:[["Cris D.",5,"Resolveu na hora, ótimo profissional."],["Léo F.",4,"Pontual e honesto no preço."]]},
+ {id:5,name:"Aline Costa",ini:"A",av:"b5",cat:"Moda e Beleza",sub:"Maquiadora",city:"Itapema/SC",rating:4.9,reviews:156,jobs:170,price:"R$ 150",unit:"serviço",resp:"~10 min",level:"Pro",verified:true,bio:"Maquiadora e designer de sobrancelhas. Atendo noivas, formandas e eventos. Atendimento em domicílio com produtos premium.",services:[["Maquiagem social","R$ 150"],["Maquiagem de noiva","R$ 450"],["Design de sobrancelha","R$ 60"]],portfolio:["💄","💅","✨","👰","💋"],revs:[["Duda S.",5,"Me deixou linda no casamento!"],["Nina P.",5,"Mão de fada, super recomendo."]]},
+ {id:6,name:"Bruno Alves",ini:"B",av:"b6",cat:"Tecnologia e Design",sub:"Designer",city:"Florianópolis/SC",rating:4.8,reviews:73,jobs:80,price:"R$ 600",unit:"projeto",resp:"~30 min",level:"Pro",verified:true,bio:"Designer de marca e sites. Crio identidades visuais e landing pages que convertem. Mais de 80 projetos entregues.",services:[["Logo + identidade","R$ 900"],["Landing page","R$ 1.200"],["Social media (mês)","R$ 600"]],portfolio:["🎨","🖥️","📱","✏️","🖌️"],revs:[["Startup X",5,"Logo incrível, superou expectativas."],["Loja Y",5,"Site ficou lindo e rápido."]]},
+];
+
+const FIXED=[
+ {icon:"🧹",t:"Faxina residencial (até 60m²)",p:"R$ 129",d:"Diarista verificada · produtos inclusos"},
+ {icon:"🛠️",t:"Montagem de guarda-roupa",p:"R$ 119",d:"Montador profissional · garantia"},
+ {icon:"🐕",t:"Passeio com cachorro (1h)",p:"R$ 45",d:"Passeador verificado · com fotos"},
+ {icon:"💡",t:"Instalação elétrica simples",p:"R$ 89",d:"Eletricista · até 2 pontos"},
+ {icon:"💅",t:"Manicure e pedicure em casa",p:"R$ 75",d:"Profissional · materiais inclusos"},
+ {icon:"🌱",t:"Corte de grama (até 100m²)",p:"R$ 99",d:"Jardineiro · equipamento próprio"},
+ {icon:"🚿",t:"Desentupimento de pia",p:"R$ 110",d:"Encanador · serviço expresso"},
+ {icon:"📦",t:"Frete pequeno na cidade",p:"R$ 90",d:"Motorista · até 1h de carga"},
+];
+
+const OPPS=[
+ {id:1,t:"Montar guarda-roupa de 6 portas",cat:"Reformas e Reparos",city:"Itapema/SC",dist:"800 m",budget:"R$ 100–150",urg:"Hoje",ago:"há 4 min",match:96},
+ {id:2,t:"Faxina completa apê 2 quartos",cat:"Serviços Domésticos",city:"Itapema/SC",dist:"1,5 km",budget:"R$ 120–160",urg:"Amanhã",ago:"há 12 min",match:91},
+ {id:3,t:"Passear com cachorro porte médio",cat:"Pets",city:"Itapema/SC",dist:"600 m",budget:"R$ 40–50",urg:"Hoje 16h",ago:"há 20 min",match:88},
+ {id:4,t:"Instalar 3 prateleiras na sala",cat:"Reformas e Reparos",city:"Itapema/SC",dist:"2,3 km",budget:"R$ 80–120",urg:"Esta semana",ago:"há 35 min",match:82},
+ {id:5,t:"Maquiagem para formatura",cat:"Moda e Beleza",city:"Itapema/SC",dist:"1,1 km",budget:"R$ 130–180",urg:"Sábado",ago:"há 1 h",match:79},
+];
+
+const MYORDERS=[
+ {id:101,t:"Faxina completa — apê 2 quartos",cat:"Serviços Domésticos",status:"Recebendo propostas",proposals:3,date:"Hoje",color:"ok"},
+ {id:102,t:"Montar guarda-roupa 6 portas",cat:"Reformas e Reparos",status:"Em andamento",proposals:0,date:"Ontem",color:"gray"},
+ {id:103,t:"Passeio com cachorro",cat:"Pets",status:"Concluído · avalie",proposals:0,date:"3 dias atrás",color:"gray"},
+];
+
+const CHATS=[
+ {id:1,name:"Carla Mendes",ini:"C",av:"b2",status:"Proposta enviada",msgs:[
+   {t:"them",b:"Oi! Vi seu pedido de faxina. Posso atender amanhã de manhã 😊"},
+   {t:"them",b:"Cobro R$ 130 pela diária completa e levo meus produtos."},
+   {t:"sys",b:"Carla enviou uma proposta: R$ 130 · amanhã 8h"},
+ ]},
+ {id:2,name:"João Pereira",ini:"J",av:"b1",status:"Pagamento protegido",msgs:[
+   {t:"me",b:"Boa! Consegue montar o guarda-roupa hoje?"},
+   {t:"them",b:"Consigo sim, chego às 15h. Fica R$ 120."},
+   {t:"sys",b:"🔒 Pagamento de R$ 120 retido com segurança"},
+   {t:"them",b:"Perfeito, estou a caminho!"},
+ ]},
+ {id:3,name:"Marina Souza",ini:"M",av:"b3",status:"Serviço concluído",msgs:[
+   {t:"sys",b:"✓ Serviço concluído · avalie a Marina"},
+   {t:"them",b:"Obrigada! O Thor é um amor 🐕"},
+ ]},
+];
+
+const TXS=[
+ {ic:"💰",in:true,t:"Pagamento recebido — Faxina",d:"Hoje · de Ana P.",a:"+ R$ 117,00"},
+ {ic:"🔒",in:false,t:"Em garantia — Montagem",d:"Hoje · libera na conclusão",a:"R$ 120,00",pend:true},
+ {ic:"🏦",in:false,t:"Saque via Pix",d:"Ontem · conta •••4321",a:"− R$ 300,00"},
+ {ic:"💰",in:true,t:"Pagamento recebido — Passeio",d:"2 dias atrás · de Lucas M.",a:"+ R$ 40,50"},
+ {ic:"🎁",in:true,t:"Bônus de indicação",d:"3 dias atrás",a:"+ R$ 20,00"},
+];
+
+/* ============================ ROUTER ============================ */
+const app=document.getElementById('app');
+const ROUTES={};
+function parseHash(){
+  const h=(location.hash||'#/').replace(/^#\/?/,'');
+  const parts=h.split('/').filter(Boolean);
+  return {route:parts[0]||'home',a:parts[1],b:parts[2]};
+}
+function nav(route,a,b){location.hash='#/'+[route,a,b].filter(x=>x!==undefined&&x!=='').join('/');}
+function render(){
+  const {route,a,b}=parseHash();
+  const fn=ROUTES[route]||ROUTES.home;
+  app.innerHTML=fn(a,b);
+  window.scrollTo(0,0);
+  closeMenu();bindAll();
+}
+window.addEventListener('hashchange',render);
+
+/* helpers */
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2400);}
+function pcardHTML(p){return `
+ <a class="pcard" data-go="profissional/${p.id}">
+   <div class="av md ${p.av}">${p.ini}</div>
+   <div class="meta">
+     <div class="nm">${p.name} ${p.verified?'<span class="verified">✔</span>':''}</div>
+     <div class="sm muted">${p.sub} · ${p.city}</div>
+     <div class="sm"><span class="stars">★</span> <b>${p.rating.toFixed(1)}</b> <span class="muted">(${p.reviews}) · responde ${p.resp}</span></div>
+     <div class="tags"><span class="chip">${p.level}</span><span class="chip gray">${p.jobs} serviços</span></div>
+   </div>
+   <div class="price"><b>${p.price}</b><span class="xs muted">/${p.unit}</span></div>
+ </a>`;}
+function oppHTML(o){return `
+ <div class="card" style="margin-bottom:14px">
+   <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+     <div><div class="dp b" style="font-size:16px">${o.t}</div><div class="sm muted">${o.cat}</div></div>
+     <span class="chip ok">${o.match}% match</span>
+   </div>
+   <div class="sm muted" style="display:flex;gap:16px;flex-wrap:wrap;margin:12px 0">
+     <span>📍 ${o.dist} · ${o.city}</span><span>💰 ${o.budget}</span><span>🕒 ${o.urg}</span>
+   </div>
+   <div style="display:flex;justify-content:space-between;align-items:center">
+     <span class="xs muted">${o.ago}</span>
+     <button class="btn btn-pri btn-sm" data-act="propose">Enviar proposta →</button>
+   </div>
+ </div>`;}
+
+/* ============================ PÁGINAS ============================ */
+
+ROUTES.home=()=>`
+ <section class="hero">
+  <div class="container hero-in">
+    <span class="eyebrow" style="background:rgba(255,72,0,.18);color:#fff">O marketplace de serviços do Brasil</span>
+    <h1>Encontre o profissional certo — ou <span class="hl">ganhe dinheiro</span> com seu tempo.</h1>
+    <p>Peça orçamentos de profissionais verificados perto de você e contrate com pagamento protegido. Tudo em um só lugar.</p>
+    <div class="searchbox">
+      <input id="heroSearch" placeholder="Do que você precisa? Ex.: faxina, pintor, aula de inglês...">
+      <button class="btn btn-pri btn-lg" data-go="pedido">Buscar</button>
+    </div>
+    <div class="hero-proof">
+      <span>★ 4,9 de avaliação média</span><span>✔ Profissionais verificados</span><span>🔒 Pagamento protegido</span>
+    </div>
+  </div>
+ </section>
+
+ <section>
+  <div class="container">
+    <div class="sec-head center"><h2 class="title">Explore por categoria</h2><p>${CATS.length} categorias e mais de ${totalSubs} tipos de serviço.</p></div>
+    <div class="catgrid">
+      ${CATS.map(c=>`<a class="cat" data-go="categoria/${c.slug}"><div class="e">${c.icon}</div><div class="nm">${c.name}</div><div class="ct">${c.subs.length} serviços</div></a>`).join('')}
+    </div>
+  </div>
+ </section>
+
+ <section class="bg-mist">
+  <div class="container">
+    <div class="sec-head center"><span class="eyebrow">Como funciona</span><h2 class="title">Contrate em 3 passos</h2></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Conte o que precisa</h3><p>Descreva o serviço e onde será. Leva menos de 1 minuto e é grátis.</p></div>
+      <div class="step"><div class="n">2</div><h3>Receba propostas</h3><p>Profissionais verificados perto de você enviam orçamentos com preço e prazo.</p></div>
+      <div class="step"><div class="n">3</div><h3>Escolha e contrate</h3><p>Compare avaliações e preços, converse pelo chat e pague com segurança no app.</p></div>
+    </div>
+    <div class="center" style="margin-top:30px"><button class="btn btn-pri btn-lg" data-go="pedido">Pedir um orçamento grátis</button></div>
+  </div>
+ </section>
+
+ <section>
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:24px;flex-wrap:wrap;gap:10px">
+      <div><span class="eyebrow">Bem avaliados</span><h2 class="title">Profissionais em destaque</h2></div>
+      <button class="btn btn-out btn-sm" data-go="busca">Ver todos →</button>
+    </div>
+    <div class="cards3">${PROVIDERS.slice(0,6).map(pcardHTML).join('')}</div>
+  </div>
+ </section>
+
+ <section class="bg-mist">
+  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center">
+    <div>
+      <span class="eyebrow">Para quem tem tempo</span>
+      <h2 class="title" style="margin-bottom:14px">Transforme seu tempo em renda.</h2>
+      <p class="muted" style="margin-bottom:18px">Ofereça seus serviços no Leblon, receba pedidos perto de você e seja pago com segurança. Sem mensalidade para começar e sem chefe.</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+        <li>✅ Receba oportunidades da sua área e no seu horário</li>
+        <li>✅ Defina seus próprios preços</li>
+        <li>✅ Recebimento garantido via carteira + saque Pix</li>
+        <li>✅ Construa reputação e cobre mais a cada avaliação</li>
+      </ul>
+      <button class="btn btn-pri btn-lg" data-go="sejaprofissional">Quero ser um profissional</button>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="background:var(--ink);color:#fff;padding:24px">
+        <div class="sm" style="opacity:.7">Ganhos do mês</div>
+        <div class="dp" style="font-size:34px;font-weight:800">R$ 2.480</div>
+        <div class="sm" style="color:#7ee9b8">↑ 18% vs. mês passado</div>
+      </div>
+      <div style="padding:18px">${OPPS.slice(0,2).map(o=>`<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)"><div><div class="b sm">${o.t}</div><div class="xs muted">${o.dist} · ${o.urg}</div></div><span class="chip ok">${o.match}%</span></div>`).join('')}</div>
+    </div>
+  </div>
+ </section>
+
+ <section>
+  <div class="container">
+    <div class="sec-head center"><span class="eyebrow">Segurança</span><h2 class="title">Confiança em cada etapa</h2></div>
+    <div class="cards3">
+      <div class="card"><div style="font-size:30px">🪪</div><h3 style="margin:10px 0 6px">Identidade verificada</h3><p class="sm muted">Documento e selfie checados antes de qualquer perfil ficar ativo.</p></div>
+      <div class="card"><div style="font-size:30px">🔒</div><h3 style="margin:10px 0 6px">Pagamento protegido</h3><p class="sm muted">Seu dinheiro só é liberado quando o serviço é concluído.</p></div>
+      <div class="card"><div style="font-size:30px">⭐</div><h3 style="margin:10px 0 6px">Avaliações reais</h3><p class="sm muted">Apenas quem contratou de verdade pode avaliar.</p></div>
+    </div>
+  </div>
+ </section>`;
+
+ROUTES.categorias=()=>`
+ <div class="pagehead"><div class="container"><div class="breadcrumb"><a data-go="home">Início</a> › Categorias</div><h1>Todas as categorias</h1><p class="muted">${CATS.length} categorias · ${totalSubs}+ tipos de serviço</p></div></div>
+ <section><div class="container">
+   ${CATS.map(c=>`
+    <div style="margin-bottom:30px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="width:46px;height:46px;border-radius:12px;background:var(--tint);display:flex;align-items:center;justify-content:center;font-size:23px">${c.icon}</div>
+        <h2 style="font-size:21px"><a data-go="categoria/${c.slug}">${c.name}</a></h2>
+      </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        ${c.subs.map(s=>`<a class="chip gray" data-go="busca/${c.slug}" style="cursor:pointer">${s}</a>`).join('')}
+      </div>
+    </div>`).join('')}
+ </div></section>`;
+
+ROUTES.categoria=(slug)=>{
+  const c=CATS.find(x=>x.slug===slug)||CATS[0];
+  const provs=PROVIDERS.filter(p=>p.cat===c.name);
+  const shown=provs.length?provs:PROVIDERS.slice(0,3);
+  return `
+  <div class="pagehead"><div class="container">
+    <div class="breadcrumb"><a data-go="home">Início</a> › <a data-go="categorias">Categorias</a> › ${c.name}</div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="width:64px;height:64px;border-radius:16px;background:var(--tint);display:flex;align-items:center;justify-content:center;font-size:32px">${c.icon}</div>
+      <div><h1>${c.name}</h1><p class="muted">${c.subs.length} tipos de serviço · profissionais verificados perto de você</p></div>
+    </div>
+    <div style="margin-top:18px"><button class="btn btn-pri" data-go="pedido">Pedir orçamento grátis</button></div>
+  </div></div>
+  <section><div class="container">
+    <h2 style="font-size:20px;margin-bottom:14px">Serviços de ${c.name}</h2>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:32px">${c.subs.map(s=>`<a class="chip gray" data-go="busca/${c.slug}">${s}</a>`).join('')}</div>
+    <h2 style="font-size:20px;margin-bottom:16px">Profissionais recomendados</h2>
+    <div class="cards3">${shown.map(pcardHTML).join('')}</div>
+    <div class="card" style="margin-top:30px;background:var(--tint);border:0;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:30px">💡</div>
+      <div style="flex:1;min-width:200px"><h3>Não sabe quem escolher?</h3><p class="sm muted">Faça um pedido e deixe os profissionais virem até você com orçamentos.</p></div>
+      <button class="btn btn-pri" data-go="pedido">Pedir orçamento</button>
+    </div>
+  </div></section>`;
+};
+
+ROUTES.busca=(slug)=>{
+  const c=slug?CATS.find(x=>x.slug===slug):null;
+  const list=c?(PROVIDERS.filter(p=>p.cat===c.name)):PROVIDERS;
+  const shown=list.length?list:PROVIDERS;
+  return `
+  <div class="pagehead"><div class="container">
+    <div class="searchbox" style="box-shadow:none;border:1.5px solid var(--line);max-width:100%">
+      <input placeholder="${c?c.name:'Buscar serviço ou profissional'}" value="${c?c.name:''}">
+      <button class="btn btn-pri">Buscar</button>
+    </div>
+  </div></div>
+  <section><div class="container">
+    <div class="filters">
+      <button class="f on">📍 Mais próximos</button><button class="f">★ Melhor avaliados</button>
+      <button class="f">R$ Menor preço</button><button class="f">✔ Verificados</button><button class="f">⚡ Responde rápido</button>
+    </div>
+    <p class="sm muted" style="margin-bottom:18px">${shown.length} profissionais encontrados</p>
+    <div class="cards3">${shown.map(pcardHTML).join('')}</div>
+  </div></section>`;
+};
+
+ROUTES.profissional=(id)=>{
+  const p=PROVIDERS.find(x=>x.id==id)||PROVIDERS[0];
+  return `
+  <div class="pagehead"><div class="container">
+    <div class="breadcrumb"><a data-go="home">Início</a> › <a data-go="busca">Profissionais</a> › ${p.name}</div>
+    <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div class="av xl ${p.av}">${p.ini}</div>
+      <div style="flex:1;min-width:200px">
+        <h1 style="display:flex;align-items:center;gap:8px">${p.name} <span class="verified">✔</span></h1>
+        <p class="muted">${p.sub} · ${p.city}</p>
+        <div style="margin-top:6px"><span class="stars">★</span> <b>${p.rating.toFixed(1)}</b> <span class="muted">(${p.reviews} avaliações)</span></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><span class="chip">${p.level}</span><span class="chip gray">${p.jobs} serviços</span><span class="chip gray">Responde ${p.resp}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn-pri" data-go="mensagens/${p.id}">Enviar mensagem</button>
+        <button class="btn btn-out" data-go="pedido">Pedir orçamento</button>
+      </div>
+    </div>
+  </div></div>
+  <section><div class="container" style="display:grid;grid-template-columns:1.6fr 1fr;gap:32px">
+    <div>
+      <h2 style="font-size:20px;margin-bottom:10px">Sobre</h2>
+      <p class="muted" style="margin-bottom:24px">${p.bio}</p>
+      <h2 style="font-size:20px;margin-bottom:12px">Serviços e preços</h2>
+      ${p.services.map(s=>`<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span class="b">${s[0]}</span><span class="b" style="color:var(--brand)">${s[1]}</span></div>`).join('')}
+      <h2 style="font-size:20px;margin:28px 0 12px">Portfólio</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px">${p.portfolio.map(e=>`<div style="aspect-ratio:1;border-radius:14px;background:linear-gradient(135deg,var(--tint),#ffd9c9);display:flex;align-items:center;justify-content:center;font-size:34px">${e}</div>`).join('')}</div>
+      <h2 style="font-size:20px;margin:28px 0 12px">Avaliações (${p.reviews})</h2>
+      ${p.revs.map(r=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between"><b>${r[0]}</b><span class="stars">${'★'.repeat(r[1])}</span></div><p class="sm muted" style="margin-top:6px">${r[2]}</p></div>`).join('')}
+    </div>
+    <div>
+      <div class="card" style="position:sticky;top:84px">
+        <div class="b dp" style="font-size:18px;margin-bottom:4px">A partir de ${p.price}</div>
+        <div class="sm muted" style="margin-bottom:16px">por ${p.unit}</div>
+        <button class="btn btn-pri btn-block" data-go="pedido" style="margin-bottom:10px">Pedir orçamento</button>
+        <button class="btn btn-out btn-block" data-go="mensagens/${p.id}">Conversar</button>
+        <div class="divider"></div>
+        <div class="sm" style="display:flex;gap:8px;align-items:center;color:var(--ok)">🔒 Pagamento protegido pelo Leblon</div>
+      </div>
+    </div>
+  </div></section>`;
+};
+
+/* ===== Wizard de pedido ===== */
+const WIZ=[
+ {q:"Qual serviço você precisa?",type:"cat"},
+ {q:"Conte um pouco mais sobre o serviço",type:"form"},
+ {q:"Quando você precisa?",type:"opts",opts:[["⚡","Hoje / urgente"],["📅","Esta semana"],["🗓️","Sem pressa, quero agendar"]]},
+ {q:"Onde será realizado?",type:"loc"},
+ {q:"Como prefere contratar?",type:"opts",opts:[["💬","Receber propostas de vários profissionais"],["🏷️","Contratar por preço fechado"]]},
+ {q:"Seus dados de contato",type:"contact"},
+];
+let wizStep=0,wizSel={};
+ROUTES.pedido=()=>{
+  if(wizStep>=WIZ.length)return wizSuccess();
+  const w=WIZ[wizStep];const pct=Math.round((wizStep/WIZ.length)*100);
+  let body='';
+  if(w.type==='cat')body=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${CATS.map((c,i)=>`<div class="opt ${wizSel[wizStep]===i?'sel':''}" data-wsel="${i}"><span class="e">${c.icon}</span>${c.name}</div>`).join('')}</div>`;
+  if(w.type==='opts')body=w.opts.map((o,i)=>`<div class="opt ${wizSel[wizStep]===i?'sel':''}" data-wsel="${i}"><span class="e">${o[0]}</span>${o[1]}</div>`).join('');
+  if(w.type==='form')body=`<div class="field"><label>Descreva o que você precisa</label><textarea rows="4" placeholder="Ex.: preciso montar 1 guarda-roupa de 6 portas comprado na loja X"></textarea></div><div class="field"><label>Fotos (opcional)</label><div class="opt" style="justify-content:center;color:var(--muted)">📷 Adicionar fotos</div></div>`;
+  if(w.type==='loc')body=`<div style="height:170px;border-radius:14px;background:linear-gradient(135deg,#dfe7ff,#eef2ff);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:16px">📍</div><div class="field"><label>Endereço ou CEP</label><input value="Itapema, SC"></div><p class="sm muted">🔒 Seu endereço exato só é compartilhado após você contratar.</p>`;
+  if(w.type==='contact')body=`<div class="field"><label>Nome</label><input placeholder="Seu nome"></div><div class="field"><label>Telefone (WhatsApp)</label><input placeholder="(48) 99999-9999"></div><div class="field"><label>E-mail</label><input placeholder="voce@email.com"></div>`;
+  return `<div class="wizwrap container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <button class="btn btn-ghost btn-sm" data-act="wizback">← Voltar</button>
+      <span class="sm muted">Passo ${wizStep+1} de ${WIZ.length}</span>
+    </div>
+    <div class="progress"><i style="width:${pct}%"></i></div>
+    <h1 style="font-size:26px;margin-bottom:22px">${w.q}</h1>
+    ${body}
+    <button class="btn btn-pri btn-block btn-lg" style="margin-top:18px" data-act="wiznext">${wizStep===WIZ.length-1?'Publicar pedido':'Continuar'}</button>
+  </div>`;
+};
+function wizSuccess(){return `<div class="wizwrap container center" style="padding:70px 0">
+  <div style="width:96px;height:96px;border-radius:50%;background:var(--tint);color:var(--brand);font-size:48px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px">✓</div>
+  <h1 style="margin-bottom:12px">Pedido publicado!</h1>
+  <p class="muted" style="margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto">Profissionais verificados perto de você já estão recebendo seu pedido. As primeiras propostas costumam chegar em poucos minutos.</p>
+  <button class="btn btn-pri btn-lg" data-go="pedido/101">Ver propostas recebidas</button><br><br>
+  <button class="btn btn-out" data-go="home">Voltar ao início</button>
+</div>`;}
+
+ROUTES.meuspedidos=()=>`
+ <div class="pagehead"><div class="container"><h1>Meus pedidos</h1><p class="muted">Acompanhe seus pedidos e propostas recebidas.</p></div></div>
+ <section><div class="container">
+   ${MYORDERS.map(o=>`
+    <a class="card" data-go="pedido/${o.id}" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:14px;flex-wrap:wrap">
+      <div><div class="dp b" style="font-size:16px">${o.t}</div><div class="sm muted">${o.cat} · ${o.date}</div></div>
+      <div style="display:flex;align-items:center;gap:14px">
+        ${o.proposals?`<span class="chip">${o.proposals} propostas</span>`:''}
+        <span class="chip ${o.color}">${o.status}</span>
+        <span style="font-size:20px;color:var(--muted)">›</span>
+      </div>
+    </a>`).join('')}
+   <button class="btn btn-pri" data-go="pedido" style="margin-top:8px">+ Novo pedido</button>
+ </div></section>`;
+
+ROUTES.pedido_detalhe=(id)=>{ /* handled below via pedido/:id */ };
+ROUTES.pedido=ROUTES.pedido; // placeholder (overwritten by router for id case below)
+
+/* Detalhe de pedido com propostas (rota: pedido/<id> quando id numérico) */
+function orderDetail(id){
+  const o=MYORDERS.find(x=>x.id==id)||{t:"Faxina completa — apê 2 quartos",cat:"Serviços Domésticos",status:"Recebendo propostas"};
+  const offers=[["Carla Mendes","b2","C",4.9,312,"R$ 120","hoje 15h","Posso atender hoje mesmo, levo todos os produtos."],
+    ["Patrícia Reis","b5","P",4.8,140,"R$ 135","amanhã 9h","Faço com garantia e capricho, disponível amanhã cedo."],
+    ["Sandra Lopes","b3","S",4.7,98,"R$ 110","hoje 18h","Atendo rápido e com preço justo, qualquer dúvida me chame."]];
+  return `
+  <div class="pagehead"><div class="container">
+    <div class="breadcrumb"><a data-go="meuspedidos">Meus pedidos</a> › Detalhe</div>
+    <h1>${o.t}</h1><p class="muted">${o.cat} · ${o.status}</p>
+  </div></div>
+  <section><div class="container">
+    <div class="card" style="background:var(--tint);border:0;display:flex;gap:12px;align-items:center;margin-bottom:22px">
+      <span style="font-size:24px">💡</span><span class="sm">Compare as propostas e escolha. O pagamento fica protegido até a conclusão do serviço.</span>
+    </div>
+    <h2 style="font-size:20px;margin-bottom:14px">${offers.length} propostas recebidas</h2>
+    ${offers.map(f=>`
+     <div class="card" style="margin-bottom:14px">
+       <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+         <div class="av md ${f[1]}">${f[2]}</div>
+         <div style="flex:1;min-width:160px"><div class="dp b" style="font-size:16px">${f[0]} <span class="verified">✔</span></div>
+         <div class="sm"><span class="stars">★</span> ${f[3]} <span class="muted">(${f[4]})</span></div></div>
+         <div style="text-align:right"><div class="dp b" style="font-size:20px;color:var(--brand)">${f[5]}</div><div class="xs muted">${f[6]}</div></div>
+       </div>
+       <p class="sm muted" style="margin:12px 0">"${f[7]}"</p>
+       <div style="display:flex;gap:10px"><button class="btn btn-out btn-sm" data-go="mensagens/1">Conversar</button><button class="btn btn-pri btn-sm" data-act="hire">Contratar e pagar</button></div>
+     </div>`).join('')}
+  </div></section>`;
+}
+
+/* ===== Chat ===== */
+ROUTES.mensagens=(id)=>{
+  const cur=CHATS.find(c=>c.id==(id||1))||CHATS[0];
+  return `
+  <div class="chatlayout">
+    <div class="chatlist ${id?'hide-m':''}">
+      ${CHATS.map(c=>`<div class="convitem ${c.id==cur.id?'on':''}" data-go="mensagens/${c.id}">
+        <div class="av md ${c.av}">${c.ini}</div>
+        <div class="meta"><div class="b">${c.name}</div><div class="prev">${c.msgs[c.msgs.length-1].b}</div><span class="chip gray xs" style="margin-top:5px">${c.status}</span></div>
+      </div>`).join('')}
+    </div>
+    <div class="chatmain">
+      <div class="chathead">
+        <button class="btn btn-ghost btn-sm" data-go="mensagens" style="padding:8px 10px">←</button>
+        <div class="av sm ${cur.av}">${cur.ini}</div>
+        <div><div class="b">${cur.name} <span class="verified">✔</span></div><div class="xs muted">online agora</div></div>
+      </div>
+      <div class="safebar">🔒 Mantenha pagamento e conversa no Leblon. Não compartilhe telefone.</div>
+      <div class="msgs" id="msgs">${cur.msgs.map(m=>`<div class="bub ${m.t}">${m.b}</div>`).join('')}</div>
+      <div class="chatbar"><input id="chatinput" placeholder="Escreva uma mensagem..."><button class="send" data-act="sendmsg" data-cid="${cur.id}">↑</button></div>
+    </div>
+  </div>`;
+};
+
+/* ===== Conta ===== */
+ROUTES.conta=()=>accountLayout('conta',`
+  <h1 style="margin-bottom:20px">Minha conta</h1>
+  <div class="card" style="display:flex;gap:16px;align-items:center;margin-bottom:20px">
+    <div class="av lg">L</div>
+    <div style="flex:1"><div class="dp b" style="font-size:18px">Leonardo Franco</div><div class="sm muted">Itapema/SC · membro desde 2026</div><span class="chip" style="margin-top:6px">✔ Identidade verificada</span></div>
+    <button class="btn btn-out btn-sm">Editar</button>
+  </div>
+  <div class="card">
+    ${[["👤","Dados pessoais"],["📍","Endereços"],["💳","Formas de pagamento e Pix"],["🔔","Notificações"],["🔒","Privacidade e segurança"],["🪪","Verificação de identidade"]].map((x,i,arr)=>`<div style="display:flex;align-items:center;gap:14px;padding:14px 0;${i<arr.length-1?'border-bottom:1px solid var(--line)':''}"><span style="width:36px;height:36px;border-radius:10px;background:var(--mist);display:flex;align-items:center;justify-content:center">${x[0]}</span><span class="b sm">${x[1]}</span><span style="margin-left:auto;color:var(--muted)">›</span></div>`).join('')}
+  </div>`);
+
+function accountLayout(active,content){
+  const items=[["conta","👤","Minha conta"],["meuspedidos","📋","Meus pedidos"],["mensagens","💬","Mensagens"],["painelprestador","💼","Painel do prestador"],["carteira","👛","Carteira"],["ajuda","❓","Ajuda"]];
+  return `<div class="container layout">
+    <div class="sidebar">${items.map(it=>`<a data-go="${it[0]}" class="${active===it[0]?'on':''}">${it[1]} ${it[2]}</a>`).join('')}</div>
+    <div>${content}</div>
+  </div>`;
+}
+
+/* ===== Painel do prestador (feed de oportunidades) ===== */
+ROUTES.painelprestador=()=>accountLayout('painelprestador',`
+  <h1 style="margin-bottom:6px">Painel do prestador</h1>
+  <p class="muted" style="margin-bottom:20px">Oportunidades perto de você. Enviar proposta é grátis — você só paga uma taxa quando ganha.</p>
+  <div class="card" style="background:var(--ink);color:#fff;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:22px;border:0">
+    <div><div class="sm" style="opacity:.7">Ganhos do mês</div><div class="dp" style="font-size:30px;font-weight:800">R$ 2.480</div><div class="sm" style="color:#7ee9b8">↑ 18%</div></div>
+    <div style="display:flex;gap:24px;align-items:center">
+      <div class="center"><div class="dp b" style="font-size:20px">23</div><div class="xs" style="opacity:.7">serviços</div></div>
+      <div class="center"><div class="dp b" style="font-size:20px">4,9★</div><div class="xs" style="opacity:.7">avaliação</div></div>
+      <div class="center"><div class="dp b" style="font-size:20px">96%</div><div class="xs" style="opacity:.7">conclusão</div></div>
+    </div>
+  </div>
+  <div class="filters"><button class="f on">📍 5 km</button><button class="f">Minhas categorias</button><button class="f">Hoje</button><button class="f">Por valor</button></div>
+  ${OPPS.map(oppHTML).join('')}`);
+
+/* ===== Carteira ===== */
+ROUTES.carteira=()=>accountLayout('carteira',`
+  <h1 style="margin-bottom:20px">Carteira</h1>
+  <div class="walletbox" style="margin-bottom:18px">
+    <div class="sm" style="opacity:.9">Saldo disponível</div>
+    <div class="v">R$ 1.847,50</div>
+    <div class="sm" style="opacity:.85">+ R$ 120,00 a liberar (em garantia)</div>
+  </div>
+  <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+    <button class="btn btn-out" data-act="toast" style="flex:1">⬇️ Sacar via Pix</button>
+    <button class="btn btn-out" data-act="toast" style="flex:1">⚡ Antecipar</button>
+    <button class="btn btn-out" data-act="toast" style="flex:1">📊 Extrato</button>
+  </div>
+  <h2 style="font-size:18px;margin-bottom:8px">Transações recentes</h2>
+  <div class="card">
+    ${TXS.map((t,i,arr)=>`<div class="tx" style="${i===arr.length-1?'border-bottom:0':''}"><div class="ic">${t.ic}</div><div><div class="b sm">${t.t}</div><div class="xs muted">${t.d}</div></div><div class="amt ${t.in?'in':''}" style="${t.pend?'color:var(--muted)':''}">${t.a}</div></div>`).join('')}
+  </div>
+  <div class="divider"></div>
+  <h2 style="font-size:18px;margin-bottom:12px">Créditos para impulsionar (opcional)</h2>
+  <p class="sm muted" style="margin-bottom:14px">No Leblon você não precisa pagar para receber oportunidades. Mas, se quiser, pode usar créditos para impulsionar suas propostas e aparecer primeiro.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    ${[["50 créditos","R$ 39"],["120 créditos","R$ 79"],["300 créditos","R$ 169"]].map(c=>`<div class="card" style="flex:1;min-width:140px;text-align:center"><div class="dp b" style="font-size:18px">${c[0]}</div><div class="dp" style="font-size:22px;color:var(--brand);font-weight:800;margin:6px 0">${c[1]}</div><button class="btn btn-out btn-sm btn-block" data-act="toast">Comprar</button></div>`).join('')}
+  </div>`);
+
+/* ===== Seja profissional (landing) ===== */
+ROUTES.sejaprofissional=()=>`
+ <section class="hero" style="padding:70px 0">
+  <div class="container hero-in">
+    <span class="eyebrow" style="background:rgba(255,72,0,.18);color:#fff">Para quem tem tempo</span>
+    <h1>Ganhe dinheiro com o que você <span class="hl">já sabe fazer</span>.</h1>
+    <p>Cadastre-se grátis, receba pedidos de clientes perto de você e seja pago com segurança. Sua agenda, suas regras.</p>
+    <button class="btn btn-pri btn-lg" data-act="login">Criar conta de profissional</button>
+  </div>
+ </section>
+ <section><div class="container">
+   <div class="sec-head center"><h2 class="title">Comece em 3 passos</h2></div>
+   <div class="steps">
+     <div class="step"><div class="n">1</div><h3>Crie seu perfil</h3><p>Diga o que você faz, sua região e seus preços. Verificação rápida e gratuita.</p></div>
+     <div class="step"><div class="n">2</div><h3>Receba oportunidades</h3><p>Pedidos compatíveis chegam até você. Envie propostas sem pagar por lead.</p></div>
+     <div class="step"><div class="n">3</div><h3>Faça e receba</h3><p>Conclua o serviço e receba na carteira, com saque via Pix.</p></div>
+   </div>
+ </div></section>
+ <section class="bg-mist"><div class="container">
+   <div class="sec-head center"><h2 class="title">Planos para profissionais</h2><p>Comece de graça. Evolua quando fizer sentido.</p></div>
+   <div class="plans">
+     <div class="plan"><div class="dp b">Grátis</div><div class="pr">R$ 0</div><p class="sm muted">Para começar a ganhar</p><ul><li>Receba oportunidades</li><li>Envie propostas</li><li>Carteira e saque Pix</li><li>Perfil verificado</li></ul><button class="btn btn-out btn-block" data-act="login">Começar grátis</button></div>
+     <div class="plan feat"><div class="pop">Mais popular</div><div class="dp b">Pro</div><div class="pr">R$ 49<span style="font-size:14px;color:var(--muted)">/mês</span></div><p class="sm muted">Para crescer mais rápido</p><ul><li>Tudo do Grátis</li><li>Taxa reduzida por serviço</li><li>Selo Pro e destaque na busca</li><li>Antecipação com taxa menor</li><li>Estatísticas avançadas</li></ul><button class="btn btn-pri btn-block" data-act="login">Assinar Pro</button></div>
+     <div class="plan"><div class="dp b">Business</div><div class="pr">R$ 149<span style="font-size:14px;color:var(--muted)">/mês</span></div><p class="sm muted">Para empresas e equipes</p><ul><li>Tudo do Pro</li><li>Vários profissionais (multiusuário)</li><li>Faturamento consolidado e NF</li><li>Gestão de equipe</li><li>Suporte prioritário</li></ul><button class="btn btn-out btn-block" data-act="login">Falar com vendas</button></div>
+   </div>
+ </div></section>`;
+
+/* ===== Preço fechado ===== */
+ROUTES.precofechado=()=>`
+ <div class="pagehead"><div class="container"><h1>Serviços com preço fechado</h1><p class="muted">Sabe o preço antes de contratar. Agende em poucos cliques, sem orçamento.</p></div></div>
+ <section><div class="container">
+   <div class="catgrid">
+     ${FIXED.map(f=>`<div class="cat"><div class="e">${f.icon}</div><div class="nm" style="font-size:14px">${f.t}</div><div class="ct">${f.d}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span class="dp b" style="color:var(--brand);font-size:18px">${f.p}</span><button class="btn btn-pri btn-sm" data-act="hire">Contratar</button></div></div>`).join('')}
+   </div>
+ </div></section>`;
+
+/* ===== Como funciona ===== */
+ROUTES.comofunciona=()=>`
+ <div class="pagehead"><div class="container"><h1>Como funciona o Leblon</h1><p class="muted">Simples para quem contrata e para quem trabalha.</p></div></div>
+ <section><div class="container">
+   <div class="sec-head"><span class="eyebrow">Para quem contrata</span><h2 class="title">Resolva qualquer coisa em 3 passos</h2></div>
+   <div class="steps">
+     <div class="step"><div class="n">1</div><h3>Faça seu pedido</h3><p>Descreva o serviço, escolha quando e onde. Grátis e leva 1 minuto.</p></div>
+     <div class="step"><div class="n">2</div><h3>Receba propostas</h3><p>Profissionais verificados enviam orçamentos com preço, prazo e avaliações.</p></div>
+     <div class="step"><div class="n">3</div><h3>Contrate com segurança</h3><p>Converse pelo chat, contrate e pague no app. O dinheiro só é liberado na conclusão.</p></div>
+   </div>
+ </div></section>
+ <section class="bg-mist"><div class="container">
+   <div class="sec-head"><span class="eyebrow">Para quem trabalha</span><h2 class="title">Transforme seu tempo em renda</h2></div>
+   <div class="steps">
+     <div class="step"><div class="n">1</div><h3>Cadastre-se grátis</h3><p>Crie seu perfil, escolha categorias e região. Verificação rápida.</p></div>
+     <div class="step"><div class="n">2</div><h3>Receba oportunidades</h3><p>Pedidos perto de você chegam ao seu painel. Envie propostas sem pagar por lead.</p></div>
+     <div class="step"><div class="n">3</div><h3>Faça e receba</h3><p>Conclua o serviço e receba na carteira, com saque via Pix.</p></div>
+   </div>
+   <div class="center" style="margin-top:28px"><button class="btn btn-pri btn-lg" data-go="sejaprofissional">Quero ser um profissional</button></div>
+ </div></section>`;
+
+/* ===== Segurança ===== */
+ROUTES.seguranca=()=>`
+ <div class="pagehead"><div class="container"><h1>Sua segurança em primeiro lugar</h1><p class="muted">Confiança é a base de tudo no Leblon.</p></div></div>
+ <section><div class="container">
+   <div class="cards3">
+     <div class="card"><div style="font-size:30px">🪪</div><h3 style="margin:10px 0 6px">Identidade verificada</h3><p class="sm muted">Documento, selfie e checagem antes de qualquer perfil ficar ativo. Para serviços sensíveis, verificação reforçada com antecedentes.</p></div>
+     <div class="card"><div style="font-size:30px">🔒</div><h3 style="margin:10px 0 6px">Pagamento protegido</h3><p class="sm muted">Seu pagamento fica retido com segurança e só é liberado ao profissional quando você confirma a conclusão.</p></div>
+     <div class="card"><div style="font-size:30px">⭐</div><h3 style="margin:10px 0 6px">Avaliações reais</h3><p class="sm muted">Apenas quem realmente contratou ou prestou um serviço pode avaliar. Reputação que não se compra.</p></div>
+     <div class="card"><div style="font-size:30px">🛟</div><h3 style="margin:10px 0 6px">Suporte e proteção</h3><p class="sm muted">Equipe de suporte 7 dias por semana, central de mediação e cobertura para imprevistos.</p></div>
+     <div class="card"><div style="font-size:30px">💬</div><h3 style="margin:10px 0 6px">Chat seguro</h3><p class="sm muted">Converse dentro do app. Orientamos manter pagamento e combinações no Leblon, protegendo os dois lados.</p></div>
+     <div class="card"><div style="font-size:30px">🔐</div><h3 style="margin:10px 0 6px">Dados protegidos (LGPD)</h3><p class="sm muted">Seus dados são tratados conforme a LGPD, com criptografia e controle total sobre suas informações.</p></div>
+   </div>
+ </div></section>`;
+
+/* ===== Ajuda / FAQ ===== */
+const FAQ=[
+ ["O que é o Leblon?","Um marketplace que conecta quem precisa de um serviço a profissionais verificados, com pagamento protegido e avaliações reais."],
+ ["O Leblon é gratuito?","Baixar, cadastrar e pedir orçamentos é grátis. Cobramos uma taxa apenas quando uma contratação acontece."],
+ ["Como peço um serviço?","Clique em 'Pedir orçamento', descreva o que precisa e receba propostas de profissionais perto de você."],
+ ["Como sei que o profissional é confiável?","Todo perfil passa por verificação de identidade e mostra avaliações de clientes reais."],
+ ["Quando eu pago?","Você autoriza o pagamento ao contratar, mas o valor só é liberado ao profissional quando você confirma a conclusão."],
+ ["E se o serviço não for bem feito?","Você pode acionar nosso suporte antes de liberar o pagamento. Mediação e proteção fazem parte do Leblon."],
+ ["Como começo a ganhar dinheiro?","Crie um perfil de profissional grátis, escolha suas categorias e comece a receber oportunidades perto de você."],
+ ["Preciso pagar para receber pedidos?","Não. Enviar propostas é grátis. Você só paga uma taxa quando ganha o serviço."],
+ ["Como recebo meus pagamentos?","O valor cai na sua carteira ao concluir o serviço e você pode sacar via Pix quando quiser."],
+ ["Meus dados estão protegidos?","Sim, seguimos a LGPD e usamos criptografia para proteger suas informações."],
+];
+ROUTES.ajuda=()=>`
+ <div class="pagehead"><div class="container"><h1>Central de ajuda</h1><p class="muted">Tire suas dúvidas sobre o Leblon.</p></div></div>
+ <section><div class="container" style="max-width:780px">
+   ${FAQ.map(f=>`<details class="faq"><summary>${f[0]}<span class="p">+</span></summary><p>${f[1]}</p></details>`).join('')}
+   <div class="card center" style="margin-top:30px;background:var(--tint);border:0"><h3>Não achou o que procurava?</h3><p class="sm muted" style="margin:8px 0 14px">Nossa equipe atende 7 dias por semana.</p><button class="btn btn-pri" data-act="toast">Falar com o suporte</button></div>
+ </div></section>`;
+
+/* ===== Sobre ===== */
+ROUTES.sobre=()=>`
+ <div class="pagehead"><div class="container"><h1>Sobre o Leblon</h1><p class="muted">Tempo transformado em dinheiro.</p></div></div>
+ <section><div class="container" style="max-width:760px">
+   <p style="font-size:19px;margin-bottom:18px">O Leblon nasceu de uma ideia simples e poderosa: <b>se você tem tempo, pode ganhar dinheiro</b>. E se você precisa de ajuda, deve poder resolver em minutos, com segurança.</p>
+   <p class="muted" style="margin-bottom:16px">Somos um marketplace de serviços que conecta milhões de brasileiros que precisam de ajuda com pessoas dispostas a oferecer seu tempo e talento. Da faxina à reforma, do passeio com o pet à criação de um site — tudo em um só lugar, com profissionais verificados e pagamento protegido.</p>
+   <p class="muted" style="margin-bottom:28px">Nossa missão é destravar oportunidade econômica e devolver tempo às pessoas, construindo a maior e mais confiável rede de serviços do país.</p>
+   <div class="cards3">
+     <div class="card center"><div class="dp" style="font-size:30px;font-weight:800;color:var(--brand)">+120 mil</div><div class="sm muted">na lista de espera</div></div>
+     <div class="card center"><div class="dp" style="font-size:30px;font-weight:800;color:var(--brand)">180+</div><div class="sm muted">cidades no lançamento</div></div>
+     <div class="card center"><div class="dp" style="font-size:30px;font-weight:800;color:var(--brand)">4,9★</div><div class="sm muted">avaliação média</div></div>
+   </div>
+ </div></section>`;
+
+/* ============================ ROTEAMENTO COM ID ============================ */
+const baseRender=render;
+window.removeEventListener('hashchange',render);
+function render2(){
+  const {route,a}=parseHash();
+  // pedido/<id numérico> => detalhe; pedido (sem id) => wizard
+  if(route==='pedido' && a && /^\d+$/.test(a)){ app.innerHTML=orderDetail(a); window.scrollTo(0,0); closeMenu(); bindAll(); return; }
+  const fn=ROUTES[route]||ROUTES.home;
+  app.innerHTML=fn(a);
+  window.scrollTo(0,0);closeMenu();bindAll();
+}
+window.addEventListener('hashchange',render2);
+window.render=render2;
+
+/* ============================ FOOTER (injetado) ============================ */
+const footer=document.createElement('footer');
+footer.innerHTML=`<div class="container">
+  <div class="foot">
+    <div class="brand"><div class="logo"><span class="dot"></span>Leblon</div><p>Tempo transformado em dinheiro. O marketplace de serviços do Brasil.</p></div>
+    <div><h4>Contratar</h4><a data-go="categorias">Categorias</a><a data-go="precofechado">Preço fechado</a><a data-go="comofunciona">Como funciona</a><a data-go="seguranca">Segurança</a><a data-go="pedido">Pedir orçamento</a></div>
+    <div><h4>Ganhar</h4><a data-go="sejaprofissional">Seja um profissional</a><a data-go="painelprestador">Painel do prestador</a><a data-go="carteira">Carteira</a></div>
+    <div><h4>Empresa</h4><a data-go="sobre">Sobre</a><a data-act="toast">Carreiras</a><a data-act="toast">Imprensa</a><a data-act="toast">Blog</a></div>
+    <div><h4>Suporte</h4><a data-go="ajuda">Central de ajuda</a><a data-go="seguranca">Segurança</a><a data-act="toast">Termos de uso</a><a data-act="toast">Privacidade</a></div>
+  </div>
+  <div class="foot-bot"><span>© 2026 Leblon Tecnologia Ltda. · Feito no Brasil 🇧🇷</span><span>Protótipo demonstrativo · conteúdo original</span></div>
+</div>`;
+document.body.insertBefore(footer,document.getElementById('toast'));
+
+/* ============================ EVENTOS ============================ */
+function bindAll(){
+  document.querySelectorAll('[data-go]').forEach(e=>{
+    e.onclick=(ev)=>{ev.preventDefault();const t=e.getAttribute('data-go').split('/');nav(t[0],t[1]);};
+  });
+  document.querySelectorAll('[data-act]').forEach(e=>{
+    e.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();act(e.getAttribute('data-act'),e);};
+  });
+  document.querySelectorAll('[data-wsel]').forEach(e=>{e.onclick=()=>{wizSel[wizStep]=+e.getAttribute('data-wsel');render2();};});
+}
+function act(a,el){
+  switch(a){
+    case 'login':openModal();break;
+    case 'closeModal':closeModal();break;
+    case 'doLogin':closeModal();toast('Bem-vindo ao Leblon! (demonstração)');break;
+    case 'wiznext':wizStep++;render2();break;
+    case 'wizback':if(wizStep>0){wizStep--;render2();}else nav('home');break;
+    case 'propose':toast('Proposta enviada! Você será avisado se for aceita.');break;
+    case 'hire':toast('🔒 Pagamento protegido ativado. Combine os detalhes no chat.');setTimeout(()=>nav('mensagens',1),700);break;
+    case 'sendmsg':sendMsg(el.getAttribute('data-cid'));break;
+    case 'toast':toast('Disponível no app completo 🙂');break;
+  }
+}
+function sendMsg(cid){
+  const inp=document.getElementById('chatinput');if(!inp||!inp.value.trim())return;
+  const c=CHATS.find(x=>x.id==cid)||CHATS[0];
+  c.msgs.push({t:'me',b:inp.value.trim()});
+  render2();
+  setTimeout(()=>{c.msgs.push({t:'them',b:'Perfeito, combinado! 👍'});render2();const m=document.getElementById('msgs');if(m)m.scrollTop=m.scrollHeight;},900);
+  const m=document.getElementById('msgs');if(m)m.scrollTop=m.scrollHeight;
+}
+/* Wizard reset ao sair */
+window.addEventListener('hashchange',()=>{const {route}=parseHash();if(route!=='pedido'){/* mantém estado leve */}});
+
+/* Modal */
+function openModal(){document.getElementById('loginModal').classList.add('open');}
+function closeModal(){document.getElementById('loginModal').classList.remove('open');}
+document.getElementById('loginModal').onclick=(e)=>{if(e.target.id==='loginModal')closeModal();};
+document.querySelectorAll('[data-ltab]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('[data-ltab]').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const reg=b.getAttribute('data-ltab')==='cadastrar';
+  document.getElementById('nameField').style.display=reg?'block':'none';
+  document.getElementById('loginTitle').textContent=reg?'Criar conta no Leblon':'Entrar no Leblon';
+});
+document.querySelectorAll('#loginModal [data-act]').forEach(e=>e.onclick=()=>act(e.getAttribute('data-act')));
+
+/* Menu mobile */
+const menuBtn=document.getElementById('menuBtn'),mobileMenu=document.getElementById('mobileMenu');
+menuBtn.onclick=()=>mobileMenu.classList.toggle('open');
+function closeMenu(){mobileMenu.classList.remove('open');}
+
+/* boot */
+if(!location.hash)location.hash='#/';
+render2();
+</script>
+</body>
+</html>
