@@ -419,7 +419,12 @@ const ICONS={
  moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
  repeat:'<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/>',
- close:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
+ close:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+ utensils:'<path d="M6 3v8a2 2 0 0 0 4 0V3"/><line x1="8" y1="11" x2="8" y2="21"/><path d="M16 3c-1.5 0-2.5 1.7-2.5 4s1 4 2.5 4v10"/>',
+ music:'<circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><line x1="9" y1="18" x2="9" y2="6"/><line x1="21" y1="16" x2="21" y2="4"/><path d="M9 6l12-2v2L9 8z"/>',
+ dumbbell:'<path d="M6.5 6.5l11 11"/><rect x="1.5" y="8.5" width="4" height="7" rx="1" transform="rotate(-45 3.5 12)"/><rect x="18.5" y="8.5" width="4" height="7" rx="1" transform="rotate(-45 20.5 12)"/>',
+ wind:'<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h16a3 3 0 1 1-3 3"/><path d="M3 16h8a2.5 2.5 0 1 1-2.5 2.5"/>',
+ key2:'<circle cx="8" cy="15" r="5"/><path d="M11.5 11.5 21 2"/><path d="M16 7l3 3"/><path d="M18.5 4.5l3 3"/>'
 };
 function ic(n,cls){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="ic ${cls||''}">${ICONS[n]||''}</svg>`;}
 const SP='12 2 14.6 8.6 21.5 9.1 16.2 13.6 17.9 20.4 12 16.7 6.1 20.4 7.8 13.6 2.5 9.1 9.4 8.6';
@@ -429,20 +434,24 @@ const VERIFIED=`<svg viewBox="0 0 24 24" class="ic ic-sm" style="color:var(--blu
 
 /* ===================== DADOS ===================== */
 const CATS=[
- {icon:"tool",name:"Reformas e Reparos",slug:"reformas",range:"R$ 80 a 300",subs:["Pintor","Pedreiro e alvenaria","Eletricista","Encanador e hidráulica","Marceneiro","Gesso e drywall","Vidraceiro","Serralheiro","Impermeabilização","Telhados e calhas","Pisos e azulejos","Montagem de móveis","Chaveiro","Dedetização","Limpeza de caixa d'água"]},
- {icon:"broom",name:"Serviços Domésticos",slug:"domesticos",range:"R$ 90 a 200",subs:["Diarista e faxina","Limpeza pós-obra","Passadeira","Cozinheira","Lavanderia","Jardinagem","Piscineiro","Personal organizer","Limpeza de estofados"]},
- {icon:"gear",name:"Assistência Técnica",slug:"assistencia",range:"R$ 70 a 250",subs:["Celular e tablet","Computador e notebook","TV","Geladeira","Máquina de lavar","Ar-condicionado","Micro-ondas","Fogão","Eletrônicos em geral","Conserto de móveis"]},
- {icon:"book",name:"Aulas e Cursos",slug:"aulas",range:"R$ 40 a 120 por hora",subs:["Inglês","Espanhol","Reforço escolar","Violão e guitarra","Piano","Canto","Dança","Yoga","Informática","ENEM e concursos","Matemática","Artes"]},
- {icon:"monitor",name:"Tecnologia e Design",slug:"tecnologia",range:"R$ 300 a 3.000",subs:["Criação de sites","Desenvolvimento de apps","Logo e identidade visual","Social media","Tráfego pago e ADS","SEO","Edição de vídeo","Ilustração","UX e UI Design","Suporte de TI","E-commerce"]},
- {icon:"calendar",name:"Eventos",slug:"eventos",range:"R$ 200 a 2.500",subs:["Fotografia","Filmagem","Buffet","DJ","Banda e música ao vivo","Decoração","Cerimonial","Bartender","Garçom","Segurança de eventos","Doces e salgados","Aluguel de equipamentos"]},
- {icon:"scissors",name:"Moda e Beleza",slug:"beleza",range:"R$ 50 a 450",subs:["Cabeleireiro","Manicure e pedicure","Maquiagem","Design de sobrancelha","Depilação","Estética facial","Massagem","Barbeiro","Personal stylist","Costureira"]},
- {icon:"heart",name:"Saúde e Bem-estar",slug:"saude",range:"R$ 80 a 200",subs:["Personal trainer","Nutricionista","Fisioterapeuta","Psicólogo","Cuidador de idosos","Enfermagem","Fonoaudiólogo","Pilates","Acupuntura","Terapeuta"]},
- {icon:"paw",name:"Pets",slug:"pets",range:"R$ 40 a 150",subs:["Passeador de cães","Pet sitter","Banho e tosa em casa","Adestrador","Veterinário em casa","Creche para pets"]},
- {icon:"car",name:"Autos",slug:"autos",range:"R$ 80 a 600",subs:["Mecânico","Funilaria e pintura","Elétrica automotiva","Lavagem e estética","Guincho","Vidros automotivos","Som automotivo","Borracharia móvel"]},
- {icon:"briefcase",name:"Consultoria e Negócios",slug:"consultoria",range:"R$ 150 a 1.000",subs:["Contador","Advogado","Consultor financeiro","Consultor de marketing","RH e recrutamento","Tradução","Despachante","Redação e copywriting","Abertura de empresa"]},
- {icon:"truck",name:"Logística e Transporte",slug:"logistica",range:"R$ 80 a 500",subs:["Frete e mudanças","Motoboy e entregas","Carreto","Montador de mudança","Transporte executivo","Compras e mercado"]},
- {icon:"users",name:"Cuidados e Família",slug:"familia",range:"R$ 90 a 200 por dia",subs:["Babá","Recreação infantil","Cuidador de crianças","Professor particular infantil"]},
- {icon:"layout",name:"Construção e Projetos",slug:"projetos",range:"R$ 500 a 5.000",subs:["Arquiteto","Engenheiro civil","Designer de interiores","Projeto elétrico","Paisagismo","Marmoraria"]},
+ {icon:"tool",name:"Reformas e Reparos",slug:"reformas",range:"R$ 80 a 500",subs:["Pintor","Pedreiro e alvenaria","Eletricista","Encanador e hidráulica","Marceneiro","Gesso e drywall","Vidraceiro","Serralheiro","Impermeabilização","Telhados e calhas","Pisos e azulejos","Montagem de móveis","Chaveiro","Dedetização","Limpeza de caixa d'água","Instalação de ar-condicionado","Portões e automatização","Marido de aluguel"]},
+ {icon:"broom",name:"Serviços Domésticos",slug:"domesticos",range:"R$ 90 a 220",subs:["Diarista e faxina","Limpeza pós-obra","Passadeira","Cozinheira","Lavanderia","Jardinagem","Piscineiro","Personal organizer","Limpeza de estofados","Limpeza de vidros","Cuidados com plantas","Lavagem de quintal"]},
+ {icon:"gear",name:"Assistência Técnica",slug:"assistencia",range:"R$ 70 a 300",subs:["Celular e tablet","Computador e notebook","TV","Geladeira","Máquina de lavar","Ar-condicionado","Micro-ondas","Fogão","Eletrônicos em geral","Conserto de móveis","Câmeras e CFTV","Lava-louças","Impressoras","Antenas"]},
+ {icon:"book",name:"Aulas e Cursos",slug:"aulas",range:"R$ 40 a 150 por hora",subs:["Inglês","Espanhol","Francês","Reforço escolar","Violão e guitarra","Piano","Canto","Bateria","Dança","Yoga","Informática","ENEM e concursos","Matemática","Artes","Reforço universitário","Natação"]},
+ {icon:"monitor",name:"Tecnologia e Design",slug:"tecnologia",range:"R$ 300 a 3.000",subs:["Criação de sites","Desenvolvimento de apps","Logo e identidade visual","Social media","Tráfego pago e ADS","SEO","Edição de vídeo","Ilustração","UX e UI Design","Suporte de TI","E-commerce","Automação e bots","Manutenção de sites","Apresentações"]},
+ {icon:"calendar",name:"Eventos",slug:"eventos",range:"R$ 200 a 2.500",subs:["Fotografia","Filmagem","Buffet","DJ","Banda e música ao vivo","Decoração","Cerimonial","Bartender","Garçom","Segurança de eventos","Doces e salgados","Aluguel de equipamentos","Som e iluminação","Brinquedos e recreação","Convites e papelaria"]},
+ {icon:"scissors",name:"Moda e Beleza",slug:"beleza",range:"R$ 50 a 450",subs:["Cabeleireiro","Manicure e pedicure","Maquiagem","Design de sobrancelha","Depilação","Estética facial","Massagem","Barbeiro","Personal stylist","Costureira","Penteados","Alongamento de cílios","Bronzeamento","Micropigmentação"]},
+ {icon:"heart",name:"Saúde e Bem-estar",slug:"saude",range:"R$ 80 a 250",subs:["Personal trainer","Nutricionista","Fisioterapeuta","Psicólogo","Cuidador de idosos","Enfermagem","Fonoaudiólogo","Pilates","Acupuntura","Terapeuta","Massoterapia","Podólogo","Quiropraxia"]},
+ {icon:"paw",name:"Pets",slug:"pets",range:"R$ 40 a 150",subs:["Passeador de cães","Pet sitter","Banho e tosa em casa","Adestrador","Veterinário em casa","Creche para pets","Transporte de pets","Fotografia pet"]},
+ {icon:"car",name:"Autos",slug:"autos",range:"R$ 80 a 600",subs:["Mecânico","Funilaria e pintura","Elétrica automotiva","Lavagem e estética","Guincho","Vidros automotivos","Som automotivo","Borracharia móvel","Troca de óleo","Martelinho de ouro","Insulfilm","Chaveiro automotivo"]},
+ {icon:"briefcase",name:"Consultoria e Negócios",slug:"consultoria",range:"R$ 150 a 1.000",subs:["Contador","Advogado","Consultor financeiro","Consultor de marketing","RH e recrutamento","Tradução","Despachante","Redação e copywriting","Abertura de empresa","Consultor de vendas","Plano de negócios","Coach"]},
+ {icon:"truck",name:"Logística e Transporte",slug:"logistica",range:"R$ 80 a 500",subs:["Frete e mudanças","Motoboy e entregas","Carreto","Montador de mudança","Transporte executivo","Compras e mercado","Transporte de móveis","Entrega expressa"]},
+ {icon:"users",name:"Cuidados e Família",slug:"familia",range:"R$ 90 a 220 por dia",subs:["Babá","Recreação infantil","Cuidador de crianças","Professor particular infantil","Acompanhante de idosos","Doula","Babá noturna"]},
+ {icon:"layout",name:"Construção e Projetos",slug:"projetos",range:"R$ 500 a 5.000",subs:["Arquiteto","Engenheiro civil","Designer de interiores","Projeto elétrico","Paisagismo","Marmoraria","Projeto hidráulico","Regularização de obra","Topografia"]},
+ {icon:"utensils",name:"Gastronomia",slug:"gastronomia",range:"R$ 120 a 1.500",subs:["Chef em casa","Confeiteiro","Churrasqueiro","Barista","Pizzaiolo","Sushiman","Personal cook","Aula de culinária","Bartender para festa"]},
+ {icon:"dumbbell",name:"Esporte e Lazer",slug:"esporte",range:"R$ 50 a 200",subs:["Personal de corrida","Aula de futebol","Tênis","Crossfit","Muay thai","Aula de skate","Natação","Árbitro","Aluguel de quadra"]},
+ {icon:"music",name:"Música e Áudio",slug:"musica",range:"R$ 100 a 1.200",subs:["Produção musical","Aula de teclado","DJ para festa","Sonorização","Gravação e mixagem","Músico para evento","Aula de violino","Locução"]},
+ {icon:"bank",name:"Empresas e Comércio",slug:"empresas",range:"Sob orçamento",subs:["Limpeza empresarial","Manutenção predial","Recepcionista","Segurança e portaria","Jardinagem corporativa","Dedetização empresarial","Montagem de stand","Serviços gerais"]},
 ];
 const totalSubs=CATS.reduce((a,c)=>a+c.subs.length,0);
 
@@ -547,12 +556,31 @@ function oppHTML(o){return `
  </div>`;}
 
 /* ===================== PÁGINAS ===================== */
+const NOW_CATS=[['bolt','Eletricista'],['droplet','Encanador'],['scissors','Barbeiro'],['wind','Ar-condicionado'],['key2','Chaveiro'],['broom','Faxina']];
+ROUTES.precisoagora=()=>`
+ <div class="pagehead"><div class="container">
+   <div class="breadcrumb"><a data-go="home">Início</a> › Preciso agora</div>
+   <h1>Preciso de um profissional agora</h1>
+   <p class="muted">Escolha o serviço. Avisamos quem está online perto de você e o primeiro que aceitar vai até você.</p>
+ </div></div>
+ <section><div class="container" style="max-width:680px">
+   <div class="card" style="margin-bottom:18px;display:flex;gap:12px;align-items:center;background:var(--tint);border:0">
+     <span style="color:var(--brand)">${ic('clock')}</span>
+     <span class="sm"><b class="dp">Tempo médio até alguém aceitar: 4 min.</b> 12 profissionais online perto de você agora.</span>
+   </div>
+   <b class="dp" style="font-size:16px">Qual serviço você precisa agora?</b>
+   <div class="catgrid" style="margin:14px 0 22px">
+     ${NOW_CATS.map(c=>`<div class="cat" data-act="dispatch"><div class="e">${ic(c[0])}</div><div class="nm">${c[1]}</div></div>`).join('')}
+   </div>
+   <button class="btn btn-pri btn-block btn-lg" data-act="dispatch">${ic('bolt')} Chamar profissional agora</button>
+   <p class="sm muted center" style="margin-top:12px">${ic('lock','ic-sm')} Você confirma o preço e os detalhes com o profissional antes de começar.</p>
+ </div></section>`;
 ROUTES.home=()=>`
  <section class="hero">
   <div class="container hero-in">
     <div class="livebar"><span class="dot"></span> 312 pedidos feitos em Itapema esta semana</div>
     <h1>Encontre o profissional certo, ou <span class="hl">ganhe dinheiro</span> com seu tempo.</h1>
-    <p>Peça orçamentos de profissionais verificados perto de você e contrate com pagamento protegido. Tudo em um só lugar.</p>
+    <p>Encontre o profissional certo para qualquer serviço, ou use o Preciso Agora e tenha alguém na hora. Tudo em um só lugar.</p>
     <div class="searchwrap">
       <div class="searchbox">
         <span class="si">${ic('search')}</span>
@@ -564,8 +592,17 @@ ROUTES.home=()=>`
     <div class="hero-proof">
       <span>${star1('var(--star)')} 4,9 de avaliação média</span>
       <span>${ic('shield','ic-sm')} Profissionais verificados</span>
-      <span>${ic('lock','ic-sm')} Pagamento protegido</span>
+      <span>${ic('clock','ic-sm')} Aceite em minutos</span>
     </div>
+  </div>
+ </section>
+ <section style="padding:24px 0 0">
+  <div class="container">
+   <a class="card" data-go="precisoagora" style="background:linear-gradient(135deg,var(--brand),#ff7a40);color:#fff;border:0;display:flex;align-items:center;gap:16px;padding:20px 24px">
+     <div style="width:52px;height:52px;border-radius:15px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0">${ic('bolt')}</div>
+     <div style="flex:1;min-width:0"><div class="dp" style="color:#fff;font-size:20px;font-weight:800">Preciso agora</div><div class="sm" style="opacity:.92">Precisa de um profissional na hora? Avisamos quem está online perto de você e o primeiro que aceitar resolve.</div></div>
+     <span class="btn" style="background:#fff;color:var(--brand);flex-shrink:0">Pedir agora ${ic('arrowRight')}</span>
+   </a>
   </div>
  </section>
  <section class="reveal">
@@ -1105,6 +1142,10 @@ function doAct(a,el){
     case 'install':doInstall();break;
     case 'garantia':openInfo('Garantia Leblon',`<p class="sm muted" style="margin:10px 0">Toda contratação no Leblon é protegida. O pagamento fica retido com segurança e só é liberado ao profissional quando você confirma que o serviço foi concluído.</p><ul class="checklist"><li class="done"><span class="dot">${ic('check','ic-sm')}</span><span>Reembolso se o serviço não for realizado</span></li><li class="done"><span class="dot">${ic('check','ic-sm')}</span><span>Mediação gratuita em caso de problema</span></li><li class="done"><span class="dot">${ic('check','ic-sm')}</span><span>Cobertura para imprevistos durante o serviço</span></li></ul>`);break;
     case 'estimate':estimate(el);break;
+    case 'dispatch':
+      openInfo('Preciso agora',`<div class="center" style="padding:20px 0"><span class="chip live" style="font-size:13.5px">Procurando profissionais online perto de você</span><p class="sm muted" style="margin-top:14px">Avisamos quem está disponível. O primeiro que aceitar resolve.</p></div>`);
+      setTimeout(function(){ if(document.getElementById('infoModal').classList.contains('open')) openInfo('Profissional a caminho',`<div class="center"><div style="width:64px;height:64px;border-radius:50%;background:var(--tint);color:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">${ic('check','ic-lg')}</div><b class="dp" style="font-size:18px">Casa Bruta aceitou seu chamado</b><p class="sm muted" style="margin:8px 0 16px">Eletricista · 4,9 estrelas · chega em aproximadamente 8 min</p><button class="btn btn-pri btn-block" data-act="closeInfo">Acompanhar a chegada</button></div>`); },1800);
+      break;
     case 'viewmap':mapView=true;render();break;
     case 'viewlist':mapView=false;render();break;
     case 'compare':openCompare();break;
