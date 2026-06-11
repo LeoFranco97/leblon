@@ -317,6 +317,8 @@ html.dark .pf{background:linear-gradient(135deg,#3a2540,#5a2f33)}
       <a data-go="seguranca">Segurança</a>
     </div>
     <div class="right">
+      <button class="btn btn-ghost btn-sm" id="cityBtn" data-act="pickcity" style="gap:6px"><span id="cityIc" style="display:inline-flex"></span><span id="cityLabel">Itapema, SC</span></button>
+      <button class="iconbtn" id="bellBtn" data-go="notificacoes" aria-label="Notificações"></button>
       <button class="iconbtn" id="installBtn" style="display:none" data-act="install" aria-label="Instalar app" title="Instalar app"></button>
       <button class="iconbtn" id="themeBtn" data-act="theme" aria-label="Alternar tema"></button>
       <button class="btn btn-ghost btn-sm" data-act="login">Entrar</button>
@@ -334,6 +336,8 @@ html.dark .pf{background:linear-gradient(135deg,#3a2540,#5a2f33)}
     <a data-go="meuspedidos">Meus pedidos</a>
     <a data-go="favoritos">Favoritos</a>
     <a data-go="indicar">Indique e ganhe</a>
+    <a data-go="empresa">Para empresas</a>
+    <a data-go="notificacoes">Notificações</a>
     <a data-go="ajuda">Ajuda</a>
     <button class="btn btn-out" data-act="login">Entrar</button>
     <button class="btn btn-pri" data-go="pedido">Pedir orçamento</button>
@@ -517,6 +521,7 @@ let MYORDERS=load('orders',DEFAULT_ORDERS);
 let CHATS=load('chats',DEFAULT_CHATS);
 let FAVS=load('favs',[]);
 let mapView=false;
+let CITY=load('city','Itapema, SC');
 
 /* ===================== ROUTER ===================== */
 const app=document.getElementById('app');
@@ -534,9 +539,9 @@ function pcardHTML(p){const isFav=FAVS.includes(p.id);return `
      <div class="nm">${p.name} ${p.verified?VERIFIED:''}</div>
      <div class="sm muted">${p.sub} · ${p.city}</div>
      <div class="sm" style="display:flex;align-items:center;gap:5px;margin-top:3px">${star1('var(--star)')} <b>${p.rating.toFixed(1)}</b> <span class="muted">(${p.reviews})</span></div>
-     <div class="tags">${p.now?'<span class="chip live">Disponível agora</span>':''}<span class="chip gray">Responde ${p.resp}</span><span class="chip gray">${p.rate}% de respostas</span></div>
+     <div class="tags">${p.now?'<span class="chip live">Online agora</span>':''}<span class="chip gray">Responde ${p.resp}</span><span class="chip gray">${p.rate}% de respostas</span></div>
    </div>
-   <div class="price"><b>${p.price}</b><span class="xs muted">por ${p.unit}</span></div>
+   <div class="price"><b>${p.price}</b><span class="xs muted">por ${p.unit}</span>${p.now?`<button class="btn btn-pri btn-sm" data-act="dispatch" style="margin-top:8px;padding:7px 12px;font-size:12px">Chamar agora</button>`:''}</div>
  </a></div>`;}
 function oppHTML(o){return `
  <div class="card" style="margin-bottom:14px">
@@ -669,16 +674,24 @@ ROUTES.home=()=>`
  </section>`;
 
 ROUTES.categorias=()=>`
- <div class="pagehead"><div class="container"><div class="breadcrumb"><a data-go="home">Início</a> › Categorias</div><h1>Todas as categorias</h1><p class="muted">${CATS.length} categorias e mais de ${totalSubs} tipos de serviço</p></div></div>
+ <section class="hero" style="padding:46px 0 54px">
+  <div class="container hero-in" style="max-width:760px;margin:0 auto;text-align:center">
+   <span class="eyebrow" style="background:rgba(255,72,0,.18);color:#fff">Encontrar profissionais</span>
+   <h1 style="font-size:clamp(28px,4vw,42px)">O profissional certo para qualquer serviço</h1>
+   <p class="sub" style="margin:14px auto 24px">${CATS.length} categorias e mais de ${totalSubs} tipos de serviço, com profissionais verificados perto de você.</p>
+   <div class="searchwrap" style="margin:0 auto">
+     <div class="searchbox"><span class="si">${ic('search')}</span><input data-search="catSug" placeholder="Buscar serviço (ex.: eletricista, faxina, barbeiro)" autocomplete="off"><button class="btn btn-pri btn-lg" data-go="pedido">Buscar</button></div>
+     <div class="suggest" id="catSug"></div>
+   </div>
+  </div>
+ </section>
  <section><div class="container">
-   ${CATS.map(c=>`
-    <div style="margin-bottom:30px">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-        <div style="width:46px;height:46px;border-radius:12px;background:var(--tint);color:var(--brand);display:flex;align-items:center;justify-content:center">${ic(c.icon)}</div>
-        <div><h2 style="font-size:21px"><a data-go="categoria/${c.slug}">${c.name}</a></h2><div class="xs muted">Preço médio ${c.range}</div></div>
-      </div>
-      <div style="display:flex;gap:9px;flex-wrap:wrap">${c.subs.map(s=>`<a class="chip gray" data-go="busca/${c.slug}">${s}</a>`).join('')}</div>
-    </div>`).join('')}
+   <div class="sm b dp" style="color:var(--muted);letter-spacing:.05em;margin-bottom:12px">MAIS BUSCADOS</div>
+   <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:36px">${['Eletricista','Diarista e faxina','Barbeiro','Encanador','Montagem de móveis','Personal trainer','Chaveiro','Ar-condicionado'].map(s=>`<a class="chip" data-go="pedido">${ic('search','ic-sm')} ${s}</a>`).join('')}</div>
+   <h2 class="title" style="font-size:26px;margin-bottom:18px">Todas as categorias</h2>
+   <div class="catgrid">
+     ${CATS.map(c=>`<a class="cat" data-go="categoria/${c.slug}"><div class="e">${ic(c.icon)}</div><div class="nm">${c.name}</div><div class="ct">${c.subs.length} serviços · ${c.range}</div></a>`).join('')}
+   </div>
  </div></section>`;
 
 ROUTES.categoria=(slug)=>{
@@ -692,7 +705,8 @@ ROUTES.categoria=(slug)=>{
       <div style="width:64px;height:64px;border-radius:16px;background:var(--tint);color:var(--brand);display:flex;align-items:center;justify-content:center">${ic(c.icon,'ic-lg')}</div>
       <div><h1>${c.name}</h1><p class="muted">${c.subs.length} tipos de serviço e profissionais verificados perto de você</p></div>
     </div>
-    <div style="margin-top:18px"><button class="btn btn-pri" data-go="pedido">Pedir orçamento grátis</button></div>
+    <div style="margin-top:14px"><span class="chip live">${(c.subs.length%9)+3} profissionais online agora</span></div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-pri" data-go="pedido">Pedir orçamento grátis</button><button class="btn btn-out" data-act="dispatch">${ic('bolt')} Preciso agora</button></div>
   </div></div>
   <section><div class="container">
     <div class="card pricehint" style="margin-bottom:24px">${ic('dollar')}<div><b class="dp">Quanto costuma custar</b><div class="sm muted">Profissionais de ${c.name} costumam cobrar <b>${c.range}</b> na sua região. Use o estimador abaixo para um valor mais preciso.</div></div></div>
@@ -709,6 +723,10 @@ ROUTES.categoria=(slug)=>{
     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:32px">${c.subs.map(s=>`<a class="chip gray" data-go="busca/${c.slug}">${s}</a>`).join('')}</div>
     <h2 style="font-size:20px;margin-bottom:16px">Profissionais recomendados</h2>
     <div class="cards3">${shown.map(pcardHTML).join('')}</div>
+    <h2 style="font-size:20px;margin:36px 0 8px">Dúvidas sobre ${c.name}</h2>
+    <details class="faq"><summary>Quanto custa contratar?<span class="p">${ic('plus')}</span></summary><p>Os preços costumam ficar em ${c.range} na sua região, dependendo do serviço e da complexidade. Use o estimador acima para uma faixa mais precisa.</p></details>
+    <details class="faq"><summary>Em quanto tempo encontro um profissional?<span class="p">${ic('plus')}</span></summary><p>Você recebe propostas em poucos minutos. Se for urgente, use o Preciso Agora e o primeiro profissional online perto de você aceita na hora.</p></details>
+    <details class="faq"><summary>Os profissionais são verificados?<span class="p">${ic('plus')}</span></summary><p>Sim. Todo profissional passa por verificação de identidade e tem nota e avaliações de clientes reais.</p></details>
   </div></section>`;
 };
 
@@ -762,7 +780,8 @@ ROUTES.profissional=(id)=>{
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">${p.now?'<span class="chip live">Disponível agora</span>':''}<span class="chip">${p.level}</span><span class="chip gray">${p.jobs} serviços</span><span class="chip gray">${p.rate}% de respostas</span></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <button class="btn btn-pri" data-go="mensagens/${p.id}">Enviar mensagem</button>
+        ${p.now?`<button class="btn btn-pri" data-act="dispatch">${ic('bolt')} Chamar agora</button>`:''}
+        <button class="btn ${p.now?'btn-out':'btn-pri'}" data-go="mensagens/${p.id}">Enviar mensagem</button>
         <button class="btn btn-out" data-fav="${p.id}">${ic('heart')} ${isFav?'Salvo':'Favoritar'}</button>
       </div>
     </div>
@@ -784,10 +803,10 @@ ROUTES.profissional=(id)=>{
       <div class="card" style="position:sticky;top:84px">
         <div class="b dp" style="font-size:18px;margin-bottom:4px">A partir de ${p.price}</div>
         <div class="sm muted" style="margin-bottom:16px">por ${p.unit}</div>
-        <button class="btn btn-pri btn-block" data-go="pedido" style="margin-bottom:10px">Pedir orçamento</button>
+        ${p.now?`<button class="btn btn-pri btn-block" data-act="dispatch" style="margin-bottom:10px">${ic('bolt')} Chamar agora</button><button class="btn btn-out btn-block" data-go="pedido" style="margin-bottom:10px">Pedir orçamento</button>`:`<button class="btn btn-pri btn-block" data-go="pedido" style="margin-bottom:10px">Pedir orçamento</button>`}
         <button class="btn btn-out btn-block" data-go="mensagens/${p.id}">Conversar</button>
         <div class="divider"></div>
-        <div class="sm" style="display:flex;gap:8px;align-items:center;color:var(--ok)">${ic('lock','ic-sm')} Pagamento protegido pelo Leblon</div>
+        <div class="sm" style="display:flex;gap:8px;align-items:center;color:var(--ok)">${ic('shield','ic-sm')} Profissional verificado pelo Leblon</div>
       </div>
     </div>
   </div></section>`;
@@ -921,13 +940,20 @@ ROUTES.conta=()=>accountLayout('conta',`
 ROUTES.painelprestador=()=>accountLayout('painelprestador',`
   <h1 style="margin-bottom:6px">Painel do prestador</h1>
   <p class="muted" style="margin-bottom:20px">Oportunidades perto de você. Enviar proposta é grátis. Você só paga uma taxa quando ganha.</p>
-  <div class="panel-dark" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:18px">
-    <div><div class="sm" style="opacity:.7">Ganhos do mês</div><div class="dp" style="font-size:30px;font-weight:800;color:#fff">R$ 2.480</div><div class="sm" style="color:#7ee9b8">Alta de 18%</div></div>
-    <div style="display:flex;gap:24px;align-items:center">
-      <div class="center"><div class="dp b" style="font-size:20px;color:#fff">23</div><div class="xs" style="opacity:.7">serviços</div></div>
-      <div class="center"><div class="dp b" style="font-size:20px;color:#fff">4,9</div><div class="xs" style="opacity:.7">avaliação</div></div>
-      <div class="center"><div class="dp b" style="font-size:20px;color:#fff">96%</div><div class="xs" style="opacity:.7">conclusão</div></div>
+  <div class="panel-dark" style="margin-bottom:18px">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center">
+      <div class="sm" style="opacity:.85;font-weight:600;display:flex;align-items:center;gap:7px">${ic('chart','ic-sm')} Simulador de ganhos</div>
+      <div style="display:flex;gap:20px">
+        <div class="center"><div class="dp b" style="font-size:18px;color:#fff">23</div><div class="xs" style="opacity:.7">serviços</div></div>
+        <div class="center"><div class="dp b" style="font-size:18px;color:#fff">4,9</div><div class="xs" style="opacity:.7">avaliação</div></div>
+        <div class="center"><div class="dp b" style="font-size:18px;color:#fff">96%</div><div class="xs" style="opacity:.7">conclusão</div></div>
+      </div>
     </div>
+    <label style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin:16px 0 6px">Horas por semana <span id="ghoursv" style="color:#ff9466">15h</span></label>
+    <input type="range" id="ghours" min="2" max="48" value="15" oninput="calcGanhos()" style="width:100%;accent-color:var(--brand)">
+    <label style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin:16px 0 6px">Valor médio por serviço <span id="gticketv" style="color:#ff9466">R$ 80</span></label>
+    <input type="range" id="gticket" min="30" max="400" step="10" value="80" oninput="calcGanhos()" style="width:100%;accent-color:var(--brand)">
+    <div style="text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12)"><div class="sm" style="opacity:.7">Você pode ganhar até</div><div id="gresult" class="dp" style="font-size:34px;font-weight:800;color:#fff">R$ 3.440</div><div class="sm" style="opacity:.6">por mês, no seu ritmo</div></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px">
     <div class="card">
@@ -993,29 +1019,48 @@ ROUTES.indicar=()=>accountLayout('indicar',`
   </div>`);
 
 ROUTES.sejaprofissional=()=>`
- <section class="hero" style="padding:70px 0">
+ <section class="hero" style="padding:64px 0">
   <div class="container hero-in">
-    <span class="eyebrow" style="background:rgba(255,72,0,.18);color:#fff">Para quem tem tempo</span>
+    <span class="eyebrow" style="background:rgba(255,72,0,.18);color:#fff">Seja um profissional Leblon</span>
     <h1>Ganhe dinheiro com o que você <span class="hl">já sabe fazer</span>.</h1>
-    <p>Cadastre-se grátis, receba pedidos de clientes perto de você e seja pago com segurança. Sua agenda, suas regras.</p>
-    <button class="btn btn-pri btn-lg" data-act="login">Criar conta de profissional</button>
+    <p>Receba pedidos de clientes perto de você, fique online quando quiser e seja pago pelos serviços. Cadastro <b>100% grátis</b>, sem mensalidade.</p>
+    <button class="btn btn-pri btn-lg" data-act="login">Quero me cadastrar grátis</button>
+    <div class="hero-proof" style="margin-top:20px"><span>${ic('check','ic-sm')} Sem mensalidade</span><span>${ic('check','ic-sm')} Sem comprar leads</span><span>${ic('check','ic-sm')} Você define seus horários</span></div>
   </div>
  </section>
  <section class="reveal"><div class="container">
-   <div class="sec-head center"><h2 class="title">Comece em 3 passos</h2></div>
+   <div class="sec-head center"><span class="eyebrow">Como funciona</span><h2 class="title">Comece a receber pedidos em 3 passos</h2></div>
    <div class="steps">
-     <div class="step"><div class="n">1</div><h3>Crie seu perfil</h3><p>Diga o que você faz, sua região e seus preços. Verificação rápida e gratuita.</p></div>
-     <div class="step"><div class="n">2</div><h3>Receba oportunidades</h3><p>Pedidos compatíveis chegam até você. Envie propostas sem pagar por lead.</p></div>
-     <div class="step"><div class="n">3</div><h3>Faça e receba</h3><p>Conclua o serviço e receba na carteira, com saque via Pix.</p></div>
+     <div class="step"><div class="n">1</div><h3>Crie seu perfil grátis</h3><p>Diga o que você faz e onde atende. Passe pela verificação de identidade, que é rápida e gratuita.</p></div>
+     <div class="step"><div class="n">2</div><h3>Fique online e receba pedidos</h3><p>Quando estiver disponível, os chamados perto de você aparecem na hora. Aceite os que quiser.</p></div>
+     <div class="step"><div class="n">3</div><h3>Faça o serviço e receba</h3><p>Conclua e receba pelo app. Sua reputação cresce e você passa a ser chamado mais vezes.</p></div>
    </div>
  </div></section>
- <section class="bg-mist reveal"><div class="container">
-   <div class="sec-head center"><h2 class="title">Planos para profissionais</h2><p>Comece de graça. Evolua quando fizer sentido.</p></div>
-   <div class="plans">
-     <div class="plan"><div class="dp b">Grátis</div><div class="pr">R$ 0</div><p class="sm muted">Para começar a ganhar</p><ul><li>${ic('check')} Receba oportunidades</li><li>${ic('check')} Envie propostas</li><li>${ic('check')} Carteira e saque Pix</li><li>${ic('check')} Perfil verificado</li></ul><button class="btn btn-out btn-block" data-act="login">Começar grátis</button></div>
-     <div class="plan feat"><div class="pop">Mais popular</div><div class="dp b">Pro</div><div class="pr">R$ 49<span style="font-size:14px;color:var(--muted)"> por mês</span></div><p class="sm muted">Para crescer mais rápido</p><ul><li>${ic('check')} Tudo do Grátis</li><li>${ic('check')} Taxa reduzida por serviço</li><li>${ic('check')} Selo Pro e destaque na busca</li><li>${ic('check')} Antecipação com taxa menor</li><li>${ic('check')} Estatísticas avançadas</li></ul><button class="btn btn-pri btn-block" data-act="login">Assinar Pro</button></div>
-     <div class="plan"><div class="dp b">Business</div><div class="pr">R$ 149<span style="font-size:14px;color:var(--muted)"> por mês</span></div><p class="sm muted">Para empresas e equipes</p><ul><li>${ic('check')} Tudo do Pro</li><li>${ic('check')} Vários profissionais</li><li>${ic('check')} Faturamento consolidado e NF</li><li>${ic('check')} Gestão de equipe</li><li>${ic('check')} Suporte prioritário</li></ul><button class="btn btn-out btn-block" data-act="login">Falar com vendas</button></div>
+ <section class="bg-mist reveal"><div class="container split">
+   <div>
+     <span class="eyebrow">De graça para começar</span>
+     <h2 class="title" style="margin-bottom:14px">Sem mensalidade. Sem comprar leads.</h2>
+     <p class="muted">No Leblon você não paga para se cadastrar nem para receber pedidos. Você só paga uma pequena taxa de serviço quando fecha um trabalho. Simples e justo: a Leblon só ganha quando você ganha.</p>
+     <ul class="checks" style="margin-top:18px">
+       <li>${ic('check')} <span>Cadastro e uso do app: <b>grátis</b></span></li>
+       <li>${ic('check')} <span>Receber e aceitar pedidos: <b>grátis</b></span></li>
+       <li>${ic('check')} <span>Você define seus preços e seus horários</span></li>
+       <li>${ic('check')} <span>Recebimento pelo app, com saque via Pix</span></li>
+     </ul>
+     <button class="btn btn-pri btn-lg" data-act="login">Criar minha conta grátis</button>
    </div>
+   <div class="card" style="padding:30px;text-align:center">
+     <div class="ico-circle" style="margin:0 auto 14px;width:64px;height:64px">${ic('dollar','ic-lg')}</div>
+     <div class="dp" style="font-size:44px;font-weight:800;color:var(--brand)">R$ 0</div>
+     <div class="b dp" style="margin:2px 0 10px">para começar</div>
+     <p class="sm muted">A Leblon cobra apenas uma taxa de serviço sobre os trabalhos que você fecha. Nada de mensalidade ou pacote de leads.</p>
+     <button class="btn btn-out btn-block" data-go="painelprestador" style="margin-top:18px">Ver o painel do prestador</button>
+   </div>
+ </div></section>
+ <section class="reveal"><div class="container center">
+   <h2 class="title" style="margin-bottom:10px">Quanto dá para ganhar?</h2>
+   <p class="muted" style="max-width:520px;margin:0 auto 22px">Depende de quanto tempo você dedica. Veja uma estimativa no painel do prestador, com o simulador de ganhos.</p>
+   <button class="btn btn-pri btn-lg" data-go="painelprestador">${ic('chart')} Abrir simulador de ganhos</button>
  </div></section>`;
 
 ROUTES.precofechado=()=>`
@@ -1026,25 +1071,37 @@ ROUTES.precofechado=()=>`
    </div>
  </div></section>`;
 
-ROUTES.comofunciona=()=>`
- <div class="pagehead"><div class="container"><h1>Como funciona o Leblon</h1><p class="muted">Simples para quem contrata e para quem trabalha.</p></div></div>
+ROUTES.comofunciona=()=>{
+  var stepCard=function(n,icon,t,p){return `<div class="step reveal in" style="text-align:center;padding:34px 24px">
+    <div style="width:66px;height:66px;border-radius:50%;background:var(--tint);color:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;position:relative">${ic(icon,'ic-lg')}<span style="position:absolute;top:-6px;right:-6px;width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;font-family:'Inter Tight';font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center">${n}</span></div>
+    <h3 style="font-size:19px;margin-bottom:8px">${t}</h3><p style="font-size:14.5px;color:var(--muted)">${p}</p></div>`;};
+  return `
+ <section class="hero" style="padding:54px 0 60px">
+  <div class="container hero-in" style="max-width:740px;margin:0 auto;text-align:center">
+    <span class="eyebrow" style="background:rgba(255,72,0,.18);color:#fff">Como funciona</span>
+    <h1 style="font-size:clamp(30px,4.4vw,46px)">Resolver, ou ganhar dinheiro, em poucos toques.</h1>
+    <p class="sub" style="margin:0 auto">Simples dos dois lados. Veja como o Leblon conecta quem precisa a quem pode resolver, na hora.</p>
+  </div>
+ </section>
  <section><div class="container">
-   <div class="sec-head"><span class="eyebrow">Para quem contrata</span><h2 class="title">Resolva qualquer coisa em 3 passos</h2></div>
+   <div class="sec-head center"><span class="eyebrow">Para quem contrata</span><h2 class="title">Resolva em 3 passos</h2></div>
    <div class="steps">
-     <div class="step"><div class="n">1</div><h3>Faça seu pedido</h3><p>Descreva o serviço, escolha quando e onde. Grátis e leva 1 minuto.</p></div>
-     <div class="step"><div class="n">2</div><h3>Receba propostas</h3><p>Profissionais verificados enviam orçamentos com preço, prazo e avaliações.</p></div>
-     <div class="step"><div class="n">3</div><h3>Contrate com segurança</h3><p>Converse pelo chat, contrate e pague no app. O dinheiro só é liberado na conclusão.</p></div>
+     ${stepCard(1,'search','Diga o que precisa','Descreva o serviço e onde será, ou toque em Preciso Agora. Leva 1 minuto e é grátis.')}
+     ${stepCard(2,'users','Encontre o profissional','Receba propostas de profissionais verificados, ou alguém online aceita seu chamado na hora.')}
+     ${stepCard(3,'check','Contrate e avalie','Combine pelo chat, acompanhe a chegada e avalie ao final. Reputação que ajuda todo mundo.')}
    </div>
+   <div class="center" style="margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn btn-pri btn-lg" data-go="pedido">Pedir um serviço</button><button class="btn btn-out btn-lg" data-go="precisoagora">${ic('bolt')} Preciso agora</button></div>
  </div></section>
  <section class="bg-mist"><div class="container">
-   <div class="sec-head"><span class="eyebrow">Para quem trabalha</span><h2 class="title">Transforme seu tempo em renda</h2></div>
+   <div class="sec-head center"><span class="eyebrow">Para quem trabalha</span><h2 class="title">Ganhe dinheiro em 3 passos</h2></div>
    <div class="steps">
-     <div class="step"><div class="n">1</div><h3>Cadastre-se grátis</h3><p>Crie seu perfil, escolha categorias e região. Verificação rápida.</p></div>
-     <div class="step"><div class="n">2</div><h3>Receba oportunidades</h3><p>Pedidos perto de você chegam ao seu painel. Envie propostas sem pagar por lead.</p></div>
-     <div class="step"><div class="n">3</div><h3>Faça e receba</h3><p>Conclua o serviço e receba na carteira, com saque via Pix.</p></div>
+     ${stepCard(1,'idcard','Crie seu perfil grátis','Diga o que você faz e onde atende. Verificação rápida e gratuita, sem mensalidade.')}
+     ${stepCard(2,'bolt','Fique online e receba','Quando estiver disponível, os pedidos perto de você aparecem na hora. Aceite os que quiser.')}
+     ${stepCard(3,'dollar','Faça e receba','Conclua o serviço e receba pelo app, com saque via Pix. Sua agenda, suas regras.')}
    </div>
-   <div class="center" style="margin-top:28px"><button class="btn btn-pri btn-lg" data-go="sejaprofissional">Quero ser um profissional</button></div>
+   <div class="center" style="margin-top:30px"><button class="btn btn-pri btn-lg" data-go="sejaprofissional">Quero ser um profissional</button></div>
  </div></section>`;
+};
 
 ROUTES.seguranca=()=>`
  <div class="pagehead"><div class="container"><h1>Sua segurança em primeiro lugar</h1><p class="muted">Confiança é a base de tudo no Leblon.</p></div></div>
@@ -1091,6 +1148,39 @@ ROUTES.sobre=()=>`
    </div>
  </div></section>`;
 
+ROUTES.acompanhar=()=>`
+ <div class="pagehead"><div class="container"><div class="breadcrumb"><a data-go="home">Início</a> › Acompanhar</div><h1>Profissional a caminho</h1><p class="muted">Casa Bruta aceitou seu chamado e está indo até você.</p></div></div>
+ <section><div class="container" style="max-width:760px">
+   <div class="mapview" style="margin-bottom:18px"><div class="pin" style="left:30%;top:62%"><div class="b">Você</div><div class="tip"></div></div><div class="pin" style="left:62%;top:34%"><div class="b alt">Casa Bruta</div><div class="tip"></div></div></div>
+   <div class="card" style="display:flex;gap:14px;align-items:center;margin-bottom:14px"><div class="av md b1">C</div><div style="flex:1"><div class="dp b" style="display:flex;align-items:center;gap:5px">Casa Bruta ${VERIFIED}</div><div class="sm muted">Eletricista · 4,9 estrelas</div></div><div style="text-align:right"><div class="dp b" style="color:var(--brand);font-size:18px">8 min</div><div class="xs muted">chegada</div></div></div>
+   <div class="card" style="background:var(--tint);border:0;margin-bottom:18px;display:flex;gap:10px;align-items:center"><span style="color:var(--brand)">${ic('bolt')}</span><span class="sm">A caminho, a 2,1 km de você. Você confirma o preço com o profissional ao chegar.</span></div>
+   <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-pri" style="flex:1;min-width:140px" data-go="mensagens/1">${ic('chat')} Conversar</button><button class="btn btn-out" style="flex:1;min-width:120px" data-act="toast">Ligar</button><button class="btn btn-out" style="color:var(--brand)" data-act="toast">Cancelar</button></div>
+ </div></section>`;
+ROUTES.notificacoes=()=>{
+  var N=[['check','Casa Bruta aceitou seu chamado','agora'],['chat','Nova mensagem de João Pereira','há 12 min'],['bell','Avalie o serviço com a Marina','há 2 h'],['dollar','Pagamento confirmado: R$ 130','ontem'],['gift','Você ganhou R$ 20 por indicação','2 dias atrás']];
+  return `<div class="pagehead"><div class="container"><h1>Notificações</h1><p class="muted">Seus chamados, mensagens e novidades.</p></div></div>
+  <section><div class="container" style="max-width:760px">
+    ${N.map(function(n){return '<div class="card" style="display:flex;gap:14px;align-items:center;margin-bottom:10px"><div class="ico-circle" style="width:42px;height:42px">'+ic(n[0])+'</div><div style="flex:1"><div class="b sm">'+n[1]+'</div><div class="xs muted">'+n[2]+'</div></div></div>';}).join('')}
+  </div></section>`;
+};
+ROUTES.empresa=()=>`
+ <section class="hero" style="padding:56px 0">
+  <div class="container hero-in">
+   <span class="eyebrow" style="background:rgba(255,72,0,.18);color:#fff">Leblon para Empresas</span>
+   <h1>Serviços para a sua empresa, sem dor de cabeça.</h1>
+   <p class="sub">Limpeza, manutenção, recepção, jardinagem e mais, com profissionais verificados, contrato e nota fiscal. Pague por uso ou contrate recorrente.</p>
+   <button class="btn btn-pri btn-lg" data-act="toast">Falar com vendas</button>
+  </div>
+ </section>
+ <section><div class="container"><div class="cards3">
+   <div class="card"><div class="ico-circle">${ic('briefcase')}</div><h3 style="margin:14px 0 6px">Conta multiusuário</h3><p class="sm muted">Sua equipe solicita serviços e você controla tudo num só lugar.</p></div>
+   <div class="card"><div class="ico-circle">${ic('bank')}</div><h3 style="margin:14px 0 6px">Faturamento e NF</h3><p class="sm muted">Fatura mensal consolidada e nota fiscal para a sua contabilidade.</p></div>
+   <div class="card"><div class="ico-circle">${ic('repeat')}</div><h3 style="margin:14px 0 6px">Serviços recorrentes</h3><p class="sm muted">Agende limpeza e manutenção recorrentes com profissionais fixos.</p></div>
+ </div></div></section>`;
+function pageSimple(title,lead,body){return `<div class="pagehead"><div class="container"><h1>${title}</h1><p class="muted">${lead}</p></div></div><section><div class="container" style="max-width:760px"><p class="muted" style="font-size:16px;line-height:1.75">${body}</p></div></section>`;}
+ROUTES.carreiras=()=>pageSimple('Carreiras','Construa com a gente o marketplace de serviços do Brasil.','Estamos crescendo e sempre buscando gente boa em produto, engenharia, operações e crescimento. Este é um protótipo demonstrativo: em breve teremos as vagas abertas aqui.');
+ROUTES.imprensa=()=>pageSimple('Imprensa','Materiais e contato para a imprensa.','Para falar com a nossa assessoria, solicitar logos, dados e entrevistas, entre em contato pela Central de Ajuda. Este é um protótipo demonstrativo.');
+ROUTES.termos=()=>pageSimple('Termos e Privacidade','Como cuidamos de você e dos seus dados.','Este é um protótipo demonstrativo, sem efeito legal. Na versão final, aqui ficarão os Termos de Uso, a Política de Privacidade conforme a LGPD e a Política de Pagamentos do Leblon.');
 /* ===================== RENDER ===================== */
 function render(){
   const {route,a}=parseHash();
@@ -1107,8 +1197,8 @@ footer.innerHTML=`<div class="container">
     <div class="brand"><div class="logo"><span class="dot"></span>Leblon</div><p>Tempo transformado em dinheiro. O marketplace de serviços do Brasil.</p></div>
     <div><h4>Contratar</h4><a data-go="categorias">Categorias</a><a data-go="precofechado">Preço fechado</a><a data-go="comofunciona">Como funciona</a><a data-go="seguranca">Segurança</a><a data-go="pedido">Pedir orçamento</a></div>
     <div><h4>Ganhar</h4><a data-go="sejaprofissional">Seja um profissional</a><a data-go="painelprestador">Painel do prestador</a><a data-go="carteira">Carteira</a><a data-go="indicar">Indique e ganhe</a></div>
-    <div><h4>Empresa</h4><a data-go="sobre">Sobre</a><a data-act="toast">Carreiras</a><a data-act="toast">Imprensa</a><a data-act="toast">Blog</a></div>
-    <div><h4>Suporte</h4><a data-go="ajuda">Central de ajuda</a><a data-go="seguranca">Segurança</a><a data-act="toast">Termos de uso</a><a data-act="toast">Privacidade</a></div>
+    <div><h4>Empresa</h4><a data-go="sobre">Sobre</a><a data-go="empresa">Para empresas</a><a data-go="carreiras">Carreiras</a><a data-go="imprensa">Imprensa</a></div>
+    <div><h4>Suporte</h4><a data-go="ajuda">Central de ajuda</a><a data-go="seguranca">Segurança</a><a data-go="termos">Termos de uso</a><a data-go="termos">Privacidade</a></div>
   </div>
   <div class="foot-bot"><span>2026 Leblon Tecnologia Ltda. Feito no Brasil.</span><span>Protótipo demonstrativo, conteúdo original.</span></div>
 </div>`;
@@ -1135,7 +1225,10 @@ function doAct(a,el){
     case 'wiznext':wizStep++;if(wizStep===WIZ.length)publishOrder();render();break;
     case 'wizback':if(wizStep>0){wizStep--;render();}else nav('home');break;
     case 'propose':toast('Proposta enviada! Você será avisado se for aceita.');break;
-    case 'hire':toast('Pagamento protegido ativado. Combine os detalhes no chat.');setTimeout(()=>nav('mensagens',1),700);break;
+    case 'hire':confirmHire();break;
+    case 'confirmhire':closeInfo();toast('Contratação confirmada! Combine os detalhes no chat.');setTimeout(()=>nav('mensagens',1),500);break;
+    case 'pickcity':pickCity();break;
+    case 'goacompanhar':closeInfo();nav('acompanhar');break;
     case 'sendmsg':sendMsg(el.getAttribute('data-cid'));break;
     case 'toast':toast('Disponível no app completo.');break;
     case 'theme':toggleTheme();break;
@@ -1144,7 +1237,7 @@ function doAct(a,el){
     case 'estimate':estimate(el);break;
     case 'dispatch':
       openInfo('Preciso agora',`<div class="center" style="padding:20px 0"><span class="chip live" style="font-size:13.5px">Procurando profissionais online perto de você</span><p class="sm muted" style="margin-top:14px">Avisamos quem está disponível. O primeiro que aceitar resolve.</p></div>`);
-      setTimeout(function(){ if(document.getElementById('infoModal').classList.contains('open')) openInfo('Profissional a caminho',`<div class="center"><div style="width:64px;height:64px;border-radius:50%;background:var(--tint);color:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">${ic('check','ic-lg')}</div><b class="dp" style="font-size:18px">Casa Bruta aceitou seu chamado</b><p class="sm muted" style="margin:8px 0 16px">Eletricista · 4,9 estrelas · chega em aproximadamente 8 min</p><button class="btn btn-pri btn-block" data-act="closeInfo">Acompanhar a chegada</button></div>`); },1800);
+      setTimeout(function(){ if(document.getElementById('infoModal').classList.contains('open')) openInfo('Profissional a caminho',`<div class="center"><div style="width:64px;height:64px;border-radius:50%;background:var(--tint);color:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">${ic('check','ic-lg')}</div><b class="dp" style="font-size:18px">Casa Bruta aceitou seu chamado</b><p class="sm muted" style="margin:8px 0 16px">Eletricista · 4,9 estrelas · chega em aproximadamente 8 min</p><button class="btn btn-pri btn-block" data-act="goacompanhar">Acompanhar a chegada</button></div>`); },1800);
       break;
     case 'viewmap':mapView=true;render();break;
     case 'viewlist':mapView=false;render();break;
@@ -1178,6 +1271,14 @@ function estimate(el){
   document.getElementById('estOut').innerHTML=`<div class="estimate">${sub} (porte selecionado)<div class="v">R$ ${lo} a R$ ${hi}</div><div class="sm" style="opacity:.8">estimativa, o preço final é definido na proposta</div></div>`;
 }
 
+/* Simulador de ganhos (painel do prestador) */
+function calcGanhos(){
+  var h=+document.getElementById('ghours').value, t=+document.getElementById('gticket').value;
+  document.getElementById('ghoursv').textContent=h+'h';
+  document.getElementById('gticketv').textContent='R$ '+t;
+  var m=Math.round((h/1.5)*t*4.3/10)*10;
+  document.getElementById('gresult').textContent='R$ '+m.toLocaleString('pt-BR');
+}
 /* Pedido -> persiste */
 function publishOrder(){
   const cat=CATS[wizSel[0]||0];
@@ -1214,9 +1315,17 @@ function closeSuggest(){document.querySelectorAll('.suggest').forEach(s=>s.class
 let reviewStars=5;
 function openReview(){
   reviewStars=5;
-  openInfo('Como foi o serviço?',`<div class="ratepick" id="ratepick">${[1,2,3,4,5].map(i=>`<button data-star="${i}" class="${i<=5?'on':''}">${star1('currentColor')}</button>`).join('')}</div><div class="field"><label>Comentário (opcional)</label><textarea rows="3" placeholder="Conte como foi a experiência"></textarea></div><button class="btn btn-pri btn-block" data-act="submitReview">Enviar avaliação</button>`);
+  function crow(label){return '<div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0"><span class="sm">'+label+'</span><div class="cgroup" style="display:inline-flex;gap:2px">'+[1,2,3,4,5].map(function(i){return '<button class="cstar" data-star="'+i+'" style="color:var(--star)">'+star1('currentColor')+'</button>';}).join('')+'</div></div>';}
+  openInfo('Como foi o serviço?',`<div class="center sm muted" style="margin-bottom:4px">Nota geral</div><div class="ratepick" id="ratepick">${[1,2,3,4,5].map(i=>`<button data-star="${i}" class="on">${star1('currentColor')}</button>`).join('')}</div>
+    <div class="divider"></div>
+    <div class="sm b dp" style="margin-bottom:2px">Por critério</div>
+    ${crow('Pontualidade')}${crow('Qualidade')}${crow('Atendimento')}
+    <div class="field" style="margin-top:14px"><label>Comentário (opcional)</label><textarea rows="3" placeholder="Conte como foi a experiência"></textarea></div>
+    <div class="field"><label>Fotos (opcional)</label><div class="opt" style="justify-content:center;color:var(--muted)">${ic('camera')} Adicionar fotos</div></div>
+    <button class="btn btn-pri btn-block" data-act="submitReview">Enviar avaliação</button>`);
   const rp=document.getElementById('ratepick');
   rp.querySelectorAll('[data-star]').forEach(b=>{b.onclick=()=>{reviewStars=+b.getAttribute('data-star');rp.querySelectorAll('button').forEach((x,i)=>x.classList.toggle('on',i<reviewStars));};});
+  document.querySelectorAll('#infoBody .cgroup').forEach(function(g){g.querySelectorAll('.cstar').forEach(function(b){b.onclick=function(){var n=+b.getAttribute('data-star');g.querySelectorAll('.cstar').forEach(function(x,i){x.style.color=i<n?'var(--star)':'#d9dae6';});};});});
 }
 
 /* Indicação */
@@ -1248,6 +1357,13 @@ menuBtn.innerHTML=ic('menu');
 menuBtn.onclick=()=>mobileMenu.classList.toggle('open');
 function closeMenu(){mobileMenu.classList.remove('open');}
 document.getElementById('installBtn').innerHTML=ic('download');
+document.getElementById('cityIc').innerHTML=ic('pin','ic-sm');
+document.getElementById('bellBtn').innerHTML=ic('bell');
+document.getElementById('cityLabel').textContent=CITY;
+function setCity(c){CITY=c;save('city',c);document.getElementById('cityLabel').textContent=c;closeInfo();render();}
+const CITY_LIST=['Itapema, SC','Balneário Camboriú, SC','Itajaí, SC','Florianópolis, SC','São Paulo, SP','Rio de Janeiro, RJ'];
+function pickCity(){openInfo('Onde você está?',CITY_LIST.map(function(c){return '<button class="btn '+(c===CITY?'btn-pri':'btn-out')+' btn-block" style="margin-bottom:8px;justify-content:flex-start" onclick="setCity(\''+c+'\')">'+c+'</button>';}).join(''));}
+function confirmHire(){openInfo('Confirmar contratação',`<div style="display:flex;gap:12px;align-items:center;margin:6px 0 14px"><div class="av md b2">C</div><div><div class="b dp">Carla Mendes</div><div class="sm muted">Faxina completa, hoje 15h</div></div></div><div class="card" style="background:var(--mist);border:0;margin-bottom:14px"><div style="display:flex;justify-content:space-between"><span class="sm">Serviço</span><span class="sm b">R$ 130</span></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span class="sm">Forma de pagamento</span><span class="sm b">A combinar no app</span></div></div><p class="xs muted" style="margin-bottom:14px">Você confirma o preço e os detalhes com o profissional antes de começar.</p><button class="btn btn-pri btn-block" data-act="confirmhire">Confirmar e abrir conversa</button>`);}
 
 /* Reveal on scroll */
 let _io;
