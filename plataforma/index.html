@@ -248,7 +248,12 @@ html.dark .safebar{color:#e9c45a}
 .checklist li.done span{color:var(--muted)}
 
 footer{background:var(--navy);color:#fff;padding:56px 0 28px}
-.foot{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;gap:30px;padding-bottom:38px;border-bottom:1px solid rgba(255,255,255,.1)}
+.foot{display:grid;grid-template-columns:1.4fr repeat(5,minmax(0,1fr));gap:26px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.1)}
+.footcities{padding:24px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.footcities h4{font-family:'Inter Tight';font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.5);margin-bottom:12px}
+.footcities .row{display:flex;gap:8px;flex-wrap:wrap}
+.footcities a{color:rgba(255,255,255,.75);font-size:13px;background:rgba(255,255,255,.06);padding:6px 12px;border-radius:999px}
+.footcities a:hover{color:#fff;background:rgba(255,255,255,.12)}
 .foot .logo{color:#fff;margin-bottom:12px}
 .foot p{color:rgba(255,255,255,.6);font-size:13.5px;max-width:230px}
 .foot h4{font-family:'Inter Tight';font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.5);margin-bottom:14px}
@@ -458,6 +463,27 @@ const CATS=[
  {icon:"bank",name:"Empresas e Comércio",slug:"empresas",range:"Sob orçamento",subs:["Limpeza empresarial","Manutenção predial","Recepcionista","Segurança e portaria","Jardinagem corporativa","Dedetização empresarial","Montagem de stand","Serviços gerais"]},
 ];
 const totalSubs=CATS.reduce((a,c)=>a+c.subs.length,0);
+const CITIES=[['Itapema, SC','itapema'],['Balneário Camboriú, SC','bc'],['Itajaí, SC','itajai'],['Florianópolis, SC','floripa'],['São Paulo, SP','sp'],['Rio de Janeiro, RJ','rj'],['Curitiba, PR','curitiba'],['Belo Horizonte, MG','bh']];
+function cityName(slug){var c=CITIES.find(function(x){return x[1]===slug;});return c?c[0]:'sua cidade';}
+function rangePrice(range,i){var n=(range.match(/\d[\d.]*/g)||[]).map(function(x){return +x.replace('.','');});if(n.length<2)return range;var lo=n[0],hi=n[1];var v=Math.round((lo+(hi-lo)*((i*37%100)/100))/10)*10;return 'a partir de R$ '+v.toLocaleString('pt-BR');}
+const POSTS=[
+ ['quanto-custa-pintar-casa','Quanto custa pintar uma casa em 2026?','Veja a faixa de preço por m², o que pesa no orçamento e como economizar contratando pelo Leblon.','tool'],
+ ['renda-extra-fim-de-semana','5 serviços para fazer renda extra no fim de semana','Do passeio com cães à montagem de móveis: como transformar seu tempo livre em dinheiro.','dollar'],
+ ['como-escolher-eletricista','Como escolher um bom eletricista','Checklist de segurança, perguntas para fazer e sinais de alerta antes de contratar.','bolt'],
+ ['diarista-ou-faxina','Diarista ou faxina: qual contratar?','Entenda as diferenças, a faixa de preço e quando cada opção compensa mais.','broom'],
+ ['ser-prestador-leblon','Como ganhar dinheiro como prestador no Leblon','O passo a passo para se cadastrar, ficar online e receber os primeiros pedidos.','briefcase'],
+ ['preciso-agora-como-funciona','Preciso Agora: profissional na hora, como funciona','Tudo sobre o despacho instantâneo do Leblon e quando vale a pena usar.','clock']
+];
+const TESTI=[
+ ['Ana P.','Cliente · Itapema','Precisei de um eletricista às 21h e em 10 minutos alguém aceitou. Salvou minha noite.',5,'b4'],
+ ['Marcos R.','Prestador · Balneário Camboriú','Comecei fazendo bicos de montagem. Hoje é minha renda principal, no meu horário.',5,'b1'],
+ ['Carla M.','Prestadora · Itapema','Como diarista, o Leblon me trouxe clientes fixos sem eu pagar nada para começar.',5,'b2'],
+ ['Lucas F.','Cliente · Florianópolis','Comparei 3 orçamentos no app, escolhi o melhor avaliado e ficou perfeito.',5,'b3'],
+ ['Bia S.','Cliente · Itajaí','Montei a casa toda em um fim de semana sem sair do sofá.',4,'b3'],
+ ['João P.','Prestador · Itapema','Os pedidos chegam prontos e eu aceito o que cabe na minha agenda. Simples.',5,'b1']
+];
+function testiCard(t){return '<div class="card"><div style="margin-bottom:10px">'+starsRow(t[3])+'</div><p class="dp" style="font-size:16px;line-height:1.45;margin-bottom:16px">"'+t[2]+'"</p><div style="display:flex;gap:10px;align-items:center"><div class="av sm '+t[4]+'">'+t[0][0]+'</div><div><div class="b sm">'+t[0]+'</div><div class="xs muted">'+t[1]+'</div></div></div></div>';}
+function qrSVG(){var m='';for(var y=0;y<11;y++){for(var x=0;x<11;x++){if((x*7+y*3+x*y+5)%3===0&&!((x<3&&y<3)||(x>7&&y<3)||(x<3&&y>7)))m+='<rect x="'+(x*9)+'" y="'+(y*9)+'" width="8" height="8"/>';}}return '<svg viewBox="-3 -3 105 105" width="116" height="116" style="background:#fff;border-radius:12px;padding:8px" fill="#03014C"><rect x="0" y="0" width="27" height="27" fill="none" stroke="#03014C" stroke-width="7"/><rect x="9" y="9" width="9" height="9"/><rect x="72" y="0" width="27" height="27" fill="none" stroke="#03014C" stroke-width="7"/><rect x="81" y="9" width="9" height="9"/><rect x="0" y="72" width="27" height="27" fill="none" stroke="#03014C" stroke-width="7"/><rect x="9" y="81" width="9" height="9"/>'+m+'</svg>';}
 
 const PROVIDERS=[
  {id:1,name:"Carla Mendes",ini:"C",av:"b2",cat:"Serviços Domésticos",sub:"Diarista",city:"Itapema, SC",rating:4.9,reviews:312,jobs:340,price:"R$ 130",unit:"diária",resp:"~8 min",rate:99,now:true,slots:["Hoje 14h","Hoje 16h","Amanhã 8h"],level:"Top Pro",verified:true,bio:"Diarista profissional há 8 anos. Capricho, pontualidade e produtos próprios inclusos. Atendo residências e escritórios com a mesma dedicação.",services:[["Faxina completa","R$ 130"],["Limpeza pós-obra","R$ 220"],["Passar roupa por 3h","R$ 90"]],portfolio:6,revs:[["Ana P.",5,"Excelente. Pontual e caprichosa, recomendo demais."],["Lucas M.",5,"Deixou tudo impecável, voltarei a contratar."],["Bia R.",4,"Muito profissional e atenciosa."]]},
@@ -671,7 +697,28 @@ ROUTES.home=()=>`
       <div class="card"><div class="ico-circle">${star1('currentColor')}</div><h3 style="margin:14px 0 6px">Avaliações reais</h3><p class="sm muted">Apenas quem contratou de verdade pode avaliar.</p></div>
     </div>
   </div>
- </section>`;
+ </section>
+ <section class="stats reveal"><div class="container">
+   <div class="stat-grid">
+     <div class="stat"><div class="v">+1.200</div><div class="l">profissionais cadastrados</div></div>
+     <div class="stat"><div class="v">${totalSubs}+</div><div class="l">tipos de serviço</div></div>
+     <div class="stat"><div class="v">4,9</div><div class="l">avaliação média</div></div>
+     <div class="stat"><div class="v">&lt; 5 min</div><div class="l">para alguém aceitar</div></div>
+   </div>
+ </div></section>
+ <section class="reveal"><div class="container">
+   <div class="sec-head center"><span class="eyebrow">Histórias reais</span><h2 class="title">Quem usa, recomenda</h2></div>
+   <div class="cards3">${TESTI.slice(0,3).map(testiCard).join('')}</div>
+   <div class="center" style="margin-top:24px"><button class="btn btn-out" data-go="historias">Ver mais histórias</button></div>
+ </div></section>
+ <section class="reveal"><div class="container">
+   <div class="card" style="background:var(--navy);color:#fff;border:0;display:flex;align-items:center;gap:30px;flex-wrap:wrap;padding:30px 34px">
+     <div style="flex:1;min-width:240px"><span class="eyebrow" style="background:rgba(255,72,0,.18);color:#fff">Baixe o app</span><h2 class="title" style="color:#fff;font-size:28px;margin:8px 0">Leve o Leblon no bolso</h2><p style="color:rgba(255,255,255,.75);margin-bottom:18px">Peça serviços, use o Preciso Agora e acompanhe tudo pelo celular. Aponte a câmera para o QR code.</p>
+       <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn" style="background:#fff;color:var(--ink)" data-act="toast">App Store</button><button class="btn" style="background:#fff;color:var(--ink)" data-act="toast">Google Play</button></div>
+     </div>
+     <div>${qrSVG()}</div>
+   </div>
+ </div></section>`;
 
 ROUTES.categorias=()=>`
  <section class="hero" style="padding:46px 0 54px">
@@ -727,6 +774,14 @@ ROUTES.categoria=(slug)=>{
     <details class="faq"><summary>Quanto custa contratar?<span class="p">${ic('plus')}</span></summary><p>Os preços costumam ficar em ${c.range} na sua região, dependendo do serviço e da complexidade. Use o estimador acima para uma faixa mais precisa.</p></details>
     <details class="faq"><summary>Em quanto tempo encontro um profissional?<span class="p">${ic('plus')}</span></summary><p>Você recebe propostas em poucos minutos. Se for urgente, use o Preciso Agora e o primeiro profissional online perto de você aceita na hora.</p></details>
     <details class="faq"><summary>Os profissionais são verificados?<span class="p">${ic('plus')}</span></summary><p>Sim. Todo profissional passa por verificação de identidade e tem nota e avaliações de clientes reais.</p></details>
+    <h2 style="font-size:20px;margin:34px 0 12px">Perguntas da comunidade</h2>
+    <div class="card" style="margin-bottom:10px"><div class="b sm dp">Preciso de orçamento antes de fechar?</div><p class="sm muted" style="margin-top:6px">Não é obrigatório. Você pode pedir orçamento e comparar, ou usar o Preciso Agora para alguém vir na hora.</p></div>
+    <div class="card"><div class="b sm dp">Posso reagendar se precisar?</div><p class="sm muted" style="margin-top:6px">Sim, combine direto com o profissional pelo chat. Tudo fica registrado no app.</p></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+      <button class="btn btn-out" data-go="melhores/${c.slug}">Melhores ${c.name.toLowerCase()}</button>
+      <button class="btn btn-out" data-go="custo/${c.slug}">Quanto custa</button>
+      <button class="btn btn-out" data-go="local/${c.slug}/itapema">Em outras cidades</button>
+    </div>
   </div></section>`;
 };
 
@@ -1061,6 +1116,16 @@ ROUTES.sejaprofissional=()=>`
    <h2 class="title" style="margin-bottom:10px">Quanto dá para ganhar?</h2>
    <p class="muted" style="max-width:520px;margin:0 auto 22px">Depende de quanto tempo você dedica. Veja uma estimativa no painel do prestador, com o simulador de ganhos.</p>
    <button class="btn btn-pri btn-lg" data-go="painelprestador">${ic('chart')} Abrir simulador de ganhos</button>
+ </div></section>
+ <section class="bg-mist reveal"><div class="container" style="max-width:560px">
+   <div class="card">
+     <h2 class="title" style="font-size:24px;margin-bottom:6px">Comece agora, é grátis</h2>
+     <p class="sm muted" style="margin-bottom:16px">Deixe seus dados e a gente te ajuda a montar o seu perfil de profissional.</p>
+     <div class="field"><label>Nome</label><input placeholder="Seu nome"></div>
+     <div class="field"><label>Telefone com WhatsApp</label><input placeholder="(48) 99999-9999"></div>
+     <div class="field"><label>O que você faz?</label><input placeholder="Ex.: eletricista, diarista, barbeiro"></div>
+     <button class="btn btn-pri btn-block" data-act="apply">Quero ser um profissional</button>
+   </div>
  </div></section>`;
 
 ROUTES.precofechado=()=>`
@@ -1130,7 +1195,14 @@ const FAQ=[
 ];
 ROUTES.ajuda=()=>`
  <div class="pagehead"><div class="container"><h1>Central de ajuda</h1><p class="muted">Tire suas dúvidas sobre o Leblon.</p></div></div>
- <section><div class="container" style="max-width:780px">
+ <section style="padding-bottom:24px"><div class="container">
+   <div class="cards3">
+     <div class="card"><div class="ico-circle">${ic('user')}</div><h3 style="margin:12px 0 4px;font-size:16px">Para clientes</h3><p class="sm muted">Como pedir, contratar, pagar e avaliar um serviço.</p></div>
+     <div class="card"><div class="ico-circle">${ic('briefcase')}</div><h3 style="margin:12px 0 4px;font-size:16px">Para profissionais</h3><p class="sm muted">Cadastro, receber pedidos e recebimentos.</p></div>
+     <div class="card"><div class="ico-circle">${ic('lock')}</div><h3 style="margin:12px 0 4px;font-size:16px">Segurança e conta</h3><p class="sm muted">Verificação, privacidade e seus dados.</p></div>
+   </div>
+ </div></section>
+ <section style="padding-top:0"><div class="container" style="max-width:780px">
    ${FAQ.map(f=>`<details class="faq"><summary>${f[0]}<span class="p">${ic('plus')}</span></summary><p>${f[1]}</p></details>`).join('')}
    <div class="card center" style="margin-top:30px;background:var(--tint);border:0"><h3>Não achou o que procurava?</h3><p class="sm muted" style="margin:8px 0 14px">Nossa equipe atende 7 dias por semana.</p><button class="btn btn-pri" data-act="toast">Falar com o suporte</button></div>
  </div></section>`;
@@ -1179,8 +1251,114 @@ ROUTES.empresa=()=>`
  </div></div></section>`;
 function pageSimple(title,lead,body){return `<div class="pagehead"><div class="container"><h1>${title}</h1><p class="muted">${lead}</p></div></div><section><div class="container" style="max-width:760px"><p class="muted" style="font-size:16px;line-height:1.75">${body}</p></div></section>`;}
 ROUTES.carreiras=()=>pageSimple('Carreiras','Construa com a gente o marketplace de serviços do Brasil.','Estamos crescendo e sempre buscando gente boa em produto, engenharia, operações e crescimento. Este é um protótipo demonstrativo: em breve teremos as vagas abertas aqui.');
-ROUTES.imprensa=()=>pageSimple('Imprensa','Materiais e contato para a imprensa.','Para falar com a nossa assessoria, solicitar logos, dados e entrevistas, entre em contato pela Central de Ajuda. Este é um protótipo demonstrativo.');
+ROUTES.imprensa=()=>`
+ <div class="pagehead"><div class="container"><h1>Imprensa</h1><p class="muted">Materiais, dados e contato para jornalistas.</p></div></div>
+ <section><div class="container">
+   <div class="cards3" style="margin-bottom:30px">
+     <div class="card center"><div class="dp" style="font-size:30px;font-weight:800;color:var(--brand)">+1.200</div><div class="sm muted">profissionais</div></div>
+     <div class="card center"><div class="dp" style="font-size:30px;font-weight:800;color:var(--brand)">${totalSubs}+</div><div class="sm muted">tipos de serviço</div></div>
+     <div class="card center"><div class="dp" style="font-size:30px;font-weight:800;color:var(--brand)">${CITIES.length}</div><div class="sm muted">cidades</div></div>
+   </div>
+   <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><div class="logo" style="font-size:26px"><span class="dot"></span>Leblon</div><div style="flex:1;min-width:200px" class="sm muted">Baixe nosso press kit com logos, paleta de cores e dados atualizados.</div><button class="btn btn-out" data-act="toast">Baixar press kit</button></div>
+   <p class="sm muted" style="margin-top:18px">Contato de imprensa: imprensa@leblon.com.br (demonstração).</p>
+ </div></section>`;
 ROUTES.termos=()=>pageSimple('Termos e Privacidade','Como cuidamos de você e dos seus dados.','Este é um protótipo demonstrativo, sem efeito legal. Na versão final, aqui ficarão os Termos de Uso, a Política de Privacidade conforme a LGPD e a Política de Pagamentos do Leblon.');
+ROUTES.local=(slug,citySlug)=>{
+  var c=CATS.find(function(x){return x.slug===slug;})||CATS[0]; var city=cityName(citySlug); var cn=city.split(',')[0];
+  var provs=PROVIDERS.filter(function(p){return p.cat===c.name;}); var shown=provs.length?provs:PROVIDERS.slice(0,3);
+  return `
+  <div class="pagehead"><div class="container">
+    <div class="breadcrumb"><a data-go="cidades">Cidades</a> › ${city} › ${c.name}</div>
+    <h1>${c.name} em ${cn}</h1>
+    <p class="muted">Encontre profissionais de ${c.name.toLowerCase()} verificados em ${cn}. Peça um orçamento grátis ou chame alguém na hora.</p>
+    <div style="margin-top:14px"><span class="chip live">${(c.subs.length%9)+3} profissionais online em ${cn}</span></div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-pri" data-go="pedido">Pedir orçamento grátis</button><button class="btn btn-out" data-act="dispatch">${ic('bolt')} Preciso agora</button></div>
+  </div></div>
+  <section><div class="container">
+    <p class="muted" style="max-width:760px;margin-bottom:24px">Precisa de ${c.name.toLowerCase()} em ${cn}? No Leblon você encontra profissionais avaliados, com identidade verificada, perto de você. Os preços costumam ficar em ${c.range}.</p>
+    <h2 style="font-size:20px;margin-bottom:12px">Serviços de ${c.name} em ${cn}</h2>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:28px">${c.subs.map(function(s){return `<a class="chip gray" data-go="busca/${c.slug}">${s} em ${cn}</a>`;}).join('')}</div>
+    <h2 style="font-size:20px;margin-bottom:16px">Profissionais em ${cn}</h2>
+    <div class="cards3">${shown.map(pcardHTML).join('')}</div>
+    <div style="margin:22px 0"><button class="btn btn-out" data-go="melhores/${c.slug}">Ver os melhores ${c.name.toLowerCase()} ${ic('arrowRight')}</button></div>
+    <h2 style="font-size:20px;margin:14px 0 8px">Dúvidas sobre ${c.name} em ${cn}</h2>
+    <details class="faq"><summary>Quanto custa ${c.name.toLowerCase()} em ${cn}?<span class="p">${ic('plus')}</span></summary><p>Em ${cn}, os preços costumam ficar em ${c.range}, variando conforme o serviço. Use o estimador na página da categoria para uma faixa mais precisa.</p></details>
+    <details class="faq"><summary>Os profissionais de ${cn} são verificados?<span class="p">${ic('plus')}</span></summary><p>Sim. Todo profissional do Leblon passa por verificação de identidade e tem nota e avaliações reais.</p></details>
+  </div></section>`;
+};
+ROUTES.cidades=()=>`
+ <div class="pagehead"><div class="container"><h1>Serviços por cidade</h1><p class="muted">O Leblon está nas principais cidades. Escolha a sua e veja os serviços disponíveis.</p></div></div>
+ <section><div class="container">
+   ${CITIES.map(function(ct){return `<div style="margin-bottom:26px"><h2 style="font-size:19px;margin-bottom:10px">${ct[0]}</h2><div style="display:flex;gap:9px;flex-wrap:wrap">${CATS.slice(0,8).map(function(c){return `<a class="chip gray" data-go="local/${c.slug}/${ct[1]}">${c.name}</a>`;}).join('')}</div></div>`;}).join('')}
+ </div></section>`;
+ROUTES.custos=()=>`
+ <div class="pagehead"><div class="container"><h1>Quanto custa? Guia de preços</h1><p class="muted">Faixas de preço de referência para os principais serviços.</p></div></div>
+ <section><div class="container"><div class="catgrid">
+   ${CATS.map(function(c){return `<a class="cat" data-go="custo/${c.slug}"><div class="e">${ic(c.icon)}</div><div class="nm">${c.name}</div><div class="ct">${c.range}</div></a>`;}).join('')}
+ </div></div></section>`;
+ROUTES.custo=(slug)=>{var c=CATS.find(function(x){return x.slug===slug;})||CATS[0];
+  return `
+  <div class="pagehead"><div class="container"><div class="breadcrumb"><a data-go="custos">Quanto custa</a> › ${c.name}</div><h1>Quanto custa ${c.name.toLowerCase()}?</h1><p class="muted">Faixa de referência: ${c.range}. Veja os preços por serviço.</p></div></div>
+  <section><div class="container" style="max-width:820px">
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+      ${c.subs.map(function(s,i){return `<div style="display:flex;justify-content:space-between;padding:14px 18px;${i<c.subs.length-1?'border-bottom:1px solid var(--line)':''}"><span class="b sm">${s}</span><span class="b" style="color:var(--brand)">${rangePrice(c.range,i)}</span></div>`;}).join('')}
+    </div>
+    <p class="sm muted" style="margin-bottom:20px">Valores de referência. O preço final é combinado com o profissional e pode variar conforme complexidade, material e região.</p>
+    <div class="card" style="background:var(--tint);border:0;text-align:center"><h3>Quer um preço exato?</h3><p class="sm muted" style="margin:8px 0 14px">Peça um orçamento grátis e receba propostas de profissionais perto de você.</p><button class="btn btn-pri" data-go="pedido">Pedir orçamento</button></div>
+  </div></section>`;};
+ROUTES.blog=()=>`
+ <div class="pagehead"><div class="container"><h1>Blog Leblon</h1><p class="muted">Guias de contratação, dicas de renda extra e tudo sobre serviços.</p></div></div>
+ <section><div class="container"><div class="cards3">
+   ${POSTS.map(function(p){return `<a class="card" data-go="post/${p[0]}" style="display:block"><div class="ico-circle" style="margin-bottom:12px">${ic(p[3])}</div><h3 style="font-size:17px;margin-bottom:8px">${p[1]}</h3><p class="sm muted">${p[2]}</p><div class="sm b" style="color:var(--brand);margin-top:10px">Ler artigo ${ic('arrowRight','ic-sm')}</div></a>`;}).join('')}
+ </div></div></section>`;
+ROUTES.post=(slug)=>{var p=POSTS.find(function(x){return x[0]===slug;})||POSTS[0];return `
+ <div class="pagehead"><div class="container"><div class="breadcrumb"><a data-go="blog">Blog</a> › Artigo</div><h1>${p[1]}</h1></div></div>
+ <section><div class="container" style="max-width:740px">
+   <p style="font-size:18px;margin-bottom:16px">${p[2]}</p>
+   <p class="muted" style="line-height:1.75;margin-bottom:14px">Este é um artigo de exemplo do protótipo. Na versão final, o blog do Leblon traz guias completos, com faixas de preço atualizadas, checklists de contratação segura e histórias reais de quem usa a plataforma.</p>
+   <p class="muted" style="line-height:1.75;margin-bottom:24px">A ideia é simples: ajudar você a contratar com confiança e a ganhar dinheiro com seu tempo. Conteúdo que também leva clientes do Google direto para o Leblon.</p>
+   <div class="card" style="background:var(--tint);border:0;text-align:center"><h3>Precisa desse serviço agora?</h3><p class="sm muted" style="margin:8px 0 14px">Encontre um profissional verificado perto de você.</p><button class="btn btn-pri" data-go="pedido">Pedir um serviço</button></div>
+ </div></section>`;};
+ROUTES.melhores=(slug)=>{var c=slug?CATS.find(function(x){return x.slug===slug;}):null; var list=(c?PROVIDERS.filter(function(p){return p.cat===c.name;}):PROVIDERS).slice(); if(!list.length)list=PROVIDERS.slice(); list.sort(function(a,b){return b.rating-a.rating||b.reviews-a.reviews;});
+  return `
+  <div class="pagehead"><div class="container"><h1>Melhores ${c?c.name.toLowerCase():'profissionais'} perto de você</h1><p class="muted">Ranking pelos mais bem avaliados, com identidade verificada.</p></div></div>
+  <section><div class="container">
+    ${list.map(function(p,i){return `<div class="card" data-go="profissional/${p.id}" style="display:flex;gap:14px;align-items:center;margin-bottom:12px"><div class="dp" style="font-size:22px;font-weight:800;color:var(--brand);width:34px;text-align:center">${i+1}</div><div class="av md ${p.av}">${p.ini}</div><div style="flex:1"><div class="dp b" style="display:flex;align-items:center;gap:5px">${p.name} ${VERIFIED}</div><div class="sm muted">${p.sub} · ${p.city}</div><div class="sm" style="display:flex;align-items:center;gap:5px;margin-top:2px">${star1('var(--star)')} <b>${p.rating.toFixed(1)}</b> <span class="muted">(${p.reviews}) · ${p.jobs} serviços</span></div></div><div style="text-align:right"><div class="b dp">${p.price}</div>${p.now?'<span class="chip live" style="margin-top:6px">Online</span>':''}</div></div>`;}).join('')}
+  </div></section>`;
+};
+ROUTES.historias=()=>`
+ <div class="pagehead"><div class="container"><h1>Histórias do Leblon</h1><p class="muted">Quem contrata e quem trabalha, contando como o Leblon mudou o dia a dia.</p></div></div>
+ <section><div class="container"><div class="cards3">${TESTI.map(testiCard).join('')}</div></div></section>`;
+ROUTES.selo=()=>`
+ <div class="pagehead"><div class="container"><h1>O Selo Leblon</h1><p class="muted">Como verificamos os profissionais e o que significam os níveis.</p></div></div>
+ <section><div class="container">
+   <div class="cards3" style="margin-bottom:36px">
+     <div class="card"><div class="ico-circle">${ic('idcard')}</div><h3 style="margin:14px 0 6px">Verificação de identidade</h3><p class="sm muted">Documento e selfie conferidos antes de o perfil ficar ativo.</p></div>
+     <div class="card"><div class="ico-circle">${star1('currentColor')}</div><h3 style="margin:14px 0 6px">Avaliações reais</h3><p class="sm muted">Só quem foi atendido pode avaliar. Reputação que não se compra.</p></div>
+     <div class="card"><div class="ico-circle">${ic('shield')}</div><h3 style="margin:14px 0 6px">Histórico transparente</h3><p class="sm muted">Serviços feitos, taxa de resposta e nota sempre visíveis.</p></div>
+   </div>
+   <h2 class="title" style="font-size:26px;margin-bottom:18px">Níveis do profissional</h2>
+   <div class="cards3">
+     <div class="card"><span class="chip">Pro</span><p class="sm muted" style="margin-top:10px">Perfil verificado e ativo, recebendo pedidos.</p></div>
+     <div class="card"><span class="chip">Top Pro</span><p class="sm muted" style="margin-top:10px">Alta avaliação e volume de serviços. Selo de destaque e mais visibilidade.</p></div>
+     <div class="card"><span class="chip">Elite</span><p class="sm muted" style="margin-top:10px">Os melhores da plataforma. Prioridade no Preciso Agora e taxa reduzida.</p></div>
+   </div>
+ </div></section>`;
+ROUTES.promocoes=()=>`
+ <div class="pagehead"><div class="container"><h1>Promoções e cupons</h1><p class="muted">Economize na sua próxima contratação.</p></div></div>
+ <section><div class="container"><div class="cards3">
+   <div class="card"><div class="ico-circle">${ic('gift')}</div><h3 style="margin:14px 0 6px">R$ 20 na primeira contratação</h3><p class="sm muted">Use o cupom <b>BEMVINDO</b> e ganhe R$ 20 no seu primeiro serviço.</p><button class="btn btn-out btn-sm" data-act="toast" style="margin-top:12px">Copiar cupom</button></div>
+   <div class="card"><div class="ico-circle">${ic('share')}</div><h3 style="margin:14px 0 6px">Indique e ganhe R$ 20</h3><p class="sm muted">A cada amigo que usa o Leblon, vocês dois ganham R$ 20.</p><button class="btn btn-out btn-sm" data-go="indicar" style="margin-top:12px">Pegar meu link</button></div>
+   <div class="card"><div class="ico-circle">${ic('bolt')}</div><h3 style="margin:14px 0 6px">Preciso Agora sem taxa</h3><p class="sm muted">No lançamento, os primeiros chamados no Preciso Agora saem sem taxa de serviço.</p><button class="btn btn-out btn-sm" data-go="precisoagora" style="margin-top:12px">Chamar agora</button></div>
+ </div></div></section>`;
+ROUTES.cobertura=()=>`
+ <div class="pagehead"><div class="container"><h1>Onde o Leblon está</h1><p class="muted">Cidades atendidas e as próximas a chegar.</p></div></div>
+ <section><div class="container">
+   <h2 style="font-size:20px;margin-bottom:12px">Disponível agora</h2>
+   <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:30px">${CITIES.map(function(ct){return `<a class="chip" data-go="local/reformas/${ct[1]}">${ic('pin','ic-sm')} ${ct[0]}</a>`;}).join('')}</div>
+   <h2 style="font-size:20px;margin-bottom:12px">Chegando em breve</h2>
+   <div style="display:flex;gap:9px;flex-wrap:wrap">${['Porto Alegre, RS','Brasília, DF','Salvador, BA','Recife, PE','Fortaleza, CE','Goiânia, GO'].map(function(c){return `<span class="chip soon">${c}</span>`;}).join('')}</div>
+ </div></section>`;
 /* ===================== RENDER ===================== */
 function render(){
   const {route,a}=parseHash();
@@ -1197,9 +1375,11 @@ footer.innerHTML=`<div class="container">
     <div class="brand"><div class="logo"><span class="dot"></span>Leblon</div><p>Tempo transformado em dinheiro. O marketplace de serviços do Brasil.</p></div>
     <div><h4>Contratar</h4><a data-go="categorias">Categorias</a><a data-go="precofechado">Preço fechado</a><a data-go="comofunciona">Como funciona</a><a data-go="seguranca">Segurança</a><a data-go="pedido">Pedir orçamento</a></div>
     <div><h4>Ganhar</h4><a data-go="sejaprofissional">Seja um profissional</a><a data-go="painelprestador">Painel do prestador</a><a data-go="carteira">Carteira</a><a data-go="indicar">Indique e ganhe</a></div>
-    <div><h4>Empresa</h4><a data-go="sobre">Sobre</a><a data-go="empresa">Para empresas</a><a data-go="carreiras">Carreiras</a><a data-go="imprensa">Imprensa</a></div>
+    <div><h4>Descubra</h4><a data-go="cidades">Serviços por cidade</a><a data-go="custos">Guia de preços</a><a data-go="blog">Blog</a><a data-go="melhores">Melhores profissionais</a><a data-go="promocoes">Promoções</a><a data-go="selo">Selo Leblon</a></div>
+    <div><h4>Empresa</h4><a data-go="sobre">Sobre</a><a data-go="empresa">Para empresas</a><a data-go="carreiras">Carreiras</a><a data-go="imprensa">Imprensa</a><a data-go="cobertura">Cobertura</a></div>
     <div><h4>Suporte</h4><a data-go="ajuda">Central de ajuda</a><a data-go="seguranca">Segurança</a><a data-go="termos">Termos de uso</a><a data-go="termos">Privacidade</a></div>
   </div>
+  <div class="footcities"><h4>Principais cidades</h4><div class="row">${CITIES.map(function(ct){return '<a data-go="local/reformas/'+ct[1]+'">'+ct[0]+'</a>';}).join('')}</div></div>
   <div class="foot-bot"><span>2026 Leblon Tecnologia Ltda. Feito no Brasil.</span><span>Protótipo demonstrativo, conteúdo original.</span></div>
 </div>`;
 document.body.insertBefore(footer,document.getElementById('compareTray'));
@@ -1247,6 +1427,7 @@ function doAct(a,el){
     case 'submitReview':closeInfo();toast('Avaliação enviada. Obrigado!');break;
     case 'recontratar':case 'recorrente':case 'agendar':toast('Tudo certo! Combine os detalhes pelo chat.');break;
     case 'copyref':copyRef();break;
+    case 'apply':toast('Recebemos seu cadastro! Em breve entramos em contato. (demonstração)');break;
   }
 }
 
