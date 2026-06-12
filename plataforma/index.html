@@ -298,6 +298,12 @@ html.dark .pf{background:linear-gradient(135deg,#3a2540,#5a2f33)}
 .pf .ic{width:30px;height:30px}
 .slot{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--ink)}
 .slot:hover{border-color:var(--brand);color:var(--brand)}
+.slot.sel{border-color:var(--brand);background:var(--tint);color:var(--brand)}
+#app{animation:appfade .28s var(--ease)}
+@keyframes appfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.skel{background:linear-gradient(90deg,var(--mist) 25%,var(--line) 37%,var(--mist) 63%);background-size:400% 100%;animation:shimmer 1.2s infinite;border-radius:var(--r)}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+@media(prefers-reduced-motion:reduce){#app{animation:none}.skel{animation:none}}
 
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .reveal.in{opacity:1;transform:none}
@@ -590,6 +596,7 @@ let CHATS=load('chats',DEFAULT_CHATS);
 let FAVS=load('favs',[]);
 let mapView=false;
 let CITY=load('city','Itapema, SC');
+let bsort='prox',bonline=false;
 
 /* ===================== ROUTER ===================== */
 const app=document.getElementById('app');
@@ -810,7 +817,7 @@ ROUTES.categoria=(slug)=>{
       <div id="estOut"></div>
     </div>`}
     <h2 style="font-size:20px;margin-bottom:14px">Serviços de ${c.name}</h2>
-    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:32px">${c.subs.map(s=>`<a class="chip gray" data-go="busca/${c.slug}">${s}</a>`).join('')}</div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:32px">${c.subs.map((s,i)=>`<a class="chip gray" data-go="servico/${c.slug}/${i}">${s}</a>`).join('')}</div>
     <h2 style="font-size:20px;margin-bottom:16px">Profissionais recomendados</h2>
     <div class="cards3">${shown.map(pcardHTML).join('')}</div>
     <h2 style="font-size:20px;margin:36px 0 8px">Dúvidas sobre ${c.name}</h2>
@@ -828,11 +835,15 @@ ROUTES.categoria=(slug)=>{
   </div></section>`;
 };
 
+function priceNum(p){if(p.visit)return 1e9;var m=(p.price||'').match(/\d[\d.]*/);return m?+m[0].replace('.',''):1e9;}
 ROUTES.busca=(slug)=>{
   const c=slug?CATS.find(x=>x.slug===slug):null;
-  const list=c?(PROVIDERS.filter(p=>p.cat===c.name)):PROVIDERS;
-  const shown=list.length?list:PROVIDERS;
-  const mapHTML=`<div class="mapview">${shown.map((p,i)=>{const pos=POS[(p.id-1)%POS.length];return `<div class="pin" style="left:${pos[0]}%;top:${pos[1]}%" data-go="profissional/${p.id}"><div class="b ${i%2?'alt':''}">${p.price}</div><div class="tip"></div></div>`;}).join('')}</div><div style="margin-top:16px" class="cards3">${shown.slice(0,3).map(pcardHTML).join('')}</div>`;
+  let list=(c?PROVIDERS.filter(p=>p.cat===c.name):PROVIDERS).slice();
+  if(bonline)list=list.filter(p=>p.now);
+  if(bsort==='rating')list.sort((a,b)=>b.rating-a.rating||b.reviews-a.reviews);
+  else if(bsort==='price')list.sort((a,b)=>priceNum(a)-priceNum(b));
+  const shown=list.length?list:[];
+  const mapHTML=`<div class="mapview">${shown.slice(0,8).map((p,i)=>{const pos=POS[(p.id-1)%POS.length];return `<div class="pin" style="left:${pos[0]}%;top:${pos[1]}%" data-go="profissional/${p.id}"><div class="b ${i%2?'alt':''}">${p.visit?'grátis':p.price}</div><div class="tip"></div></div>`;}).join('')}</div><div style="margin-top:16px" class="cards3">${shown.slice(0,3).map(pcardHTML).join('')}</div>`;
   return `
   <div class="pagehead"><div class="container">
     <div class="searchwrap" style="max-width:100%">
@@ -846,12 +857,14 @@ ROUTES.busca=(slug)=>{
   </div></div>
   <section><div class="container">
     <div class="filters">
-      <button class="f on">${ic('pin')} Mais próximos</button><button class="f">${star1('currentColor')} Melhor avaliados</button>
-      <button class="f">${ic('dollar')} Menor preço</button><button class="f">${ic('check')} Verificados</button>
+      <button class="f ${bsort==='prox'?'on':''}" data-act="bprox">${ic('pin')} Mais próximos</button>
+      <button class="f ${bsort==='rating'?'on':''}" data-act="brating">${star1('currentColor')} Melhor avaliados</button>
+      <button class="f ${bsort==='price'?'on':''}" data-act="bprice">${ic('dollar')} Menor preço</button>
+      <button class="f ${bonline?'on':''}" data-act="bonline">${ic('bolt')} Online agora</button>
       <div class="viewtoggle"><button class="${!mapView?'on':''}" data-act="viewlist">${ic('list')} Lista</button><button class="${mapView?'on':''}" data-act="viewmap">${ic('map')} Mapa</button></div>
     </div>
-    <p class="sm muted" style="margin-bottom:18px">${shown.length} profissionais encontrados</p>
-    ${mapView?mapHTML:`<div class="cards3">${shown.map(pcardHTML).join('')}</div>`}
+    <p class="sm muted" style="margin-bottom:18px">${shown.length} profissionais encontrados${bonline?', online agora':''}</p>
+    ${shown.length?(mapView?mapHTML:`<div class="cards3">${shown.map(pcardHTML).join('')}</div>`):'<div class="card center" style="padding:40px"><p class="muted">Nenhum profissional online agora nessa busca. Tente remover o filtro.</p></div>'}
   </div></section>`;
 };
 
@@ -889,13 +902,23 @@ ROUTES.profissional=(id)=>{
       <h2 style="font-size:20px;margin-bottom:10px">Sobre</h2>
       <p class="muted" style="margin-bottom:24px">${p.bio}</p>
       <h2 style="font-size:20px;margin-bottom:12px">Disponibilidade</h2>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">${p.slots.map(s=>`<button class="slot" data-act="agendar">${ic('calendar','ic-sm')} ${s}</button>`).join('')}</div>
+      <div class="card" style="margin-bottom:24px">
+        <div class="sm muted" style="margin-bottom:8px">Escolha o dia</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">${['Hoje','Amanhã','Qua','Qui','Sex','Sáb'].map((d,i)=>`<button class="slot ${i===0?'sel':''}" onclick="pickAg(this)">${d}</button>`).join('')}</div>
+        <div class="sm muted" style="margin-bottom:8px">Escolha o horário</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">${['08:00','10:00','13:00','15:00','17:00','19:00'].map((t,i)=>`<button class="slot ${i===2?'sel':''}" onclick="pickAg(this)">${ic('clock','ic-sm')} ${t}</button>`).join('')}</div>
+        <button class="btn btn-pri" data-act="agendar">Agendar ${p.visit?'visita':'serviço'}</button>
+      </div>
       <h2 style="font-size:20px;margin-bottom:12px">Serviços e preços</h2>
       ${p.services.map(s=>`<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span class="b">${s[0]}</span><span class="b" style="color:var(--brand)">${s[1]}</span></div>`).join('')}
       <h2 style="font-size:20px;margin:28px 0 12px">Portfólio</h2>
       <div class="portfolio">${Array.from({length:p.portfolio}).map(()=>`<div class="pf">${ic('image')}</div>`).join('')}</div>
       <h2 style="font-size:20px;margin:28px 0 12px">Avaliações (${p.reviews})</h2>
-      ${p.revs.map(r=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between"><b>${r[0]}</b>${starsRow(r[1])}</div><p class="sm muted" style="margin-top:6px">${r[2]}</p></div>`).join('')}
+      <div class="card" style="margin-bottom:14px"><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+        <div style="text-align:center"><div class="dp" style="font-size:34px;font-weight:800;color:var(--ink)">${p.rating.toFixed(1)}</div>${starsRow(p.rating)}<div class="xs muted" style="margin-top:2px">${p.reviews} avaliações</div></div>
+        <div style="flex:1;min-width:220px">${[['Pontualidade',p.rating],['Qualidade',Math.min(5,p.rating+0.1)],['Atendimento',Math.max(4.5,p.rating-0.1)]].map(cr=>`<div style="display:flex;align-items:center;gap:10px;margin:5px 0"><span class="xs muted" style="width:92px">${cr[0]}</span><div class="progbar" style="flex:1;margin:0"><i style="width:${cr[1]/5*100}%;background:var(--star)"></i></div><span class="xs b" style="width:26px;text-align:right">${cr[1].toFixed(1)}</span></div>`).join('')}</div>
+      </div></div>
+      ${p.revs.map((r,ri)=>`<div class="card" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between"><b>${r[0]}</b>${starsRow(r[1])}</div><p class="sm muted" style="margin:6px 0 0">${r[2]}</p>${ri===0?`<div style="display:flex;gap:8px;margin-top:10px">${[0,1,2].map(function(){return '<div style="width:58px;height:58px;border-radius:10px;background:linear-gradient(135deg,var(--tint),#ffd9c9);display:flex;align-items:center;justify-content:center;color:var(--brand)">'+ic('image','ic-sm')+'</div>';}).join('')}</div>`:''}</div>`).join('')}
     </div>
     <div>
       <div class="card" style="position:sticky;top:84px">
@@ -1401,6 +1424,27 @@ ROUTES.cobertura=()=>`
    <h2 style="font-size:20px;margin-bottom:12px">Chegando em breve</h2>
    <div style="display:flex;gap:9px;flex-wrap:wrap">${['Porto Alegre, RS','Brasília, DF','Salvador, BA','Recife, PE','Fortaleza, CE','Goiânia, GO'].map(function(c){return `<span class="chip soon">${c}</span>`;}).join('')}</div>
  </div></section>`;
+ROUTES.servico=(slug,idx)=>{
+  var c=CATS.find(function(x){return x.slug===slug;})||CATS[0];
+  var sub=c.subs[+idx]||c.subs[0];
+  var provs=PROVIDERS.filter(function(p){return p.cat===c.name;});
+  var shown=provs.length?provs:PROVIDERS.slice(0,3);
+  return `
+  <div class="pagehead"><div class="container">
+    <div class="breadcrumb"><a data-go="categorias">Categorias</a> › <a data-go="categoria/${c.slug}">${c.name}</a> › ${sub}</div>
+    <h1>${sub}</h1>
+    <p class="muted">${c.visit?'Profissionais de '+sub.toLowerCase()+' com orçamento grátis, perto de você.':sub+' com profissionais verificados perto de você. Faixa de referência: '+c.range+'.'}</p>
+    <div style="margin-top:14px"><span class="chip live">${(c.subs.length%9)+3} profissionais online agora</span></div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-pri" data-go="pedido">${c.visit?'Pedir orçamento grátis':'Pedir orçamento'}</button><button class="btn btn-out" data-act="dispatch">${ic('bolt')} Preciso agora</button></div>
+  </div></div>
+  <section><div class="container">
+    <h2 style="font-size:20px;margin-bottom:16px">Profissionais de ${sub}</h2>
+    <div class="cards3">${shown.map(pcardHTML).join('')}</div>
+    <h2 style="font-size:20px;margin:34px 0 8px">Dúvidas sobre ${sub}</h2>
+    <details class="faq"><summary>Quanto custa ${sub.toLowerCase()}?<span class="p">${ic('plus')}</span></summary><p>${c.visit?'Esse serviço tem orçamento grátis: o profissional avalia no local e passa o preço, sem taxa de visita.':'Costuma ficar em '+c.range+', conforme o caso. Você recebe propostas e escolhe.'}</p></details>
+    <details class="faq"><summary>Como contrato?<span class="p">${ic('plus')}</span></summary><p>Peça um orçamento ou use o Preciso Agora para alguém vir na hora. Combine pelo chat e pague pelo app.</p></details>
+  </div></section>`;
+};
 /* ===================== RENDER ===================== */
 function render(){
   const {route,a}=parseHash();
@@ -1463,6 +1507,10 @@ function doAct(a,el){
       break;
     case 'viewmap':mapView=true;render();break;
     case 'viewlist':mapView=false;render();break;
+    case 'bprox':bsort='prox';render();break;
+    case 'brating':bsort='rating';render();break;
+    case 'bprice':bsort='price';render();break;
+    case 'bonline':bonline=!bonline;render();break;
     case 'compare':openCompare();break;
     case 'clearfav':FAVS=[];save('favs',FAVS);updateCompare();render();break;
     case 'review':openReview();break;
@@ -1586,7 +1634,15 @@ document.getElementById('cityLabel').textContent=CITY;
 function setCity(c){CITY=c;save('city',c);document.getElementById('cityLabel').textContent=c;closeInfo();render();}
 const CITY_LIST=['Itapema, SC','Balneário Camboriú, SC','Itajaí, SC','Florianópolis, SC','São Paulo, SP','Rio de Janeiro, RJ'];
 function pickCity(){openInfo('Onde você está?',CITY_LIST.map(function(c){return '<button class="btn '+(c===CITY?'btn-pri':'btn-out')+' btn-block" style="margin-bottom:8px;justify-content:flex-start" onclick="setCity(\''+c+'\')">'+c+'</button>';}).join(''));}
-function confirmHire(){openInfo('Confirmar contratação',`<div style="display:flex;gap:12px;align-items:center;margin:6px 0 14px"><div class="av md b2">C</div><div><div class="b dp">Carla Mendes</div><div class="sm muted">Faxina completa, hoje 15h</div></div></div><div class="card" style="background:var(--mist);border:0;margin-bottom:14px"><div style="display:flex;justify-content:space-between"><span class="sm">Serviço</span><span class="sm b">R$ 130</span></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span class="sm">Forma de pagamento</span><span class="sm b">A combinar no app</span></div></div><p class="xs muted" style="margin-bottom:14px">Você confirma o preço e os detalhes com o profissional antes de começar.</p><button class="btn btn-pri btn-block" data-act="confirmhire">Confirmar e abrir conversa</button>`);}
+function confirmHire(){openInfo('Pagamento seguro',`
+  <div style="display:flex;gap:12px;align-items:center;margin:4px 0 14px"><div class="av md b2">C</div><div><div class="b dp">Carla Mendes</div><div class="sm muted">Faxina completa, hoje 15h</div></div></div>
+  <div class="card" style="background:var(--mist);border:0;margin-bottom:14px"><div style="display:flex;justify-content:space-between"><span class="sm">Serviço</span><span class="sm b">R$ 130,00</span></div><div style="display:flex;justify-content:space-between;margin-top:6px"><span class="sm muted">Taxa Leblon</span><span class="sm muted">incluída</span></div><div style="display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)"><span class="b">Total</span><span class="b" style="color:var(--brand)">R$ 130,00</span></div></div>
+  <div class="tab2" id="cktabs"><button class="on" onclick="ckTab('pix')">Pix</button><button onclick="ckTab('card')">Cartão</button></div>
+  <div id="ckpix"><div class="center" style="margin-bottom:8px">${qrSVG()}</div><div class="field"><label>Pix copia e cola</label><input value="00020126BR.GOV.BCB.PIX...LEBLON5204000053039865802BR" readonly></div></div>
+  <div id="ckcard" style="display:none"><div class="field"><label>Número do cartão</label><input placeholder="0000 0000 0000 0000"></div><div style="display:flex;gap:10px"><div class="field" style="flex:1"><label>Validade</label><input placeholder="MM/AA"></div><div class="field" style="flex:1"><label>CVV</label><input placeholder="123"></div></div><div class="field"><label>Nome no cartão</label><input placeholder="Como está no cartão"></div></div>
+  <button class="btn btn-pri btn-block" data-act="confirmhire">Pagar R$ 130,00</button>
+  <p class="xs muted center" style="margin-top:10px">O valor só é liberado ao profissional quando você confirma a conclusão. (demonstração)</p>`);}
+function ckTab(t){document.getElementById('ckpix').style.display=t==='pix'?'block':'none';document.getElementById('ckcard').style.display=t==='card'?'block':'none';var bs=document.querySelectorAll('#cktabs button');bs[0].classList.toggle('on',t==='pix');bs[1].classList.toggle('on',t==='card');}
 
 /* Reveal on scroll */
 let _io;
@@ -1603,8 +1659,13 @@ function doInstall(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=n
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 
 /* Boot */
+function pickAg(el){var p=el.parentNode;p.querySelectorAll('button').forEach(function(b){b.classList.remove('sel');});el.classList.add('sel');}
+function onbCity(el,c){CITY=c;save('city',c);var l=document.getElementById('cityLabel');if(l)l.textContent=c;el.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('sel');});el.classList.add('sel');}
+function onbGo(slug){save('onb',1);closeInfo();nav('categoria',slug);}
+function onboard(){ if(load('onb',0))return; openInfo('Bem-vindo ao Leblon','<p class="sm muted" style="margin-bottom:14px">Em segundos, deixe o Leblon do seu jeito.</p><div class="sm b dp" style="margin-bottom:8px">Onde você está?</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">'+CITY_LIST.slice(0,4).map(function(c){return '<button class="slot'+(c===CITY?' sel':'')+'" onclick="onbCity(this,\''+c+'\')">'+c.split(',')[0]+'</button>';}).join('')+'</div><div class="sm b dp" style="margin-bottom:8px">O que você precisa?</div><div class="catgrid" style="grid-template-columns:1fr 1fr;gap:10px">'+CATS.slice(0,6).map(function(c){return '<button class="cat" style="cursor:pointer;text-align:left" onclick="onbGo(\''+c.slug+'\')"><div class="e">'+ic(c.icon)+'</div><div class="nm">'+c.name+'</div></button>';}).join('')+'</div><div class="center" style="margin-top:14px"><button class="sm muted" style="text-decoration:underline" onclick="save(\'onb\',1);closeInfo();">Agora não</button></div>'); save('onb',1); }
 if(!location.hash)location.hash='#/';
 render();
+setTimeout(onboard,500);
 </script>
 </body>
 </html>
