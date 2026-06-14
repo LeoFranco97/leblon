@@ -6,6 +6,13 @@
 <title>Leblon · protótipo do app</title>
 <meta name="description" content="Protótipo navegável do app Leblon: fluxo do usuário (Preciso agora / Agendar) e do prestador (serviços na hora / tipo de serviço)."/>
 <meta name="theme-color" content="#FF4800"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="icon" href="icon-192.png" type="image/png"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Leblon"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -421,6 +428,13 @@ body.dark .paymethod{border-color:var(--brand)}
 /* skeleton */
 .sk{background:linear-gradient(90deg,var(--mist) 25%,var(--line) 37%,var(--mist) 63%);background-size:400% 100%;animation:shimmer 1.3s infinite;border-radius:8px}
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+/* tour */
+.tourbar{position:absolute;left:12px;right:12px;bottom:84px;z-index:70;background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 16px 40px rgba(0,0,0,.4);display:none;flex-direction:column;gap:11px;animation:drop .25s var(--ease)}
+.tourbar .tcap{font-size:13.5px;line-height:1.45;color:#fff}
+.tourbar .tcap b{color:#fff;background:var(--brand);padding:2px 7px;border-radius:6px;font-size:11px;margin-right:7px;font-family:'Inter Tight'}
+.tourbar .trow{display:flex;gap:10px;justify-content:flex-end}
+.tourbar .trow button{font-family:'Inter Tight';font-weight:600;font-size:14px;padding:8px 16px;border-radius:10px;background:rgba(255,255,255,.16);color:#fff}
+.tourbar .trow .np{background:var(--brand)}
 </style>
 </head>
 <body>
@@ -430,6 +444,7 @@ body.dark .paymethod{border-color:var(--brand)}
   <div id="screen" class="screen"></div>
   <div id="overlay"></div>
   <nav id="botnav" class="botnav"></nav>
+  <div id="tourbar" class="tourbar"></div>
 </div>
 <div id="toast" class="toast"></div>
 
@@ -499,7 +514,12 @@ const ICONS={
  ticket:'<path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><line x1="13" y1="6" x2="13" y2="18" stroke-dasharray="2 2"/>',
  trophy:'<path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3"/>',
  chart:'<line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="11" width="3" height="6"/><rect x="11" y="7" width="3" height="10"/><rect x="16" y="13" width="3" height="4"/>',
- bank:'<path d="M3 9l9-6 9 6"/><rect x="4" y="9" width="16" height="11" rx="1"/><line x1="8" y1="12" x2="8" y2="17"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="16" y1="12" x2="16" y2="17"/>'
+ bank:'<path d="M3 9l9-6 9 6"/><rect x="4" y="9" width="16" height="11" rx="1"/><line x1="8" y1="12" x2="8" y2="17"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="16" y1="12" x2="16" y2="17"/>',
+ building:'<rect x="4" y="3" width="16" height="18" rx="2"/><line x1="9" y1="7" x2="9" y2="7"/><line x1="15" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="9" y2="11"/><line x1="15" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="9" y2="15"/><line x1="15" y1="15" x2="15" y2="15"/><path d="M9 21v-3h6v3"/>',
+ download:'<path d="M12 3v12"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/>',
+ flag:'<path d="M4 21V4s2-1 5-1 4 2 7 2 4-1 4-1v9s-2 1-4 1-4-2-7-2-5 1-5 1"/>',
+ briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>'
 };
 function ic(n,style){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="ic"'+(style?' style="'+style+'"':'')+'>'+(ICONS[n]||'')+'</svg>';}
 function star1(c){return '<svg viewBox="0 0 24 24" class="ic" style="color:'+c+'"><polygon points="12 2 14.6 8.6 21.5 9.1 16.2 13.6 17.9 20.4 12 16.7 6.1 20.4 7.8 13.6 2.5 9.1 9.4 8.6" fill="currentColor" stroke="none"/></svg>';}
@@ -543,7 +563,13 @@ var AUTH=load('auth',null);            // {name,email,phone,via} quando logado
 var FAVS=load('favs',['faxina','barbeiro']); // categorias/prestadores favoritos
 var NOTIF=load('notif',{push:true,email:true,sms:false,promo:false});
 var THEME=load('theme','light');
-function persist(){save('orders',ORDERS);save('pro',PRO);save('favs',FAVS);save('notif',NOTIF);save('theme',THEME);if(AUTH)save('auth',AUTH);}
+var LANG=load('lang','pt');
+function persist(){save('orders',ORDERS);save('pro',PRO);save('favs',FAVS);save('notif',NOTIF);save('theme',THEME);save('lang',LANG);if(AUTH)save('auth',AUTH);}
+const DICT={
+ pt:{greet:'Olá',sub:'O que você precisa hoje?',now:'Preciso agora',nowd:'Atendimento imediato, em até 10 min.',nowcta:'CHAMAR PRESTADOR ›',sched:'Agendar',schedd:'Escolha o dia e o horário do serviço.',schedcta:'MARCAR HORÁRIO ›',cats:'Categorias',n_home:'Início',n_order:'Pedir',n_orders:'Pedidos',n_acc:'Conta',n_status:'Status',n_jobs:'Trabalhos',n_agenda:'Agenda',refer:'Indique e ganhe R$ 20',referd:'Você e seu amigo ganham a cada primeiro serviço.',becomet:'Vire prestador no Leblon',becomed:'Tem tempo livre? Receba pedidos perto de você.',start:'Começar'},
+ en:{greet:'Hi',sub:'What do you need today?',now:'Need it now',nowd:'Instant service, in up to 10 min.',nowcta:'CALL A PRO ›',sched:'Schedule',schedd:'Pick the day and time of the service.',schedcta:'BOOK A TIME ›',cats:'Categories',n_home:'Home',n_order:'Request',n_orders:'Orders',n_acc:'Account',n_status:'Status',n_jobs:'Jobs',n_agenda:'Calendar',refer:'Refer & earn R$ 20',referd:'You and your friend earn on the first service.',becomet:'Become a Leblon pro',becomed:'Got free time? Get requests near you.',start:'Start'}
+};
+function t(k){return (DICT[LANG]&&DICT[LANG][k])||DICT.pt[k]||k;}
 function applyTheme(){document.body.classList.toggle('dark',THEME==='dark');}
 // vários prestadores por categoria (para escolher no Agendar)
 const MARKET={
@@ -553,6 +579,31 @@ const MARKET={
 };
 function marketFor(catId){return MARKET[catId]||[Object.assign({price:cat(catId)?cat(catId).price:'R$ 100'},PROS[catId])];}
 const COUPONS={'LEBLON10':10,'PRIMEIRA':15,'LEO20':20};
+const QDATA={
+ eletricista:[['Qual o problema?',['Tomada ou interruptor','Disjuntor caiu','Instalação nova','Curto / cheiro de queimado']]],
+ faxina:[['Tamanho do imóvel',['Studio / 1 quarto','2 quartos','3+ quartos','Comercial']],['Tipo de limpeza',['Faxina comum','Pesada / pós-obra','Passar roupa']]],
+ encanador:[['Qual o problema?',['Vazamento','Entupimento','Instalação','Outro']]],
+ barbeiro:[['Serviço',['Corte','Corte + barba','Barba']]],
+ manicure:[['Serviço',['Mão','Mão e pé','Alongamento']]],
+ pet:[['Porte do animal',['Pequeno','Médio','Grande']],['Duração',['30 minutos','1 hora']]],
+ jardim:[['Tarefa',['Cortar grama','Poda','Manutenção geral']]],
+ reparos:[['Tipo',['Montagem de móveis','Pequeno reparo','Instalação']]]
+};
+const ADDRS=[{n:'Casa',d:'Rua 234, 120 · Centro, Itapema',ic:'home'},{n:'Trabalho',d:'Av. Litorânea, 800 · Meia Praia',ic:'pin'}];
+function addrLabel(){return S.draft.addr||(ADDRS[0].n+' · '+ADDRS[0].d);}
+function detailsCard(catId){
+ var qs=QDATA[catId]||[];S.draft.qa=S.draft.qa||{};
+ var html='<div class="card" style="margin-bottom:14px"><div class="b sm" style="margin-bottom:10px">Detalhes do serviço</div>';
+ qs.forEach(function(q,i){var key=catId+'_'+i;
+   html+='<div class="field" style="margin-bottom:12px"><label>'+q[0]+'</label><select data-qa="'+key+'">'+q[1].map(function(opt){return '<option'+(S.draft.qa[key]===opt?' selected':'')+'>'+opt+'</option>';}).join('')+'</select></div>';});
+ html+='<div class="field" style="margin-bottom:12px"><label>Observações</label><textarea rows="2" placeholder="Detalhe o que precisa (opcional)"></textarea></div>';
+ html+='<div id="reqphoto">'+reqPhotoHTML()+'</div></div>';
+ return html;
+}
+function reqPhotoHTML(){
+ if(S.draft.reqPhoto)return '<div class="row" style="gap:10px;align-items:center"><div class="bub img" style="width:64px;height:46px;border-radius:10px">'+ic('image')+'</div><span class="sm muted">1 foto anexada</span><button class="btn btn-sm btn-ghost" style="margin-left:auto;width:auto" data-act="rm-req-photo">Remover</button></div>';
+ return '<button class="btn btn-out btn-sm" style="width:100%" data-act="add-req-photo">'+ic('camera')+'Adicionar foto do problema</button>';
+}
 
 // conta de teste do protótipo
 const TEST_EMAIL='leo@leblon.app', TEST_PASS='leblon123';
@@ -589,16 +640,24 @@ function rend(){
   elScreen.style.paddingBottom=(AUTHSCREENS.indexOf(S.screen)>=0)?'0':'';
   elScreen.innerHTML=fn(S.params);
   // nav hidden on focused flows
-  var hideNav=['chat','request-when','request-cat','searching','payment','success','pro-grab','tracking','rate','provider','search','receipt','estimate','choose-pro','verify-id','pro-sim'].concat(AUTHSCREENS).indexOf(S.screen)>=0;
+  var hideNav=['chat','request-when','request-cat','searching','payment','success','pro-grab','tracking','rate','provider','search','receipt','estimate','choose-pro','verify-id','pro-sim','pro-onboard','rate-client'].concat(AUTHSCREENS).indexOf(S.screen)>=0;
   elNav.style.display=hideNav?'none':'flex';
   if(!hideNav)elNav.innerHTML=navHTML();
   renderOverlay();
   if(SCREENS[S.screen]&&SCREENS[S.screen]._after)SCREENS[S.screen]._after(S.params);
+  renderTour();
+}
+function renderTour(){
+  var tb=document.getElementById('tourbar');if(!tb)return;
+  if(S.tour!=null&&typeof TOUR!=='undefined'&&TOUR[S.tour]){
+    tb.style.display='flex';
+    tb.innerHTML='<div class="tcap"><b>'+(S.tour+1)+'/'+TOUR.length+'</b>'+TOUR[S.tour].cap+'</div><div class="trow"><button data-act="stop-tour">Encerrar</button><button class="np" data-act="next-tour">'+(S.tour===TOUR.length-1?'Concluir':'Próximo ›')+'</button></div>';
+  } else tb.style.display='none';
 }
 function navHTML(){
   var items=S.mode==='user'
-   ?[['home','home','Início'],['request-cat','search','Pedir'],['orders','list','Pedidos'],['user-profile','user','Conta']]
-   :[['pro-home','power','Status'],['pro-jobs','list','Trabalhos'],['pro-calendar','calendar','Agenda'],['pro-profile','user','Conta']];
+   ?[['home','home',t('n_home')],['request-cat','search',t('n_order')],['orders','list',t('n_orders')],['user-profile','user',t('n_acc')]]
+   :[['pro-home','power',t('n_status')],['pro-jobs','list',t('n_jobs')],['pro-calendar','calendar',t('n_agenda')],['pro-profile','user',t('n_acc')]];
   var act=activeOrder();
   return items.map(function(it){
     var on=S.screen===it[0]||(it[0]==='request-cat'&&['request-when','searching'].indexOf(S.screen)>=0)||(it[0]==='orders'&&S.screen==='order')||(it[0]==='pro-jobs'&&S.screen==='pro-order');
@@ -641,19 +700,19 @@ SCREENS.splash=function(){return '<div class="splash"><div class="lg">'+ic('bolt
 SCREENS.home=function(){
   var act=activeOrder();
   var fn=((AUTH&&AUTH.name)||'Leonardo').trim().split(' ')[0];
-  return '<div class="homehead"><div class="row between"><div class="loc">'+ic('pin')+' Itapema, SC · Centro</div><div class="hactions"><button class="hicon" data-go="search">'+ic('search')+'</button><button class="hicon" data-act="toggle-theme">'+ic(THEME==='dark'?'sun':'moon')+'</button><button class="hbell" data-go="notifications">'+ic('bell')+'<span class="ndot"></span></button></div></div><h1>Olá, '+fn+' 👋</h1><p>O que você precisa hoje?</p></div>'+
+  return '<div class="homehead"><div class="row between"><div class="loc">'+ic('pin')+' Itapema, SC · Centro</div><div class="hactions"><button class="hicon" data-go="search">'+ic('search')+'</button><button class="hicon" data-act="toggle-theme">'+ic(THEME==='dark'?'sun':'moon')+'</button><button class="hbell" data-go="notifications">'+ic('bell')+'<span class="ndot"></span></button></div></div><h1>'+t('greet')+', '+fn+' 👋</h1><p>'+t('sub')+'</p></div>'+
    '<div class="bigacts">'+
-     '<button class="bigact now" data-go="request-cat" data-mode-now="now"><div class="ico">'+ic('bolt')+'</div><h3>Preciso agora</h3><p>Atendimento imediato, em até 10 min.</p><span class="tag">CHAMAR PRESTADOR ›</span></button>'+
-     '<button class="bigact sched" data-go="request-cat" data-mode-now="sched"><div class="ico">'+ic('calendar')+'</div><h3>Agendar</h3><p>Escolha o dia e o horário do serviço.</p><span class="tag">MARCAR HORÁRIO ›</span></button>'+
+     '<button class="bigact now" data-go="request-cat" data-mode-now="now"><div class="ico">'+ic('bolt')+'</div><h3>'+t('now')+'</h3><p>'+t('nowd')+'</p><span class="tag">'+t('nowcta')+'</span></button>'+
+     '<button class="bigact sched" data-go="request-cat" data-mode-now="sched"><div class="ico">'+ic('calendar')+'</div><h3>'+t('sched')+'</h3><p>'+t('schedd')+'</p><span class="tag">'+t('schedcta')+'</span></button>'+
    '</div>'+
    '<div class="pad">'+
      (act?'<div class="sec-title">Em andamento</div>'+orderCard(act):'')+
-     '<div class="sec-title">Categorias</div>'+
+     '<div class="sec-title">'+t('cats')+'</div>'+
      '<div class="catgrid">'+CATS.map(function(c){return '<button class="catitem" data-act="pickcat" data-fresh="1" data-cat="'+c.id+'"><div class="e">'+ic(c.ic)+(c.now?'<span class="nowdot">JÁ</span>':'')+'</div><span>'+c.name+'</span></button>';}).join('')+'</div>'+
-     '<div class="promo" data-go="indicar"><div class="pico">'+ic('gift')+'</div><div style="flex:1"><div class="dp b" style="font-size:15px">Indique e ganhe R$ 20</div><div class="sm muted">Você e seu amigo ganham a cada primeiro serviço.</div></div>'+ic('chevronR','color:var(--muted)')+'</div>'+
+     '<div class="promo" data-go="indicar"><div class="pico">'+ic('gift')+'</div><div style="flex:1"><div class="dp b" style="font-size:15px">'+t('refer')+'</div><div class="sm muted">'+t('referd')+'</div></div>'+ic('chevronR','color:var(--muted)')+'</div>'+
      '<div class="card" style="margin-top:12px;display:flex;gap:12px;align-items:center;background:var(--ink);border:0;color:#fff">'+
-       '<div class="av md b2">R$</div><div style="flex:1"><div class="dp b" style="color:#fff;font-size:15px">Vire prestador no Leblon</div><div class="sm" style="color:rgba(255,255,255,.75)">Tem tempo livre? Receba pedidos perto de você.</div></div>'+
-       '<button class="btn btn-sm" style="background:var(--brand);color:#fff" data-mode="pro">Ativar</button></div>'+
+       '<div class="av md b2">R$</div><div style="flex:1"><div class="dp b" style="color:#fff;font-size:15px">'+t('becomet')+'</div><div class="sm" style="color:rgba(255,255,255,.75)">'+t('becomed')+'</div></div>'+
+       '<button class="btn btn-sm" style="background:var(--brand);color:#fff" data-act="become-pro">'+t('start')+'</button></div>'+
    '</div>';
 };
 SCREENS.notifications=function(){
@@ -707,11 +766,11 @@ SCREENS['request-when']=function(p){
       '<div class="card" style="margin-bottom:14px">'+
         '<div class="row between" style="margin-bottom:12px"><div class="row" style="gap:10px"><div class="ordercard ico" style="margin:0">'+ic(c.ic)+'</div><div><div class="dp b">'+c.name+'</div><div class="sm muted">Atendimento imediato</div></div></div><span class="chip ok">'+ic('bolt')+'Agora</span></div>'+
         '<div class="divider"></div>'+
-        '<div class="row between sm"><span class="muted">Local</span><b>Rua 234, Centro · Itapema</b></div>'+
+        '<button class="row between sm" style="width:100%;background:none;text-align:left" data-act="pick-addr"><span class="muted">Local</span><b style="display:flex;align-items:center;gap:5px">'+(S.draft.otherName?'Para '+S.draft.otherName+' · ':'')+addrLabel().split(' · ')[0]+' '+ic('chevronR','width:14px;height:14px;color:var(--muted)')+'</b></button>'+
         '<div class="row between sm" style="margin-top:8px"><span class="muted">Valor estimado</span><b>'+c.price+' / '+c.unit+'</b></div>'+
         '<div class="row between sm" style="margin-top:8px"><span class="muted">Pagamento</span><b>'+ic('lock','width:13px;height:13px;color:var(--ok)')+' Protegido no app</b></div>'+
       '</div>'+
-      '<div class="field"><label>Descreva rapidamente o que precisa</label><textarea rows="3" placeholder="Ex.: disjuntor caiu e não volta..."></textarea></div>'+
+      detailsCard(c.id)+
       '<div class="banner ok">'+ic('shield')+'<div>Você só confirma o pagamento depois que o prestador <b>aceitar</b> e o atendimento for concluído.</div></div>'+
       '<button class="btn btn-pri" data-act="dispatch" data-cat="'+c.id+'">'+ic('bolt')+'Chamar prestador agora</button>'+
      '</div>';
@@ -722,6 +781,7 @@ SCREENS['request-when']=function(p){
    '<div class="pad">'+
     '<div class="card" style="margin-bottom:16px">'+provRow(pr,'<span class="chip gray">'+c.price+'</span>')+'</div>'+
     '<div class="banner '+(fixed?'info':'warn')+'">'+ic(fixed?'clock':'calendar')+'<div>'+(fixed?'<b>'+c.name+' trabalha com hora marcada.</b> Escolha o dia e um horário livre na agenda dele.':'<b>'+c.name+' não tem hora fixa.</b> Escolha o dia — o prestador confirma e combina o melhor horário com você pelo chat.')+'</div></div>'+
+    detailsCard(c.id)+
     '<label class="b sm" style="display:block;margin:4px 0 10px">Escolha o dia</label>'+daysRow()+
     (fixed?'<label class="b sm" style="display:block;margin:18px 0 10px">Horários disponíveis</label>'+slotsGrid():'')+
     '<div class="setitem" style="border-radius:14px;border:1px solid var(--line);margin-top:18px"><div class="e">'+ic('repeat')+'</div><div class="meta"><div>Repetir toda semana</div><div class="d">Reagenda automaticamente o mesmo dia/horário</div></div><div class="switch'+(S.draft.recur?' on':'')+'" data-act="toggle-recur"></div></div>'+
@@ -732,6 +792,7 @@ SCREENS['request-when']._after=function(){
   // seleção visual de dia/slot
   S.draft.day=S.draft.day||1;S.draft.slot=S.draft.slot||null;
   bindPick();
+  elScreen.querySelectorAll('[data-qa]').forEach(function(sel){S.draft.qa[sel.dataset.qa]=sel.value;sel.onchange=function(){S.draft.qa[sel.dataset.qa]=sel.value;};});
 };
 
 function daysRow(){
@@ -780,9 +841,11 @@ SCREENS.searching._after=function(p){
 };
 
 // ORDER DETAIL (ordem de serviço — lado usuário)
+function ensurePin(o){if(!o._pin)o._pin=String(Math.floor(1000+Math.random()*9000));}
 SCREENS.order=function(p){
   var o=orderById(p.id)||activeOrder();if(!o)return emptyOrders();
   var pr=o._pro||PROS[o.cat];var c=cat(o.cat);
+  if(['confirmed','inprogress'].indexOf(o.status)>=0)ensurePin(o);
   var whenTxt=o.type==='now'?'Atendimento imediato':('Agendado · '+dayLabel(o.day)+(o.slot?' às '+o.slot:' (horário a combinar)'))+(o.recur?' · semanal':'');
   return topbar('Ordem de serviço',(o.status==='cancelled'?'':'<button class="act" data-go="chat" data-id="'+o.id+'">'+ic('chat')+'</button>'))+
    '<div class="pad">'+
@@ -792,17 +855,16 @@ SCREENS.order=function(p){
       '<button class="btn btn-sm btn-out" style="width:100%;margin-top:12px" data-go="provider" data-cat="'+o.cat+'">'+ic('user')+'Ver perfil de '+pr.name.split(' ')[0]+'</button>'+
     '</div>'+
     (o.status==='suggested'?suggestBox(o):'')+
+    (o.status==='confirmed'?'<div class="card" style="margin-bottom:16px;border:1.5px solid var(--brand)"><div class="row between"><div><div class="b sm">Código de início</div><div class="xs muted">Informe ao prestador quando ele chegar</div></div><div class="dp b" style="font-size:26px;letter-spacing:.15em;color:var(--brand)">'+o._pin+'</div></div></div>':'')+
     (o.status==='cancelled'?'<div class="banner warn">'+ic('info')+'<div>Esta ordem foi cancelada.</div></div>':'<div class="card" style="margin-bottom:16px"><div class="b sm" style="margin-bottom:12px">Acompanhamento</div>'+steps(o)+'</div>')+
+    '<button class="banner ok" style="width:100%;text-align:left;border:0;margin-bottom:12px" data-act="garantia">'+ic('shield')+'<div>Protegido pela <b>Garantia Leblon</b>. Toque para saber como funciona.</div></button>'+
     orderActions(o)+
     (['confirmed','inprogress'].indexOf(o.status)>=0?'<button class="btn" style="width:100%;margin-top:12px;background:none;color:#d23b3b;font-size:14px" data-act="sos" data-id="'+o.id+'">'+ic('support')+'Preciso de ajuda / suporte</button>':'')+
    '</div>';
 };
 SCREENS.order._after=function(p){
   var o=orderById(p.id)||activeOrder();if(!o)return;
-  // simula prestador iniciar e concluir o atendimento quando confirmado
-  if(o.status==='confirmed'&&o.type==='now'){
-    later(function(){o.status='inprogress';persist();toast(o.proName+' iniciou o atendimento');if(S.screen==='order')rend();},2600);
-  }
+  // após iniciado (pela chegada no mapa ou pelo código do prestador), conclui sozinho para a demo fluir
   if(o.status==='inprogress'){
     later(function(){o.status='done';persist();toast('Atendimento realizado! Confirme o pagamento.');if(S.screen==='order')rend();},3000);
   }
@@ -884,7 +946,7 @@ SCREENS.chat=function(p){
   var name=S.mode==='pro'?'Leonardo (cliente)':(o?o.proName||pr.name:pr.name);
   var ini=S.mode==='pro'?'L':pr.ini;
   o._msgs=o._msgs||defaultMsgs(o);
-  return '<div class="chathead"><button class="back" data-back>'+ic('chevronL')+'</button><div class="av sm '+(S.mode==='pro'?'':pr.av)+'">'+ini+'</div><div style="flex:1"><div class="nm">'+name+'</div><div class="stt">online</div></div><button class="act" style="width:36px;height:36px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center">'+ic('phone')+'</button></div>'+
+  return '<div class="chathead"><button class="back" data-back>'+ic('chevronL')+'</button><div class="av sm '+(S.mode==='pro'?'':pr.av)+'">'+ini+'</div><div style="flex:1"><div class="nm">'+name+'</div><div class="stt">online</div></div><button class="act" style="width:36px;height:36px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center;color:var(--ink)">'+ic('phone')+'</button><button class="act" style="width:36px;height:36px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center;margin-left:8px;color:var(--ink)" data-act="report">'+ic('shield')+'</button></div>'+
    '<div class="msgs" id="msgs">'+o._msgs.map(bubHTML).join('')+'</div>'+
    '<div class="chatbar"><button class="plusbtn" data-act="chat-attach" data-id="'+(o?o.id:'')+'">'+ic('plus')+'</button><input id="chatinput" placeholder="Mensagem..."><button class="send" data-act="send" data-id="'+(o?o.id:'')+'">'+ic('send')+'</button></div>';
 };
@@ -904,8 +966,13 @@ SCREENS['user-profile']=function(){
   return topbar('Minha conta')+modeseg()+'<div class="pad">'+
     '<div class="card" style="display:flex;gap:14px;align-items:center;margin-bottom:18px" data-go="acc-personal"><div class="av lg">'+ini+'</div><div style="flex:1"><div class="dp b" style="font-size:18px">'+u.name+' '+vbadge()+'</div><div class="sm muted">'+u.email+'</div></div>'+ic('chevronR','color:var(--muted)')+'</div>'+
     setGroup('Conta',[['user','Dados pessoais','acc-personal'],['pin','Endereços','acc-addresses'],['card','Formas de pagamento','acc-payments'],['heart','Favoritos','favorites'],['gift','Indique e ganhe','indicar'],['bell','Notificações','acc-notifications']])+
-    setGroup('Suporte',[['shield','Segurança e privacidade','acc-security'],['info','Central de ajuda','acc-help']])+
-    '<button class="btn btn-out" style="margin-bottom:10px" data-mode="pro">'+ic('bolt')+'Quero prestar serviços</button>'+
+    setGroup('Mais',[['building','Leblon para Empresas','empresas'],['shield','Segurança e privacidade','acc-security'],['info','Central de ajuda','acc-help']])+
+    '<div class="setgrp"><div class="h">App</div>'+
+     '<div class="setitem" data-act="start-tour"><div class="e">'+ic('flag')+'</div><div class="meta">Modo apresentação (tour)</div><div class="arr">'+ic('chevronR')+'</div></div>'+
+     '<div class="setitem" data-act="toggle-lang"><div class="e">'+ic('globe')+'</div><div class="meta">Idioma / Language</div><span class="sm muted" style="margin-left:auto">'+(LANG==='en'?'English':'Português')+'</span></div>'+
+     '<div class="setitem" data-act="toggle-theme"><div class="e">'+ic(THEME==='dark'?'sun':'moon')+'</div><div class="meta">'+(LANG==='en'?'Theme':'Tema')+': '+(THEME==='dark'?(LANG==='en'?'dark':'escuro'):(LANG==='en'?'light':'claro'))+'</div></div>'+
+    '</div>'+
+    '<button class="btn btn-out" style="margin-bottom:10px" data-act="become-pro">'+ic('bolt')+'Quero prestar serviços</button>'+
     '<button class="btn" style="background:none;color:#d23b3b" data-act="logout">'+ic('logout')+'Sair da conta</button>'+
    '</div>';
 };
@@ -1007,6 +1074,7 @@ SCREENS['pro-confirm']=function(p){
 // PRO order (lado prestador)
 SCREENS['pro-order']=function(p){
   var o=orderById(p.id)||activeOrder();if(!o)return proEmpty();var c=cat(o.cat);
+  if(['confirmed','inprogress'].indexOf(o.status)>=0)ensurePin(o);
   var whenTxt=o.type==='now'?'Atendimento imediato':('Agendado · '+dayLabel(o.day)+(o.slot?' às '+o.slot:' (hora a combinar)'));
   return topbar('Ordem de serviço','<button class="act" data-go="chat" data-id="'+o.id+'">'+ic('chat')+'</button>')+'<div class="pad">'+
     '<div class="card" style="margin-bottom:16px"><div class="row between" style="margin-bottom:12px"><div class="row" style="gap:11px"><div class="ordercard ico" style="margin:0">'+ic(c.ic)+'</div><div><div class="dp b" style="font-size:16px">'+c.name+'</div><div class="sm muted">'+whenTxt+'</div></div></div>'+stPill(o.status)+'</div>'+
@@ -1016,10 +1084,10 @@ SCREENS['pro-order']=function(p){
    '</div>';
 };
 function proOrderActions(o){
-  if(o.status==='confirmed')return '<button class="btn btn-pri" data-act="pro-start" data-id="'+o.id+'">'+ic('bolt')+'Iniciar atendimento</button><button class="btn btn-danger" style="margin-top:10px" data-act="open-cancel" data-id="'+o.id+'">Cancelar</button>';
+  if(o.status==='confirmed')return '<button class="btn btn-pri" data-act="open-startcode" data-id="'+o.id+'">'+ic('lock')+'Cheguei — confirmar com código</button><button class="btn btn-danger" style="margin-top:10px" data-act="open-cancel" data-id="'+o.id+'">Cancelar</button>';
   if(o.status==='inprogress')return '<button class="btn btn-ok" data-act="pro-done" data-id="'+o.id+'">'+ic('check')+'Marcar atendimento realizado</button>';
   if(o.status==='done')return '<div class="banner ok">'+ic('clock')+'<div>Atendimento concluído. Aguardando o cliente confirmar o pagamento.</div></div><button class="btn btn-out" data-act="sim-pay" data-id="'+o.id+'">Simular pagamento do cliente</button>';
-  if(o.status==='paid')return '<div class="banner ok">'+ic('wallet')+'<div><b>Pagamento recebido!</b> '+cat(o.cat).price+' creditado na sua carteira.</div></div><button class="btn btn-pri" data-go="pro-home">Voltar ao início</button>';
+  if(o.status==='paid')return '<div class="banner ok">'+ic('wallet')+'<div><b>Pagamento recebido!</b> '+cat(o.cat).price+' creditado na sua carteira.</div></div><button class="btn btn-pri" data-go="rate-client" data-id="'+o.id+'">'+ic('star')+'Avaliar cliente</button><button class="btn btn-out" style="margin-top:10px" data-go="pro-home">Voltar ao início</button>';
   if(o.status==='cancelled')return '<button class="btn btn-pri" data-go="pro-home">Voltar ao início</button>';
   return '<button class="btn btn-out" data-go="chat" data-id="'+o.id+'">'+ic('chat')+'Abrir chat</button>';
 }
@@ -1057,7 +1125,7 @@ SCREENS['pro-profile']=function(){
     '<div class="card" style="display:flex;gap:14px;align-items:center;margin-bottom:14px"><div class="av lg b4">R</div><div><div class="dp b" style="font-size:18px">Rafael Lima '+vbadge()+'</div><div class="sm" style="display:flex;align-items:center;gap:4px">'+star1('var(--star)')+'<b>4,8</b><span class="muted">(241) avaliações)</span></div></div></div>'+
     '<div class="card" style="margin-bottom:14px"><div class="row between" style="margin-bottom:4px"><div class="row" style="gap:8px"><span style="color:var(--brand)">'+ic('trophy')+'</span><b class="dp">Nível Top Pro</b></div><span class="chip">82%</span></div><div class="levbar"><i style="width:82%"></i></div><div class="xs muted">Faltam <b>9 serviços</b> e nota acima de 4,8 para o nível <b>Elite</b> (mais destaque e menor taxa).</div></div>'+
     '<div class="walletbox" style="background:linear-gradient(135deg,var(--ink),#241c6e)" data-go="acc-wallet"><div class="lbl">Disponível para saque</div><div class="v">R$ 1.240,00</div><div class="pend">+ R$ 120 em garantia (liberam na conclusão)</div></div>'+
-    setGroup('Atendimento',[['sliders','Tipo de serviço','pro-config'],['calendar','Minha agenda','pro-calendar'],['chart','Simulador de ganhos','pro-sim'],['pin','Área de atuação','acc-area'],['bell','Notificações','acc-notifications']])+
+    setGroup('Atendimento',[['sliders','Tipo de serviço','pro-config'],['calendar','Minha agenda','pro-calendar'],['chart','Simulador de ganhos','pro-sim'],['doc','Relatórios','pro-reports'],['pin','Área de atuação','acc-area'],['bell','Notificações','acc-notifications']])+
     setGroup('Conta',[['wallet','Carteira e saques','acc-wallet'],['shield','Verificação e documentos','acc-verify-docs'],['info','Ajuda','acc-help']])+
     '<button class="btn btn-out" style="margin-bottom:10px" data-mode="user">'+ic('user')+'Voltar para o modo usuário</button>'+
     '<button class="btn" style="background:none;color:#d23b3b" data-act="logout">'+ic('logout')+'Sair da conta</button>'+
@@ -1362,6 +1430,7 @@ SCREENS.provider=function(p){
    '<button class="btn btn-ghost" style="margin:4px 0 14px" data-go="estimate" data-cat="'+key+'">'+ic('ticket')+'Estimar preço do serviço</button>'+
    (c.now?'<button class="btn btn-pri" style="margin-bottom:10px" data-act="dispatch" data-cat="'+key+'">'+ic('bolt')+'Preciso agora</button>':'')+
    '<button class="btn '+(c.now?'btn-out':'btn-pri')+'" data-act="prov-sched" data-cat="'+key+'">'+ic('calendar')+'Agendar horário</button>'+
+   '<button class="btn" style="background:none;color:var(--muted);font-size:13px;margin-top:8px" data-act="report">'+ic('shield')+'Denunciar perfil</button>'+
   '</div>';
 };
 
@@ -1429,7 +1498,15 @@ Object.assign(ACTIONS,{
  fav:function(d){var i=FAVS.indexOf(d.cat);if(i>=0)FAVS.splice(i,1);else FAVS.push(d.cat);persist();rend();toast(i>=0?'Removido dos favoritos':'Adicionado aos favoritos ❤');},
  unfav:function(d){var i=FAVS.indexOf(d.cat);if(i>=0){FAVS.splice(i,1);persist();rend();toast('Removido dos favoritos');}},
  'prov-sched':function(d){S.draft.flow='sched';S.draft._pro=Object.assign({price:cat(d.cat).price},PROS[d.cat]);S.draft.recur=false;go('request-when',{cat:d.cat});},
- pickcat:function(d){var fl=d.fresh?(cat(d.cat).now?'now':'sched'):(S.draft.flow||(cat(d.cat).now?'now':'sched'));S.draft.flow=fl;S.draft.cat=d.cat;S.draft.proIdx=0;S.draft._pro=null;S.draft.recur=false;if(fl==='now')go('request-when',{cat:d.cat});else go('choose-pro',{cat:d.cat});},
+ pickcat:function(d){var fl=d.fresh?(cat(d.cat).now?'now':'sched'):(S.draft.flow||(cat(d.cat).now?'now':'sched'));S.draft.flow=fl;S.draft.cat=d.cat;S.draft.proIdx=0;S.draft._pro=null;S.draft.recur=false;S.draft.qa={};S.draft.reqPhoto=false;S.draft.otherName='';if(fl==='now')go('request-when',{cat:d.cat});else go('choose-pro',{cat:d.cat});},
+ 'add-req-photo':function(){S.draft.reqPhoto=true;var el=document.getElementById('reqphoto');if(el)el.innerHTML=reqPhotoHTML();},
+ 'rm-req-photo':function(){S.draft.reqPhoto=false;var el=document.getElementById('reqphoto');if(el)el.innerHTML=reqPhotoHTML();},
+ 'pick-addr':function(){openModal('<h3 style="font-size:19px;margin-bottom:12px">Onde será o atendimento?</h3>'+
+   ADDRS.map(function(a,i){return '<button class="addr" style="width:100%;text-align:left;border:1.5px solid '+(S.draft.addrIdx===i?'var(--brand)':'var(--line)')+'" data-act="set-addr" data-i="'+i+'"><div class="e">'+ic(a.ic)+'</div><div style="flex:1"><div class="b sm">'+a.n+'</div><div class="xs muted">'+a.d+'</div></div></button>';}).join('')+
+   '<div class="divider"></div><label class="b sm" style="display:block;margin-bottom:8px">Pedir para outra pessoa</label><div class="field" style="margin-bottom:6px"><input id="other-name" placeholder="Nome de quem vai receber" value="'+(S.draft.otherName||'')+'"></div>'+
+   '<button class="btn btn-pri" data-act="save-other">Confirmar</button><button class="btn btn-ghost" style="margin-top:10px" data-act="close-modal">Fechar</button>');},
+ 'set-addr':function(d){S.draft.addrIdx=+d.i;S.draft.addr=ADDRS[+d.i].n+' · '+ADDRS[+d.i].d;closeModal();rend();},
+ 'save-other':function(){var el=document.getElementById('other-name');S.draft.otherName=(el?el.value:'').trim();closeModal();rend();toast(S.draft.otherName?'Pedido para '+S.draft.otherName:'Endereço confirmado');},
  'pick-pro':function(d){var list=marketFor(d.cat);S.draft._pro=list[+d.idx]||list[0];S.draft.flow='sched';go('request-when',{cat:d.cat});},
  'toggle-recur':function(){S.draft.recur=!S.draft.recur;rend();},
  setrate:function(d){S.rate=+d.n;rend();},
@@ -1541,7 +1618,7 @@ SCREENS['pro-sim']=function(){
   '</div>'+
   '<div class="statrow"><div class="s"><b id="sim-jobs">~0</b><span>serviços/semana</span></div><div class="s"><b id="sim-weekly">R$ 0</b><span>por semana</span></div></div>'+
   '<div class="banner info" style="margin-top:8px">'+ic('info')+'<div>Estimativa para você se planejar. Ganhos reais dependem da demanda na sua região e da sua disponibilidade.</div></div>'+
-  '<button class="btn btn-pri" style="margin-top:6px" data-mode="user">'+ic('bolt')+'Quero receber pedidos agora</button>'+
+  '<button class="btn btn-pri" style="margin-top:6px" data-go="pro-home">'+ic('bolt')+'Quero receber pedidos agora</button>'+
  '</div>';
 };
 SCREENS['pro-sim']._after=function(){
@@ -1561,6 +1638,113 @@ Object.assign(ACTIONS,{
  'do-withdraw':function(){closeModal();go('success',{icon:'pix',title:'Saque solicitado!',sub:'R$ 1.240,00 a caminho da sua chave Pix. O valor costuma cair em segundos.',cta:'Voltar',go:'pro-profile'},false);}
 });
 
+/* ===== ONDA 9: tour guiado ===== */
+const TOUR=[
+ {run:function(){S.mode='user';reset('home');},cap:'Tela inicial: peça na hora ou agende. Tem busca, modo escuro e notificações.'},
+ {run:function(){S.draft.flow='now';S.draft.cat='eletricista';S.draft.qa={};S.draft.reqPhoto=false;S.draft.otherName='';go('request-when',{cat:'eletricista'});},cap:'"Preciso agora": chamamos os prestadores online por perto e o 1º que aceitar atende.'},
+ {run:function(){S.draft.flow='sched';go('choose-pro',{cat:'barbeiro'});},cap:'"Agendar": compare vários profissionais por preço, nota e distância.'},
+ {run:function(){go('provider',{cat:'faxina'});},cap:'Perfil do prestador: selos de confiança, portfólio e avaliações.'},
+ {run:function(){S.mode='pro';reset('pro-home');},cap:'Lado do prestador: fique online e receba pedidos. O 1º que aceita pega.'},
+ {run:function(){go('pro-sim');},cap:'Simulador de ganhos: veja quanto dá para ganhar por mês.'},
+ {run:function(){S.mode='user';go('empresas');},cap:'Leblon para Empresas: contratos recorrentes com nota fiscal.'},
+ {run:function(){S.mode='user';reset('home');},cap:'Esse é o Leblon, pronto para apresentar. 🎉'}
+];
+Object.assign(ACTIONS,{
+ 'start-tour':function(){S.tour=0;TOUR[0].run();},
+ 'next-tour':function(){if(S.tour>=TOUR.length-1){S.tour=null;rend();toast('Tour concluído 🎉');}else{S.tour++;TOUR[S.tour].run();}},
+ 'stop-tour':function(){S.tour=null;rend();},
+ 'toggle-lang':function(){LANG=LANG==='pt'?'en':'pt';save('lang',LANG);rend();toast(LANG==='en'?'Language: English':'Idioma: Português');}
+});
+
+/* ===== ONDA 8: segurança extra ===== */
+SCREENS['rate-client']=function(p){
+ var tags=['Pontual','Educado','Local de fácil acesso','Tudo certo'];
+ return topbar('Avaliar cliente')+'<div class="pad center">'+
+   '<div class="av xl" style="margin:6px auto 0">L</div>'+
+   '<div class="dp b" style="font-size:19px;margin-top:12px">Leonardo Franco</div><p class="muted sm">Como foi atender esse cliente?</p>'+
+   '<div class="starin">'+[1,2,3,4,5].map(function(i){return '<button data-act="setrate" data-n="'+i+'">'+star1(i<=S.rate?'var(--star)':'#dcdde8')+'</button>';}).join('')+'</div>'+
+   '<div class="tagpick">'+tags.map(function(t){return '<button class="'+(S.rtags.indexOf(t)>=0?'on':'')+'" data-act="rtag" data-t="'+t+'">'+t+'</button>';}).join('')+'</div>'+
+   '<div class="field"><textarea rows="2" placeholder="Comentário (opcional)"></textarea></div>'+
+   '<button class="btn btn-pri" data-act="submit-rate-client">Enviar avaliação</button>'+
+ '</div>';
+};
+Object.assign(ACTIONS,{
+ garantia:function(){openModal('<h3 style="font-size:19px;margin-bottom:6px">'+ic('shield')+' Garantia Leblon</h3><p class="muted sm" style="margin-bottom:14px">Todo serviço no app é protegido. Veja como:</p>'+
+   [['lock','Pagamento protegido','O valor fica retido e só é liberado ao prestador depois que você confirma a conclusão.'],['check','Profissionais verificados','Identidade e antecedentes checados antes de atender.'],['support','Suporte e ressarcimento','Se algo der errado, abra uma disputa e o time resolve em até 24h.']].map(function(x){return '<div class="addr"><div class="e">'+ic(x[0])+'</div><div style="flex:1"><div class="b sm">'+x[1]+'</div><div class="xs muted">'+x[2]+'</div></div></div>';}).join('')+
+   '<button class="btn btn-pri" style="margin-top:6px" data-act="close-modal">Entendi</button>');},
+ 'open-startcode':function(d){var o=orderById(d.id);ensurePin(o);openModal('<h3 style="font-size:19px;margin-bottom:6px">Confirmar chegada</h3><p class="muted sm" style="margin-bottom:8px">Peça ao cliente o <b>código de 4 dígitos</b> e digite abaixo para iniciar o atendimento.</p>'+
+   '<div class="coderow">'+o._pin.split('').map(function(x){return '<input class="codebox fill" maxlength="1" inputmode="numeric" value="'+x+'">';}).join('')+'</div>'+
+   '<button class="btn btn-ok" data-act="do-startcode" data-id="'+d.id+'">'+ic('check')+'Confirmar e iniciar</button><button class="btn btn-ghost" style="margin-top:10px" data-act="close-modal">Cancelar</button>');},
+ 'do-startcode':function(d){var o=orderById(d.id);var boxes=elOverlay.querySelectorAll('.codebox');var code='';boxes.forEach(function(b){code+=b.value;});if(code===o._pin){o.status='inprogress';persist();closeModal();rend();toast('Chegada confirmada! Atendimento iniciado.');}else{toast('Código incorreto. Confira com o cliente.');}},
+ report:function(){openModal('<h3 style="font-size:19px;margin-bottom:12px">Denunciar ou bloquear</h3>'+
+   '<button class="btn btn-out" style="margin-bottom:10px" data-act="do-report">'+ic('shield')+'Denunciar comportamento</button>'+
+   '<button class="btn btn-danger" data-act="do-block">'+ic('close')+'Bloquear contato</button>'+
+   '<button class="btn btn-ghost" style="margin-top:10px" data-act="close-modal">Cancelar</button>');},
+ 'do-report':function(){closeModal();toast('Denúncia registrada. Nosso time vai analisar.');},
+ 'do-block':function(){closeModal();toast('Contato bloqueado.');},
+ 'submit-rate-client':function(){if(!S.rate){toast('Escolha de 1 a 5 estrelas');return;}S.rate=0;S.rtags=[];go('success',{icon:'star',title:'Avaliação enviada!',sub:'Avaliações dos dois lados mantêm a comunidade Leblon segura e confiável.',cta:'Voltar ao painel',go:'pro-home'},false);}
+});
+
+/* ===== ONDA 6: cadastro de prestador + relatórios ===== */
+SCREENS['pro-onboard']=function(){
+ var st=S.poStep||0;S.poCats=S.poCats||['faxina'];
+ var steps=['Serviços','Preço','Documentos','Recebimento'];
+ var body='';
+ if(st===0){
+   body='<h2 style="font-size:21px;margin-bottom:4px">Quais serviços você oferece?</h2><p class="muted sm" style="margin-bottom:16px">Escolha uma ou mais categorias. Você pode mudar depois.</p>'+
+     '<div class="chiprow">'+CATS.map(function(c){var on=S.poCats.indexOf(c.id)>=0;return '<button class="c" style="'+(on?'background:var(--tint);color:var(--brand);box-shadow:inset 0 0 0 1.5px var(--brand)':'')+'" data-act="po-cat" data-cat="'+c.id+'">'+(on?'✓ ':'')+c.name+'</button>';}).join('')+'</div>';
+ } else if(st===1){
+   body='<h2 style="font-size:21px;margin-bottom:4px">Seu valor médio</h2><p class="muted sm" style="margin-bottom:18px">Quanto você costuma cobrar por atendimento?</p>'+
+     '<div class="bignum" id="po-pl">R$ '+(S.poPrice||90)+'</div>'+
+     '<input class="sld" type="range" min="40" max="300" step="5" id="po-price" value="'+(S.poPrice||90)+'">'+
+     '<div class="banner info" style="margin-top:14px">'+ic('info')+'<div>O Leblon retém 15% por serviço concluído. Sem mensalidade.</div></div>';
+ } else if(st===2){
+   body='<h2 style="font-size:21px;margin-bottom:4px">Verificação</h2><p class="muted sm" style="margin-bottom:16px">Envie um documento com foto. Aumenta sua confiança e libera mais pedidos.</p>'+
+     '<div class="card" style="height:150px;display:flex;align-items:center;justify-content:center;border:2px dashed var(--line);background:var(--mist)" data-act="po-doc">'+(S.poDoc?ic('check','width:42px;height:42px;color:var(--ok)'):ic('camera','width:42px;height:42px;color:var(--muted)'))+'</div>'+
+     (S.poDoc?'<div class="banner ok" style="margin-top:12px">'+ic('check')+'<div>Documento enviado para análise.</div></div>':'<button class="btn btn-out" style="margin-top:12px" data-act="po-doc">'+ic('camera')+'Enviar documento</button>');
+ } else {
+   body='<h2 style="font-size:21px;margin-bottom:4px">Onde você recebe</h2><p class="muted sm" style="margin-bottom:16px">Informe a chave Pix para receber seus ganhos.</p>'+
+     '<div class="field"><label>Tipo de chave</label><select><option>E-mail</option><option>CPF</option><option>Telefone</option><option>Aleatória</option></select></div>'+
+     '<div class="field"><label>Chave Pix</label><input value="leo@leblon.app"></div>'+
+     '<div class="banner ok">'+ic('lock')+'<div>Seus dados bancários são protegidos e usados só para repasse dos pagamentos.</div></div>';
+ }
+ return '<div class="topbar"><button class="back" data-act="po-back">'+ic('chevronL')+'</button><h2>Seja um prestador</h2><span class="sm muted" style="margin-left:auto">'+(st+1)+'/'+steps.length+'</span></div>'+
+  '<div class="pad"><div class="progress" style="margin-bottom:20px"><i style="width:'+((st+1)/steps.length*100)+'%"></i></div>'+body+
+  '<button class="btn btn-pri" style="margin-top:24px" data-act="po-next">'+(st===steps.length-1?'Concluir cadastro':'Continuar')+'</button></div>';
+};
+SCREENS['pro-onboard']._after=function(){var p=document.getElementById('po-price');if(p)p.oninput=function(){S.poPrice=+p.value;var l=document.getElementById('po-pl');if(l)l.textContent='R$ '+p.value;};};
+SCREENS['pro-reports']=function(){
+ var days=['S','T','Q','Q','S','S','D'];var vals=[120,90,210,150,0,260,180];var max=Math.max.apply(null,vals);
+ return topbar('Relatórios')+'<div class="pad">'+
+  '<div class="statrow"><div class="s"><b>R$ 1.010</b><span>esta semana</span></div><div class="s"><b>R$ 4.180</b><span>este mês</span></div></div>'+
+  '<div class="card" style="margin-top:6px"><div class="b sm" style="margin-bottom:14px">Ganhos por dia</div><div style="display:flex;align-items:flex-end;gap:8px;height:130px">'+vals.map(function(v,i){return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%"><div style="flex:1;display:flex;align-items:flex-end;width:100%"><div style="width:100%;border-radius:6px 6px 0 0;background:'+(v?'var(--brand)':'var(--line)')+';height:'+(v?Math.round(v/max*100):3)+'%"></div></div><span class="xs muted">'+days[i]+'</span></div>';}).join('')+'</div></div>'+
+  '<div class="sec-title">Resumo do mês</div>'+
+  [['check','Atendimentos concluídos','24'],['star','Avaliação média','4,9'],['repeat','Clientes recorrentes','7'],['clock','Taxa de aceitação','92%']].map(function(x){return '<div class="addr"><div class="e">'+ic(x[0])+'</div><div style="flex:1"><div class="b sm">'+x[1]+'</div></div><b class="dp">'+x[2]+'</b></div>';}).join('')+
+ '</div>';
+};
+Object.assign(ACTIONS,{
+ 'become-pro':function(){if(PRO.onboarded){setMode('pro');}else{S.poStep=0;go('pro-onboard');}},
+ 'po-back':function(){if((S.poStep||0)>0){S.poStep--;rend();}else back();},
+ 'po-cat':function(d){var i=S.poCats.indexOf(d.cat);if(i>=0){if(S.poCats.length>1)S.poCats.splice(i,1);}else S.poCats.push(d.cat);rend();},
+ 'po-doc':function(){S.poDoc=true;rend();},
+ 'po-next':function(){if((S.poStep||0)<3){S.poStep=(S.poStep||0)+1;rend();}else{PRO.onboarded=true;persist();S.poStep=0;go('success',{icon:'check',title:'Cadastro concluído!',sub:'Bem-vindo ao time Leblon. Ative seu status e comece a receber pedidos perto de você.',cta:'Ir para o painel',act:'go-pro-home'},false);}},
+ 'go-pro-home':function(){S.mode='pro';reset('pro-home');}
+});
+
+/* ===== ONDA 5: Leblon para Empresas (B2B) ===== */
+SCREENS.empresas=function(){
+ var benef=[['repeat','Contratos recorrentes','Equipe fixa, agenda garantida toda semana.'],['doc','Nota fiscal e faturamento','Pagamento mensal consolidado, com NF.'],['shield','Profissionais verificados','Identidade e antecedentes checados.'],['briefcase','Gerente de conta','Atendimento dedicado para sua empresa.']];
+ return topbar('Leblon para Empresas')+'<div class="pad">'+
+  '<div class="card" style="background:var(--ink);border:0;color:#fff;margin-bottom:16px"><span class="chip" style="background:rgba(255,255,255,.15);color:#fff;margin-bottom:8px">'+ic('building')+'B2B</span><div class="dp b" style="color:#fff;font-size:19px">Serviços para o seu negócio</div><p class="sm" style="color:rgba(255,255,255,.8);margin-top:6px">Limpeza, manutenção, recepção e mais — com contrato, nota fiscal e um time fixo de profissionais verificados.</p></div>'+
+  '<div class="sec-title" style="margin-top:0">Vantagens</div>'+
+  benef.map(function(x){return '<div class="addr"><div class="e">'+ic(x[0])+'</div><div style="flex:1"><div class="b sm">'+x[1]+'</div><div class="xs muted">'+x[2]+'</div></div></div>';}).join('')+
+  '<div class="card" style="margin-top:8px"><div class="b sm" style="margin-bottom:10px">Fale com a gente</div>'+
+   '<div class="field"><label>Empresa</label><input placeholder="Nome da empresa"></div>'+
+   '<div class="field"><label>O que você precisa?</label><textarea rows="3" placeholder="Ex.: limpeza 3x por semana em escritório de 200m²"></textarea></div>'+
+   '<button class="btn btn-pri" data-act="save-toast">'+ic('send')+'Solicitar proposta</button></div>'+
+ '</div>';
+};
+
 /* arranque */
 function afterSplash(){
  if(AUTH){S.mode='user';go('home',{},false);}
@@ -1568,6 +1752,10 @@ function afterSplash(){
 }
 function boot(){ applyTheme();S.screen='splash';rend();setTimeout(afterSplash,1600); }
 boot();
+// PWA: registra o service worker só em produção (evita interferir no preview local)
+if('serviceWorker' in navigator && /github\.io$/.test(location.hostname)){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw-app.js').catch(function(){});});
+}
 </script>
 </body>
 </html>

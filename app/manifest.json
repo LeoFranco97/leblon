@@ -1,0 +1,17 @@
+{
+  "name": "Leblon — serviços na hora",
+  "short_name": "Leblon",
+  "description": "Profissional perto de você, em minutos. Peça agora ou agende.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#0c0935",
+  "theme_color": "#FF4800",
+  "orientation": "portrait",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
