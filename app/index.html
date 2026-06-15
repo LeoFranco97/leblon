@@ -442,6 +442,18 @@ body.dark .map .park{background:#1f3326}
 body.dark .bub.loc .map2{background:#192133}
 body.dark .map .eta{background:#0f1726;color:#eceaff}
 body.dark .map .eta .ic{color:var(--brand)}
+/* === wallet card === */
+.walletbox{background:linear-gradient(135deg,var(--brand),#ff7e45);border-radius:20px;padding:20px;color:#fff;box-shadow:0 14px 34px rgba(255,72,0,.3);position:relative;overflow:hidden}
+.walletbox::after{content:"";position:absolute;top:-40%;right:-12%;width:170px;height:170px;background:rgba(255,255,255,.13);border-radius:50%}
+.walletbox>*{position:relative;z-index:1}
+.walletbox .lbl{font-size:13px;opacity:.92;display:flex;align-items:center;gap:7px;font-weight:500}
+.walletbox .lbl .ic{width:15px;height:15px}
+.walletbox .v{font-family:'Inter Tight';font-weight:800;font-size:34px;letter-spacing:-.02em;margin:6px 0 13px;line-height:1}
+.walletbox .pend{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.2);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600}
+.walletbox .pend .ic{width:14px;height:14px}
+/* === progress bar === */
+.progress{height:6px;background:var(--mist);border-radius:6px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--brand);border-radius:6px;transition:width .3s var(--ease)}
 /* theme toggle */
 .hicon{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;color:#fff}
 .hicon .ic{width:19px;height:19px}
@@ -1193,7 +1205,7 @@ SCREENS['pro-profile']=function(){
   return topbar('Conta do prestador')+modeseg()+'<div class="pad">'+
     '<div class="card" style="display:flex;gap:14px;align-items:center;margin-bottom:14px"><div class="av lg b4">R</div><div><div class="dp b" style="font-size:18px">Rafael Lima '+vbadge()+'</div><div class="sm" style="display:flex;align-items:center;gap:4px">'+star1('var(--star)')+'<b>4,8</b><span class="muted">(241) avaliações)</span></div></div></div>'+
     '<div class="card" style="margin-bottom:14px"><div class="row between" style="margin-bottom:4px"><div class="row" style="gap:8px"><span style="color:var(--brand)">'+ic('trophy')+'</span><b class="dp">Nível Top Pro</b></div><span class="chip">82%</span></div><div class="levbar"><i style="width:82%"></i></div><div class="xs muted">Faltam <b>9 serviços</b> e nota acima de 4,8 para o nível <b>Elite</b> (mais destaque e menor taxa).</div></div>'+
-    '<div class="walletbox" style="background:linear-gradient(135deg,#14104f,#241c6e)" data-go="acc-wallet"><div class="lbl">Disponível para saque</div><div class="v">R$ 1.240,00</div><div class="pend">+ R$ 120 em garantia (liberam na conclusão)</div></div>'+
+    '<div class="walletbox" data-go="acc-wallet"><div class="lbl">'+ic('wallet')+'Disponível para saque</div><div class="v">R$ 1.240,00</div><div class="pend">'+ic('lock')+'R$ 120 em garantia · liberam na conclusão</div></div>'+
     setGroup('Atendimento',[['sliders','Tipo de serviço','pro-config'],['calendar','Minha agenda','pro-calendar'],['chart','Simulador de ganhos','pro-sim'],['doc','Relatórios','pro-reports'],['pin','Área de atuação','acc-area'],['bell','Notificações','acc-notifications']])+
     setGroup('Conta',[['wallet','Carteira e saques','acc-wallet'],['shield','Verificação e documentos','acc-verify-docs'],['info','Ajuda','acc-help']])+
     '<button class="btn btn-out" style="margin-bottom:10px" data-mode="user">'+ic('user')+'Voltar para o modo usuário</button>'+
@@ -1459,7 +1471,7 @@ SCREENS['acc-area']._after=function(){var i=document.getElementById('area-r');if
 SCREENS['acc-wallet']=function(){
  var txs=[['dollar','Pagamento recebido · faxina','Hoje, de Ana P.','+ R$ 117,00','in'],['lock','Em garantia · montagem','Libera na conclusão','R$ 120,00','pend'],['wallet','Saque via Pix','Ontem · conta final 4321','- R$ 300,00','out'],['dollar','Pagamento recebido · passeio','2 dias · de Lucas M.','+ R$ 40,50','in']];
  return accScreen('Carteira',
-  '<div class="walletbox"><div class="lbl">Disponível para saque</div><div class="v">R$ 1.240,00</div><div class="pend">+ R$ 120,00 em garantia (liberam na conclusão)</div></div>'+
+  '<div class="walletbox"><div class="lbl">'+ic('wallet')+'Disponível para saque</div><div class="v">R$ 1.240,00</div><div class="pend">'+ic('lock')+'R$ 120,00 em garantia · liberam na conclusão</div></div>'+
   '<button class="btn btn-pri" data-act="open-withdraw">'+ic('pix')+'Sacar via Pix</button>'+
   '<div class="sec-title">Transações</div>'+
   txs.map(function(t){var col=t[4]==='in'?'color:var(--ok)':(t[4]==='pend'?'color:var(--muted)':'');return '<div class="tx"><div class="ic-box">'+ic(t[0])+'</div><div class="meta"><div class="b sm">'+t[1]+'</div><div class="xs muted">'+t[2]+'</div></div><div class="amt" style="'+col+'">'+t[3]+'</div></div>';}).join('')+
@@ -1745,7 +1757,7 @@ Object.assign(ACTIONS,{
 SCREENS['user-wallet']=function(){
  var txs=[['gift','Bônus de indicação','Há 2 dias','+ R$ 20,00','in'],['dollar','Cashback · faxina','Há 3 dias','+ R$ 6,50','in'],['ticket','Cupom usado · LEBLON10','Há 1 semana','- R$ 10,00','out'],['dollar','Cashback · corte','Há 2 semanas','+ R$ 4,50','in']];
  return topbar('Carteira')+'<div class="pad">'+
-  '<div class="walletbox"><div class="lbl">Saldo Leblon</div><div class="v">R$ 46,50</div><div class="pend">Use como desconto no seu próximo pedido.</div></div>'+
+  '<div class="walletbox"><div class="lbl">'+ic('wallet')+'Saldo Leblon</div><div class="v">R$ 46,50</div><div class="pend">'+ic('ticket')+'Use como desconto no próximo pedido</div></div>'+
   '<div class="statrow"><div class="s"><b>R$ 26,50</b><span>cashback acumulado</span></div><div class="s"><b>R$ 20,00</b><span>bônus de indicação</span></div></div>'+
   '<button class="btn btn-pri" data-go="indicar">'+ic('gift')+'Indicar amigos e ganhar mais</button>'+
   '<div class="sec-title">Movimentações</div>'+
