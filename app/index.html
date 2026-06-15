@@ -35,7 +35,7 @@ img{max-width:100%}
 .statusbar.dark{color:#fff;background:transparent;position:absolute;left:0;right:0;top:0}
 .statusbar .dots{display:flex;gap:6px;align-items:center}.statusbar .ic{width:15px;height:15px}
 .screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:92px}
-.screen.noscroll{padding-bottom:74px;overflow:hidden}
+.screen.noscroll{padding-bottom:0;overflow:hidden;display:flex;flex-direction:column}
 .screen.enter{animation:slidein .28s var(--ease)}
 .screen.back{animation:slideout .28s var(--ease)}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -52,6 +52,21 @@ img{max-width:100%}
 .confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:40}
 .confetti i{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;opacity:.95;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(960px) rotate(620deg);opacity:.3}}
+/* acessibilidade */
+:focus-visible{outline:3px solid rgba(255,72,0,.55);outline-offset:2px;border-radius:8px}
+button{font-family:inherit}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+/* como funciona */
+.howstep{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px}
+.howstep .n{width:38px;height:38px;border-radius:11px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Inter Tight';font-weight:800;flex-shrink:0}
+.howstep h4{font-size:15px;margin-bottom:3px}
+.howstep p{font-size:13.5px;color:var(--muted);line-height:1.45}
+.howseg{display:flex;background:var(--mist);border-radius:999px;padding:4px;gap:4px;margin-bottom:18px}
+.howseg button{flex:1;font-family:'Inter Tight';font-weight:600;font-size:14px;padding:9px;border-radius:999px;color:var(--muted)}
+.howseg button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(3,1,76,.12)}
+/* faq bot chips */
+.botchips{display:flex;gap:8px;overflow-x:auto;padding:10px 14px;border-top:1px solid var(--line);background:var(--paper)}
+.botchips button{flex-shrink:0;background:var(--tint);color:var(--brand);border:1px solid #ffe0d2;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:600;white-space:nowrap}
 .pad{padding:0 20px}
 .topbar{display:flex;align-items:center;gap:12px;padding:8px 16px 14px;position:sticky;top:0;background:var(--paper);z-index:4}
 .topbar .back{width:38px;height:38px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center;color:var(--ink);flex-shrink:0;font-size:18px}
@@ -589,8 +604,8 @@ var THEME=load('theme','light');
 var LANG=load('lang','pt');
 function persist(){save('orders',ORDERS);save('pro',PRO);save('favs',FAVS);save('notif',NOTIF);save('theme',THEME);save('lang',LANG);if(AUTH)save('auth',AUTH);}
 const DICT={
- pt:{greet:'Olá',sub:'O que você precisa hoje?',now:'Preciso agora',nowd:'Atendimento imediato, em até 10 min.',nowcta:'CHAMAR PRESTADOR ›',sched:'Agendar',schedd:'Escolha o dia e o horário do serviço.',schedcta:'MARCAR HORÁRIO ›',cats:'Categorias',n_home:'Início',n_order:'Pedir',n_orders:'Pedidos',n_acc:'Conta',n_status:'Status',n_jobs:'Trabalhos',n_agenda:'Agenda',refer:'Indique e ganhe R$ 20',referd:'Você e seu amigo ganham a cada primeiro serviço.',becomet:'Vire prestador no Leblon',becomed:'Tem tempo livre? Receba pedidos perto de você.',start:'Começar'},
- en:{greet:'Hi',sub:'What do you need today?',now:'Need it now',nowd:'Instant service, in up to 10 min.',nowcta:'CALL A PRO ›',sched:'Schedule',schedd:'Pick the day and time of the service.',schedcta:'BOOK A TIME ›',cats:'Categories',n_home:'Home',n_order:'Request',n_orders:'Orders',n_acc:'Account',n_status:'Status',n_jobs:'Jobs',n_agenda:'Calendar',refer:'Refer & earn R$ 20',referd:'You and your friend earn on the first service.',becomet:'Become a Leblon pro',becomed:'Got free time? Get requests near you.',start:'Start'}
+ pt:{greet:'Olá',sub:'O que você precisa hoje?',now:'Preciso agora',nowd:'Atendimento imediato, em até 10 min.',nowcta:'CHAMAR PRESTADOR ›',sched:'Agendar',schedd:'Escolha o dia e o horário do serviço.',schedcta:'MARCAR HORÁRIO ›',cats:'Categorias',n_home:'Início',n_order:'Pedir',n_orders:'Pedidos',n_acc:'Conta',n_status:'Status',n_jobs:'Trabalhos',n_agenda:'Agenda',refer:'Indique e ganhe R$ 20',referd:'Você e seu amigo ganham a cada primeiro serviço.',becomet:'Vire prestador no Leblon',becomed:'Tem tempo livre? Receba pedidos perto de você.',start:'Começar',inprog:'Em andamento',hist:'Histórico'},
+ en:{greet:'Hi',sub:'What do you need today?',now:'Need it now',nowd:'Instant service, in up to 10 min.',nowcta:'CALL A PRO ›',sched:'Schedule',schedd:'Pick the day and time of the service.',schedcta:'BOOK A TIME ›',cats:'Categories',n_home:'Home',n_order:'Request',n_orders:'Orders',n_acc:'Account',n_status:'Status',n_jobs:'Jobs',n_agenda:'Calendar',refer:'Refer & earn R$ 20',referd:'You and your friend earn on the first service.',becomet:'Become a Leblon pro',becomed:'Got free time? Get requests near you.',start:'Start',inprog:'In progress',hist:'History'}
 };
 function t(k){return (DICT[LANG]&&DICT[LANG][k])||DICT.pt[k]||k;}
 function applyTheme(){document.body.classList.toggle('dark',THEME==='dark');}
@@ -661,11 +676,11 @@ function rend(){
   elBar.style.display=(AUTHSCREENS.indexOf(S.screen)>=0)?'none':'flex';
   elBar.innerHTML='<span>9:41</span><span class="dots">'+ic('signal')+ic('wifi')+ic('battery')+'</span>';
   var fn=SCREENS[S.screen]||SCREENS.home;
-  elScreen.className='screen'+(S.screen==='chat'?' noscroll':'')+(S._nav==='back'?' back':(S._nav==='fwd'?' enter':''));S._nav=null;
+  elScreen.className='screen'+(S.screen==='chat'||S.screen==='faqbot'?' noscroll':'')+(S._nav==='back'?' back':(S._nav==='fwd'?' enter':''));S._nav=null;
   elScreen.style.paddingBottom=(AUTHSCREENS.indexOf(S.screen)>=0)?'0':'';
   elScreen.innerHTML=fn(S.params);
   // nav hidden on focused flows
-  var hideNav=['chat','request-when','request-cat','searching','payment','success','pro-grab','tracking','rate','provider','search','receipt','estimate','choose-pro','verify-id','pro-sim','pro-onboard','rate-client'].concat(AUTHSCREENS).indexOf(S.screen)>=0;
+  var hideNav=['chat','request-when','request-cat','searching','payment','success','pro-grab','tracking','rate','provider','search','receipt','estimate','choose-pro','verify-id','pro-sim','pro-onboard','rate-client','faqbot'].concat(AUTHSCREENS).indexOf(S.screen)>=0;
   elNav.style.display=hideNav?'none':'flex';
   if(!hideNav)elNav.innerHTML=navHTML();
   renderOverlay();
@@ -692,7 +707,7 @@ function navHTML(){
 }
 
 /* ============ COMPONENTES ============ */
-function topbar(title,act){return '<div class="topbar"><button class="back" data-back>'+ic('chevronL')+'</button><h2>'+title+'</h2>'+(act||'<span style="width:38px"></span>')+'</div>';}
+function topbar(title,act){return '<div class="topbar"><button class="back" data-back aria-label="Voltar">'+ic('chevronL')+'</button><h2>'+title+'</h2>'+(act||'<span style="width:38px"></span>')+'</div>';}
 function modeseg(){
   return '<div class="modeseg"><button class="'+(S.mode==='user'?'on':'')+'" data-mode="user">'+ic('user')+'Usuário</button>'+
          '<button class="'+(S.mode==='pro'?'on pro':'')+'" data-mode="pro">'+ic('bolt')+'Prestador</button></div>';
@@ -725,7 +740,7 @@ SCREENS.splash=function(){return '<div class="splash"><div class="lg">'+ic('bolt
 SCREENS.home=function(){
   var act=activeOrder();
   var fn=((AUTH&&AUTH.name)||'Leonardo').trim().split(' ')[0];
-  return '<div class="homehead"><div class="row between"><div class="loc">'+ic('pin')+' Itapema, SC · Centro</div><div class="hactions"><button class="hicon" data-go="search">'+ic('search')+'</button><button class="hicon" data-act="toggle-theme">'+ic(THEME==='dark'?'sun':'moon')+'</button><button class="hbell" data-go="notifications">'+ic('bell')+'<span class="ndot"></span></button></div></div><h1>'+t('greet')+', '+fn+' 👋</h1><p>'+t('sub')+'</p></div>'+
+  return '<div class="homehead"><div class="row between"><div class="loc">'+ic('pin')+' Itapema, SC · Centro</div><div class="hactions"><button class="hicon" data-go="search" aria-label="Buscar serviço">'+ic('search')+'</button><button class="hicon" data-act="toggle-theme" aria-label="Alternar tema claro e escuro">'+ic(THEME==='dark'?'sun':'moon')+'</button><button class="hbell" data-go="notifications" aria-label="Notificações">'+ic('bell')+'<span class="ndot"></span></button></div></div><h1>'+t('greet')+', '+fn+' 👋</h1><p>'+t('sub')+'</p></div>'+
    '<div class="bigacts">'+
      '<button class="bigact now" data-go="request-cat" data-mode-now="now"><div class="ico">'+ic('bolt')+'</div><h3>'+t('now')+'</h3><p>'+t('nowd')+'</p><span class="tag">'+t('nowcta')+'</span></button>'+
      '<button class="bigact sched" data-go="request-cat" data-mode-now="sched"><div class="ico">'+ic('calendar')+'</div><h3>'+t('sched')+'</h3><p>'+t('schedd')+'</p><span class="tag">'+t('schedcta')+'</span></button>'+
@@ -955,13 +970,20 @@ SCREENS.success._after=function(p){if(p&&p.confetti)setTimeout(confetti,120);};
 
 // ORDERS list (usuário)
 SCREENS.orders=function(){
-  if(!ORDERS.length)return topbar('Meus pedidos')+emptyOrders();
-  return topbar('Meus pedidos')+'<div class="pad">'+ORDERS.slice().reverse().map(orderCard).join('')+'</div>';
+  if(!ORDERS.length)return topbar(t('n_orders'))+emptyOrders();
+  var tab=S.ordersTab||'ativos';
+  var ACTIVE=['searching','awaiting','suggested','confirmed','inprogress','done'];
+  var list=ORDERS.slice().reverse().filter(function(o){return tab==='ativos'?ACTIVE.indexOf(o.status)>=0:ACTIVE.indexOf(o.status)<0;});
+  return topbar(t('n_orders'))+
+   '<div class="tabs"><button class="'+(tab==='ativos'?'on':'')+'" data-act="orders-tab" data-t="ativos">'+t('inprog')+'</button><button class="'+(tab==='hist'?'on':'')+'" data-act="orders-tab" data-t="hist">'+t('hist')+'</button></div>'+
+   '<div class="pad" style="padding-top:14px">'+(list.length?list.map(orderCard).join(''):'<div class="success" style="padding:50px 20px"><div class="big">'+ic(tab==='ativos'?'list':'check')+'</div><h2 style="font-size:19px">'+(tab==='ativos'?'Nada em andamento':'Sem histórico ainda')+'</h2><p>'+(tab==='ativos'?'Seus pedidos ativos aparecem aqui.':'Pedidos concluídos e cancelados ficam aqui.')+'</p></div>')+'</div>';
 };
 function emptyOrders(){return '<div class="pad"><div class="success"><div class="big">'+ic('list')+'</div><h2>Nenhum pedido ainda</h2><p>Peça um serviço agora ou agende para depois.</p><button class="btn btn-pri" data-go="request-cat">Pedir um serviço</button></div></div>';}
 function orderCard(o){var c=cat(o.cat);var when=o.type==='now'?'Agora':(dayLabel(o.day)+(o.slot?' '+o.slot:''));
+  var done=['paid','cancelled'].indexOf(o.status)>=0;
   return '<div class="ordercard" data-go="order" data-id="'+o.id+'"><div class="head"><div class="ico">'+ic(c.ic)+'</div><div style="flex:1;min-width:0"><div class="dp b" style="font-size:15px">'+c.name+'</div><div class="sm muted">'+(o.proName||'Procurando prestador')+' · '+when+'</div></div>'+stPill(o.status)+'</div>'+
-    (['searching','awaiting','suggested','confirmed','inprogress','done'].indexOf(o.status)>=0?'<div class="row" style="gap:8px"><button class="btn btn-sm btn-ghost" style="flex:1" data-go="order" data-id="'+o.id+'">Acompanhar</button>'+(o.status==='done'?'<button class="btn btn-sm btn-pri" style="flex:1" data-go="payment" data-id="'+o.id+'">Pagar</button>':'<button class="btn btn-sm btn-out" style="flex:1" data-go="chat" data-id="'+o.id+'">'+ic('chat')+'Chat</button>')+'</div>':'')+
+    (done?'<div class="row" style="gap:8px"><button class="btn btn-sm btn-ghost" style="flex:1" data-go="order" data-id="'+o.id+'">Detalhes</button><button class="btn btn-sm btn-pri" style="flex:1" data-act="reorder" data-id="'+o.id+'">'+ic('repeat')+'Pedir de novo</button></div>':
+     (['searching','awaiting','suggested','confirmed','inprogress','done'].indexOf(o.status)>=0?'<div class="row" style="gap:8px"><button class="btn btn-sm btn-ghost" style="flex:1" data-go="order" data-id="'+o.id+'">Acompanhar</button>'+(o.status==='done'?'<button class="btn btn-sm btn-pri" style="flex:1" data-go="payment" data-id="'+o.id+'">Pagar</button>':'<button class="btn btn-sm btn-out" style="flex:1" data-go="chat" data-id="'+o.id+'">'+ic('chat')+'Chat</button>')+'</div>':''))+
    '</div>';
 }
 
@@ -991,7 +1013,7 @@ SCREENS['user-profile']=function(){
   var ini=(u.name||'L').trim().charAt(0).toUpperCase();
   return topbar('Minha conta')+modeseg()+'<div class="pad">'+
     '<div class="card" style="display:flex;gap:14px;align-items:center;margin-bottom:18px" data-go="acc-personal"><div class="av lg">'+ini+'</div><div style="flex:1"><div class="dp b" style="font-size:18px">'+u.name+' '+vbadge()+'</div><div class="sm muted">'+u.email+'</div></div>'+ic('chevronR','color:var(--muted)')+'</div>'+
-    setGroup('Conta',[['user','Dados pessoais','acc-personal'],['pin','Endereços','acc-addresses'],['card','Formas de pagamento','acc-payments'],['heart','Favoritos','favorites'],['gift','Indique e ganhe','indicar'],['bell','Notificações','acc-notifications']])+
+    setGroup('Conta',[['user','Dados pessoais','acc-personal'],['wallet','Carteira e cashback','user-wallet'],['pin','Endereços','acc-addresses'],['card','Formas de pagamento','acc-payments'],['heart','Favoritos','favorites'],['gift','Indique e ganhe','indicar'],['bell','Notificações','acc-notifications']])+
     setGroup('Mais',[['building','Leblon para Empresas','empresas'],['shield','Segurança e privacidade','acc-security'],['info','Central de ajuda','acc-help']])+
     '<div class="setgrp"><div class="h">App</div>'+
      '<div class="setitem" data-act="start-tour"><div class="e">'+ic('flag')+'</div><div class="meta">Modo apresentação (tour)</div><div class="arr">'+ic('chevronR')+'</div></div>'+
@@ -1137,7 +1159,8 @@ SCREENS['pro-calendar']=function(){
   for(var i=0;i<first;i++)html+='<div class="cd muted"></div>';
   for(var d=1;d<=30;d++){var has=booked[d];var today=(d===11);
     html+='<div class="cd'+(has?' has':'')+(today?' today':'')+'"'+(has?' data-go="pro-order" data-id="'+has.id+'"':'')+'>'+d+'</div>';}
-  return topbar('Agenda')+modeseg()+'<div class="pad">'+
+  return topbar('Agenda','<button class="act" data-go="pro-agenda">'+ic('sliders')+'</button>')+modeseg()+'<div class="pad">'+
+   '<button class="btn btn-out" style="margin-bottom:14px" data-go="pro-agenda">'+ic('clock')+'Editar disponibilidade e folgas</button>'+
    '<div class="card" style="margin-bottom:16px"><div class="row between" style="margin-bottom:6px"><b class="dp" style="font-size:16px">Junho 2026</b><span class="chip gray">'+Object.keys(booked).length+' agendados</span></div>'+
      '<div class="cal">'+names.map(function(n){return '<div class="cdh">'+n+'</div>';}).join('')+html+'</div></div>'+
    '<div class="b sm" style="margin-bottom:10px">Próximos agendamentos</div>'+
@@ -1401,7 +1424,8 @@ SCREENS['acc-help']=function(){
  return accScreen('Central de ajuda',
   '<div class="searchbar" style="margin-bottom:16px">'+ic('search')+'<input placeholder="Buscar ajuda..."></div>'+
   faqs.map(function(f){return '<div class="card" style="margin-bottom:10px"><div class="b sm" style="margin-bottom:5px">'+f[0]+'</div><div class="sm muted">'+f[1]+'</div></div>';}).join('')+
-  '<button class="btn btn-pri" style="margin-top:8px" data-act="soon">'+ic('chat')+'Falar com o suporte</button>');
+  '<button class="btn btn-out" style="margin-top:2px;margin-bottom:10px" data-go="como-funciona">'+ic('info')+'Como funciona</button>'+
+  '<button class="btn btn-pri" data-go="faqbot">'+ic('chat')+'Falar com o assistente</button>');
 };
 SCREENS['acc-area']=function(){
  var r=PRO.radius||8;
@@ -1662,6 +1686,69 @@ Object.assign(ACTIONS,{
    '<div class="field"><label>Chave Pix</label><input id="wd-key" value="leo@leblon.app"></div>'+
    '<button class="btn btn-pri" data-act="do-withdraw">Confirmar saque</button><button class="btn btn-ghost" style="margin-top:10px" data-act="close-modal">Cancelar</button>');},
  'do-withdraw':function(){closeModal();go('success',{icon:'pix',title:'Saque solicitado!',sub:'R$ 1.240,00 a caminho da sua chave Pix. O valor costuma cair em segundos.',cta:'Voltar',go:'pro-profile',confetti:true},false);}
+});
+
+/* ===== ONDA C: como funciona + FAQ bot ===== */
+SCREENS['como-funciona']=function(){
+ var side=S.howSide||'user';
+ var user=[['Diga o que precisa','Escolha "Preciso agora" para atendimento imediato ou "Agendar" para marcar dia e horário.'],['Receba um profissional','Os prestadores online por perto recebem seu chamado. O 1º que aceitar vai até você.'],['Pague com segurança','O pagamento fica protegido e só é liberado quando você confirma que o serviço foi concluído.']];
+ var pro=[['Ative seu status','Fique online quando quiser e escolha como atende: na hora ou agendado.'],['Aceite pedidos','Os chamados perto de você aparecem na hora. O 1º que aceitar pega o serviço.'],['Receba na carteira','Ao concluir, o valor cai na sua carteira Leblon. Saque por Pix quando quiser.']];
+ var steps=side==='user'?user:pro;
+ return topbar('Como funciona')+'<div class="pad">'+
+  '<div class="howseg"><button class="'+(side==='user'?'on':'')+'" data-act="how-side" data-s="user">Para você</button><button class="'+(side==='pro'?'on':'')+'" data-act="how-side" data-s="pro">Para prestadores</button></div>'+
+  steps.map(function(s,i){return '<div class="howstep"><div class="n">'+(i+1)+'</div><div><h4>'+s[0]+'</h4><p>'+s[1]+'</p></div></div>';}).join('')+
+  '<div class="banner ok" style="margin-top:6px">'+ic('shield')+'<div>Profissionais verificados e pagamento protegido em todos os atendimentos.</div></div>'+
+  (side==='user'?'<button class="btn btn-pri" style="margin-top:8px" data-go="request-cat">Pedir um serviço</button>':'<button class="btn btn-pri" style="margin-top:8px" data-act="become-pro">Quero ser prestador</button>')+
+ '</div>';
+};
+const BOTQA={
+ 'Como funciona o pagamento?':'O pagamento fica retido pelo Leblon e só é liberado ao prestador depois que você confirma que o serviço foi concluído. Aceitamos Pix e cartão.',
+ 'É seguro?':'Sim! Todo prestador passa por verificação de identidade e antecedentes. Você acompanha a chegada pelo app e o pagamento é protegido pela Garantia Leblon.',
+ 'Como cancelo um pedido?':'Abra a ordem de serviço e toque em Cancelar. Em agendamentos você também pode remarcar. Cancelamentos em cima da hora podem ter taxa.',
+ 'Quero ser prestador':'Que ótimo! Em Conta, toque em "Quero prestar serviços", faça o cadastro rápido (serviços, preço, documento e Pix) e fique online.',
+ 'Como uso um cupom?':'No pagamento, digite o cupom no campo "Cupom de desconto" e toque em Aplicar. Ex.: LEBLON10.'
+};
+SCREENS.faqbot=function(){
+ S.botMsgs=S.botMsgs||[{t:'them',b:'Oi! Sou o assistente do Leblon 🤖 Como posso ajudar?'}];
+ var qs=Object.keys(BOTQA);
+ return '<div class="chathead"><button class="back" data-back aria-label="Voltar">'+ic('chevronL')+'</button><div class="av sm b3">L</div><div style="flex:1"><div class="nm">Assistente Leblon</div><div class="stt">online</div></div></div>'+
+  '<div class="msgs" id="msgs">'+S.botMsgs.map(function(m){return '<div class="bub '+(m.t==='me'?'me':'them')+'">'+m.b+'</div>';}).join('')+'</div>'+
+  '<div class="botchips">'+qs.map(function(q){return '<button data-act="bot-ask" data-q="'+encodeURIComponent(q)+'">'+q+'</button>';}).join('')+'</div>';
+};
+SCREENS.faqbot._after=function(){var m=document.getElementById('msgs');if(m)m.scrollTop=m.scrollHeight;};
+Object.assign(ACTIONS,{
+ 'how-side':function(d){S.howSide=d.s;rend();},
+ 'bot-ask':function(d){var q=decodeURIComponent(d.q);S.botMsgs=S.botMsgs||[];S.botMsgs.push({t:'me',b:q});rend();later(function(){S.botMsgs.push({t:'them',b:BOTQA[q]||'Posso ajudar com pagamento, segurança, cancelamento e como ser prestador.'});if(S.screen==='faqbot')rend();},650);}
+});
+
+/* ===== ONDA B: completar ciclos ===== */
+SCREENS['user-wallet']=function(){
+ var txs=[['gift','Bônus de indicação','Há 2 dias','+ R$ 20,00','in'],['dollar','Cashback · faxina','Há 3 dias','+ R$ 6,50','in'],['ticket','Cupom usado · LEBLON10','Há 1 semana','- R$ 10,00','out'],['dollar','Cashback · corte','Há 2 semanas','+ R$ 4,50','in']];
+ return topbar('Carteira')+'<div class="pad">'+
+  '<div class="walletbox"><div class="lbl">Saldo Leblon</div><div class="v">R$ 46,50</div><div class="pend">Use como desconto no seu próximo pedido.</div></div>'+
+  '<div class="statrow"><div class="s"><b>R$ 26,50</b><span>cashback acumulado</span></div><div class="s"><b>R$ 20,00</b><span>bônus de indicação</span></div></div>'+
+  '<button class="btn btn-pri" data-go="indicar">'+ic('gift')+'Indicar amigos e ganhar mais</button>'+
+  '<div class="sec-title">Movimentações</div>'+
+  txs.map(function(x){var col=x[4]==='in'?'color:var(--ok)':'';return '<div class="txr"><div class="ic-box">'+ic(x[0])+'</div><div class="meta"><div class="b sm">'+x[1]+'</div><div class="xs muted">'+x[2]+'</div></div><div class="amt" style="'+col+'">'+x[3]+'</div></div>';}).join('')+
+  '<style>.txr{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.txr .ic-box{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--mist);color:var(--ink)}.txr .ic-box .ic{width:18px;height:18px}.txr .meta{flex:1}.txr .amt{font-family:Inter Tight;font-weight:700;font-size:15px}</style>'+
+ '</div>';
+};
+SCREENS['pro-agenda']=function(){
+ PRO.days=PRO.days||{Seg:true,Ter:true,Qua:true,Qui:true,Sex:true,'Sáb':true,Dom:false};
+ var days=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+ return topbar('Disponibilidade')+'<div class="pad">'+
+  '<div class="banner info">'+ic('info')+'<div>Escolha os dias e horários em que você aceita agendamentos. Desligue um dia para marcar folga.</div></div>'+
+  '<div class="b sm" style="margin:4px 0 10px">Dias que você atende</div>'+
+  '<div class="setgrp">'+days.map(function(d){return '<div class="setitem"><div class="meta">'+d+(PRO.days[d]?'':' <span class="xs" style="color:var(--muted)">(folga)</span>')+'</div><div class="switch'+(PRO.days[d]?' on':'')+'" data-act="toggle-day" data-d="'+d+'"></div></div>';}).join('')+'</div>'+
+  '<div class="row" style="gap:10px;margin-top:16px"><div class="field" style="flex:1;margin:0"><label>Abre</label><input value="'+(PRO.hStart||'08:00')+'" data-h="hStart"></div><div class="field" style="flex:1;margin:0"><label>Fecha</label><input value="'+(PRO.hEnd||'18:00')+'" data-h="hEnd"></div></div>'+
+  '<button class="btn btn-pri" style="margin-top:18px" data-act="save-agenda">Salvar disponibilidade</button>'+
+ '</div>';
+};
+Object.assign(ACTIONS,{
+ reorder:function(d){var o=orderById(d.id);if(!o)return;var c=cat(o.cat);S.draft.flow=c.now?'now':'sched';S.draft.cat=o.cat;S.draft.proIdx=0;S.draft._pro=o._pro||null;S.draft.recur=false;S.draft.qa={};S.draft.reqPhoto=false;S.draft.otherName='';if(S.draft.flow==='now')go('request-when',{cat:o.cat});else go('choose-pro',{cat:o.cat});toast('Pedindo '+c.name+' de novo');},
+ 'orders-tab':function(d){S.ordersTab=d.t;rend();},
+ 'toggle-day':function(d){PRO.days=PRO.days||{};PRO.days[d.d]=!PRO.days[d.d];persist();rend();},
+ 'save-agenda':function(){var s=document.querySelector('[data-h="hStart"]'),e=document.querySelector('[data-h="hEnd"]');if(s)PRO.hStart=s.value;if(e)PRO.hEnd=e.value;persist();toast('Disponibilidade salva ✓');back();}
 });
 
 /* ===== ONDA 9: tour guiado ===== */
