@@ -34,9 +34,24 @@ img{max-width:100%}
 .statusbar{display:flex;justify-content:space-between;align-items:center;padding:10px 22px 4px;font-size:13px;font-weight:600;color:var(--ink);flex-shrink:0;background:var(--paper);z-index:6}
 .statusbar.dark{color:#fff;background:transparent;position:absolute;left:0;right:0;top:0}
 .statusbar .dots{display:flex;gap:6px;align-items:center}.statusbar .ic{width:15px;height:15px}
-.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:92px;animation:fade .25s var(--ease)}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:92px}
 .screen.noscroll{padding-bottom:74px;overflow:hidden}
+.screen.enter{animation:slidein .28s var(--ease)}
+.screen.back{animation:slideout .28s var(--ease)}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes slidein{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes slideout{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+/* push notification */
+.pushnotif{position:absolute;top:8px;left:12px;right:12px;z-index:95;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:11px 13px;box-shadow:0 16px 40px rgba(3,1,76,.28);display:flex;gap:11px;align-items:center;transform:translateY(-160%);transition:transform .42s var(--ease)}
+.pushnotif.show{transform:translateY(0)}
+.pushnotif .pn-ic{width:40px;height:40px;border-radius:11px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pushnotif .pn-ic .ic{width:21px;height:21px}
+.pushnotif .pn-t{font-family:'Inter Tight';font-weight:700;font-size:14px;color:var(--ink)}
+.pushnotif .pn-b{font-size:12.5px;color:var(--muted);line-height:1.3}
+/* confetti */
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:40}
+.confetti i{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;opacity:.95;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(960px) rotate(620deg);opacity:.3}}
 .pad{padding:0 20px}
 .topbar{display:flex;align-items:center;gap:12px;padding:8px 16px 14px;position:sticky;top:0;background:var(--paper);z-index:4}
 .topbar .back{width:38px;height:38px;border-radius:50%;background:var(--mist);display:flex;align-items:center;justify-content:center;color:var(--ink);flex-shrink:0;font-size:18px}
@@ -452,6 +467,7 @@ body.dark .safebanner,body.dark .bub.sys{background:var(--tint)}
   <div id="overlay"></div>
   <nav id="botnav" class="botnav"></nav>
   <div id="tourbar" class="tourbar"></div>
+  <div id="pushnotif" class="pushnotif"></div>
 </div>
 <div id="toast" class="toast"></div>
 
@@ -625,8 +641,8 @@ const elNav=document.getElementById('botnav');
 const elBar=document.getElementById('statusbar');
 const elOverlay=document.getElementById('overlay');
 
-function go(screen,params,push){clearTimers();params=params||{};if(push!==false&&S.screen)S.stack.push({screen:S.screen,params:S.params});S.screen=screen;S.params=params;rend();elScreen.scrollTop=0;}
-function back(){clearTimers();var p=S.stack.pop();if(p){S.screen=p.screen;S.params=p.params;rend();}else go(S.mode==='user'?'home':'pro-home',{},false);}
+function go(screen,params,push){clearTimers();params=params||{};if(push!==false&&S.screen)S.stack.push({screen:S.screen,params:S.params});S.screen=screen;S.params=params;S._nav='fwd';rend();elScreen.scrollTop=0;}
+function back(){clearTimers();var p=S.stack.pop();if(p){S.screen=p.screen;S.params=p.params;S._nav='back';rend();}else go(S.mode==='user'?'home':'pro-home',{},false);}
 function reset(home){clearTimers();S.stack=[];go(home||(S.mode==='user'?'home':'pro-home'),{},false);}
 function setMode(m){if(S.mode===m)return;S.mode=m;reset();}
 
@@ -634,6 +650,8 @@ function activeOrder(){return ORDERS.filter(function(o){return ['searching','awa
 function orderById(id){return ORDERS.filter(function(o){return o.id==id;})[0];}
 
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2200);}
+function pushNotif(title,body,icon){var el=document.getElementById('pushnotif');if(!el)return;el.innerHTML='<div class="pn-ic">'+ic(icon||'bell')+'</div><div style="flex:1"><div class="pn-t">'+title+'</div><div class="pn-b">'+body+'</div></div>';el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},3900);}
+function confetti(){var host=document.getElementById('screen');if(!host)return;var c=document.createElement('div');c.className='confetti';var cols=['#FF4800','#1FB67A','#FFB400','#3b34c4','#ff9466'];for(var i=0;i<36;i++){var p=document.createElement('i');p.style.left=(Math.random()*100)+'%';p.style.background=cols[i%cols.length];p.style.animationDuration=(1.5+Math.random()*1.5)+'s';p.style.animationDelay=(Math.random()*.4)+'s';p.style.transform='rotate('+(Math.random()*360)+'deg)';c.appendChild(p);}host.appendChild(c);setTimeout(function(){c.remove();},3400);}
 
 /* ============ RENDER ROOT ============ */
 const AUTHSCREENS=['splash','onboarding','login','signup','verify'];
@@ -643,7 +661,7 @@ function rend(){
   elBar.style.display=(AUTHSCREENS.indexOf(S.screen)>=0)?'none':'flex';
   elBar.innerHTML='<span>9:41</span><span class="dots">'+ic('signal')+ic('wifi')+ic('battery')+'</span>';
   var fn=SCREENS[S.screen]||SCREENS.home;
-  elScreen.className='screen'+(S.screen==='chat'?' noscroll':'');
+  elScreen.className='screen'+(S.screen==='chat'?' noscroll':'')+(S._nav==='back'?' back':(S._nav==='fwd'?' enter':''));S._nav=null;
   elScreen.style.paddingBottom=(AUTHSCREENS.indexOf(S.screen)>=0)?'0':'';
   elScreen.innerHTML=fn(S.params);
   // nav hidden on focused flows
@@ -842,7 +860,7 @@ SCREENS.searching._after=function(p){
   later(function(){var el=document.getElementById('srch-count');if(el)el.textContent='Rafael está a caminho da resposta...';},1600);
   later(function(){
     o.status='confirmed';o.proName=PROS[o.cat].name;o.confirmedAt=Date.now();persist();
-    toast(PROS[o.cat].name+' confirmou seu atendimento!');
+    pushNotif(PROS[o.cat].name+' aceitou seu chamado!','Está a caminho do seu atendimento.','bolt');
     go('tracking',{id:o.id},false);
   },3600);
 };
@@ -933,6 +951,7 @@ SCREENS.success=function(p){
     (sec?'<button class="btn btn-out" style="margin-top:10px" '+sec+'>'+(p.cta2||'')+'</button>':'')+
    '</div>';
 };
+SCREENS.success._after=function(p){if(p&&p.confetti)setTimeout(confetti,120);};
 
 // ORDERS list (usuário)
 SCREENS.orders=function(){
@@ -1192,10 +1211,10 @@ const ACTIONS={
       var pick=Math.random();
       if(pick<0.45){ // não pode → sugere outro horário
         o.status='suggested';o.suggestDay=(o.day+1)%7;o.suggestSlot=o.slot?'10:30':null;persist();
-        toast(o.proName+' sugeriu outro horário');
+        pushNotif(o.proName+' sugeriu outro horário','Toque para ver a nova data proposta.','clock');
       }else{
         o.status='confirmed';o.confirmedAt=Date.now();persist();
-        toast(o.proName+' confirmou seu agendamento');
+        pushNotif(o.proName+' confirmou seu agendamento','Tudo certo! Veja os detalhes na sua ordem.','check');
       }
       if(S.screen==='order')rend();
     },3200);
@@ -1224,7 +1243,7 @@ const ACTIONS={
     o._tip=S.draft.payTip||0;o._coupon=S.draft.payCoupon||'';o._discount=S.draft.payDiscount||0;
     o._total=val+fee-o._discount+o._tip;
     o.status='paid';o.paidAt=Date.now();persist();S.rateId=o.id;S.receiptId=o.id;
-    go('success',{icon:'check',title:'Pagamento concluído!',sub:'O valor fica protegido e é liberado ao prestador. Que tal avaliar o atendimento?',cta:'⭐ Avaliar prestador',act:'go-rate',cta2:'Ver comprovante',act2:'go-receipt'},false);
+    go('success',{icon:'check',title:'Pagamento concluído!',sub:'O valor fica protegido e é liberado ao prestador. Que tal avaliar o atendimento?',cta:'⭐ Avaliar prestador',act:'go-rate',cta2:'Ver comprovante',act2:'go-receipt',confetti:true},false);
   },
   'go-rate':function(){go('rate',{id:S.rateId},false);},
   'go-receipt':function(){go('receipt',{id:S.receiptId},false);},
@@ -1601,7 +1620,7 @@ SCREENS['verify-id']=function(){
 Object.assign(ACTIONS,{
  'toggle-theme':function(){THEME=THEME==='dark'?'light':'dark';persist();applyTheme();rend();toast(THEME==='dark'?'Modo escuro ativado':'Modo claro ativado');},
  'search-pick':function(d){S.searchQ=d.q;rend();},
- 'vid-next':function(){if((S.vidStep||0)<1){S.vidStep=(S.vidStep||0)+1;rend();}else{S.vidStep=0;if(AUTH){AUTH.verified=true;save('auth',AUTH);}go('success',{icon:'shield',title:'Identidade verificada!',sub:'Sua conta agora tem o selo de confiança. Prestadores e clientes confiam mais em você.',cta:'Voltar à conta',go:'user-profile'},false);}},
+ 'vid-next':function(){if((S.vidStep||0)<1){S.vidStep=(S.vidStep||0)+1;rend();}else{S.vidStep=0;if(AUTH){AUTH.verified=true;save('auth',AUTH);}go('success',{icon:'shield',title:'Identidade verificada!',sub:'Sua conta agora tem o selo de confiança. Prestadores e clientes confiam mais em você.',cta:'Voltar à conta',go:'user-profile',confetti:true},false);}},
  'chat-attach':function(d){openModal('<h3 style="font-size:18px;margin-bottom:14px">Enviar no chat</h3>'+
    '<button class="btn btn-out" style="margin-bottom:10px" data-act="send-photo" data-id="'+d.id+'">'+ic('camera')+'Foto</button>'+
    '<button class="btn btn-out" data-act="send-loc" data-id="'+d.id+'">'+ic('pin')+'Minha localização</button>'+
@@ -1642,7 +1661,7 @@ Object.assign(ACTIONS,{
    '<div class="field"><label>Valor</label><input id="wd-val" value="R$ 1.240,00"></div>'+
    '<div class="field"><label>Chave Pix</label><input id="wd-key" value="leo@leblon.app"></div>'+
    '<button class="btn btn-pri" data-act="do-withdraw">Confirmar saque</button><button class="btn btn-ghost" style="margin-top:10px" data-act="close-modal">Cancelar</button>');},
- 'do-withdraw':function(){closeModal();go('success',{icon:'pix',title:'Saque solicitado!',sub:'R$ 1.240,00 a caminho da sua chave Pix. O valor costuma cair em segundos.',cta:'Voltar',go:'pro-profile'},false);}
+ 'do-withdraw':function(){closeModal();go('success',{icon:'pix',title:'Saque solicitado!',sub:'R$ 1.240,00 a caminho da sua chave Pix. O valor costuma cair em segundos.',cta:'Voltar',go:'pro-profile',confetti:true},false);}
 });
 
 /* ===== ONDA 9: tour guiado ===== */
@@ -1734,7 +1753,7 @@ Object.assign(ACTIONS,{
  'po-back':function(){if((S.poStep||0)>0){S.poStep--;rend();}else back();},
  'po-cat':function(d){var i=S.poCats.indexOf(d.cat);if(i>=0){if(S.poCats.length>1)S.poCats.splice(i,1);}else S.poCats.push(d.cat);rend();},
  'po-doc':function(){S.poDoc=true;rend();},
- 'po-next':function(){if((S.poStep||0)<3){S.poStep=(S.poStep||0)+1;rend();}else{PRO.onboarded=true;persist();S.poStep=0;go('success',{icon:'check',title:'Cadastro concluído!',sub:'Bem-vindo ao time Leblon. Ative seu status e comece a receber pedidos perto de você.',cta:'Ir para o painel',act:'go-pro-home'},false);}},
+ 'po-next':function(){if((S.poStep||0)<3){S.poStep=(S.poStep||0)+1;rend();}else{PRO.onboarded=true;persist();S.poStep=0;go('success',{icon:'check',title:'Cadastro concluído!',sub:'Bem-vindo ao time Leblon. Ative seu status e comece a receber pedidos perto de você.',cta:'Ir para o painel',act:'go-pro-home',confetti:true},false);}},
  'go-pro-home':function(){S.mode='pro';reset('pro-home');}
 });
 
