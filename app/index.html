@@ -388,6 +388,7 @@ button{font-family:inherit}
 .splash .lg{width:96px;height:96px;border-radius:30px;background:var(--brand);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(255,72,0,.5);margin-bottom:22px;animation:pop .5s var(--ease)}
 .splash-logo{width:64%;max-width:290px;margin-bottom:26px;animation:pop .5s var(--ease)}
 .authlogo-img{height:46px;display:block;margin:0 auto}
+.home-logo{width:30px;height:30px;flex-shrink:0;object-fit:contain}
 .splash .lg .ic{width:48px;height:48px;color:#fff}
 .splash .nm{font-family:'Inter Tight';font-weight:800;font-size:34px;color:#fff;display:flex;align-items:center;gap:9px;letter-spacing:-.03em}
 .splash .nm .d{width:11px;height:11px;border-radius:50%;background:var(--brand);margin-top:8px}
@@ -634,7 +635,7 @@ var PRO=load('pro',{online:false,now:true,fixed:true,open:true,hStart:'08:00',hE
 var AUTH=load('auth',null);            // {name,email,phone,via} quando logado
 var FAVS=load('favs',['faxina','barbeiro']); // categorias/prestadores favoritos
 var NOTIF=load('notif',{push:true,email:true,sms:false,promo:false});
-var THEME=load('theme','light');
+var THEME=load('theme','dark');
 var LANG=load('lang','pt');
 function persist(){save('orders',ORDERS);save('pro',PRO);save('favs',FAVS);save('notif',NOTIF);save('theme',THEME);save('lang',LANG);if(AUTH)save('auth',AUTH);}
 const DICT={
@@ -775,7 +776,7 @@ SCREENS.splash=function(){return '<div class="splash"><img class="splash-logo" s
 SCREENS.home=function(){
   var act=activeOrder();
   var fn=((AUTH&&AUTH.name)||'Leonardo').trim().split(' ')[0];
-  return '<div class="homehead"><div class="row between"><div class="loc">'+ic('pin')+' Itapema, SC · Centro</div><div class="hactions"><button class="hicon" data-go="search" aria-label="Buscar serviço">'+ic('search')+'</button><button class="hicon" data-act="toggle-theme" aria-label="Alternar tema claro e escuro">'+ic(THEME==='dark'?'sun':'moon')+'</button><button class="hbell" data-go="notifications" aria-label="Notificações">'+ic('bell')+'<span class="ndot"></span></button></div></div><h1>'+t('greet')+', '+fn+' 👋</h1><p>'+t('sub')+'</p></div>'+
+  return '<div class="homehead"><div class="row between"><div class="row" style="gap:9px"><img class="home-logo" src="logo-mark-dark.png" alt="Leblon"><div class="loc">'+ic('pin')+' Itapema, SC · Centro</div></div><div class="hactions"><button class="hicon" data-go="search" aria-label="Buscar serviço">'+ic('search')+'</button><button class="hicon" data-act="toggle-theme" aria-label="Alternar tema claro e escuro">'+ic(THEME==='dark'?'sun':'moon')+'</button><button class="hbell" data-go="notifications" aria-label="Notificações">'+ic('bell')+'<span class="ndot"></span></button></div></div><h1>'+t('greet')+', '+fn+' 👋</h1><p>'+t('sub')+'</p></div>'+
    '<div class="bigacts">'+
      '<button class="bigact now" data-go="request-cat" data-mode-now="now"><div class="ico">'+ic('bolt')+'</div><h3>'+t('now')+'</h3><p>'+t('nowd')+'</p><span class="tag">'+t('nowcta')+'</span></button>'+
      '<button class="bigact sched" data-go="request-cat" data-mode-now="sched"><div class="ico">'+ic('calendar')+'</div><h3>'+t('sched')+'</h3><p>'+t('schedd')+'</p><span class="tag">'+t('schedcta')+'</span></button>'+
