@@ -386,6 +386,8 @@ button{font-family:inherit}
 /* splash */
 .splash{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(125% 125% at 50% 0,#221a6a,#0c0935 55%,#070528);color:#fff;text-align:center}
 .splash .lg{width:96px;height:96px;border-radius:30px;background:var(--brand);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(255,72,0,.5);margin-bottom:22px;animation:pop .5s var(--ease)}
+.splash-logo{width:64%;max-width:290px;margin-bottom:26px;animation:pop .5s var(--ease)}
+.authlogo-img{height:46px;display:block;margin:0 auto}
 .splash .lg .ic{width:48px;height:48px;color:#fff}
 .splash .nm{font-family:'Inter Tight';font-weight:800;font-size:34px;color:#fff;display:flex;align-items:center;gap:9px;letter-spacing:-.03em}
 .splash .nm .d{width:11px;height:11px;border-radius:50%;background:var(--brand);margin-top:8px}
@@ -767,7 +769,8 @@ function steps(o){
 
 /* ============ SCREENS: USUÁRIO ============ */
 const SCREENS={};
-SCREENS.splash=function(){return '<div class="splash"><div class="lg">'+ic('bolt')+'</div><div class="nm">Leblon<span class="d"></span></div><div class="tg">Se você tem tempo, ganhe dinheiro.</div><div class="bar"><i></i></div></div>';};
+function wm(){return '<img class="authlogo-img" src="logo-wordmark'+(THEME==='dark'?'-dark':'')+'.png" alt="Leblon">';}
+SCREENS.splash=function(){return '<div class="splash"><img class="splash-logo" src="logo-wordmark-dark.png" alt="Leblon"><div class="tg">Se você tem tempo, ganhe dinheiro.</div><div class="bar"><i></i></div></div>';};
 
 SCREENS.home=function(){
   var act=activeOrder();
@@ -1377,7 +1380,7 @@ SCREENS.onboarding=function(){var s=ONB[S.onb];
 };
 SCREENS.login=function(){
  return '<div class="auth"><div class="grow">'+
-   '<div class="authlogo">Leblon<span class="dot"></span></div>'+
+   wm()+
    '<h1>Entrar</h1><div class="sub">Bem-vindo de volta 👋</div>'+
    '<div class="testcred">'+ic('info')+'<div><b>Conta de teste (já preenchida):</b><br>e-mail <b>leo@leblon.app</b> · senha <b>leblon123</b></div></div>'+
    '<button class="socialbtn" data-act="social" data-via="Google">'+GOOGLE_SVG+'Entrar com Google</button>'+
@@ -1392,7 +1395,7 @@ SCREENS.login=function(){
 SCREENS.signup=function(){
  return '<button class="skip" style="left:22px;right:auto" data-go="login">‹ Voltar</button>'+
   '<div class="auth"><div class="grow">'+
-   '<div class="authlogo">Leblon<span class="dot"></span></div>'+
+   wm()+
    '<h1>Criar conta</h1><div class="sub">É grátis e leva menos de 1 minuto.</div>'+
    '<button class="socialbtn" data-act="social" data-via="Google">'+GOOGLE_SVG+'Cadastrar com Google</button>'+
    '<button class="socialbtn apple" data-act="social" data-via="Apple">'+APPLE_SVG+'Cadastrar com Apple</button>'+
@@ -1408,7 +1411,7 @@ SCREENS.signup=function(){
 SCREENS.verify=function(){
  return '<button class="skip" style="left:22px;right:auto" data-back>‹ Voltar</button>'+
   '<div class="auth"><div class="grow">'+
-   '<div class="authlogo">Leblon<span class="dot"></span></div>'+
+   wm()+
    '<h1>Confirme seu número</h1><div class="sub">Enviamos um código por SMS para '+(S.draft.phone||'(47) 9 9999-0000')+'</div>'+
    '<div class="coderow">'+['1','2','3','4'].map(function(v){return '<input class="codebox fill" maxlength="1" inputmode="numeric" value="'+v+'">';}).join('')+'</div>'+
    '<button class="btn btn-pri" data-act="do-verify">Confirmar e entrar</button>'+
@@ -1895,7 +1898,28 @@ function afterSplash(){
  if(AUTH){S.mode='user';go('home',{},false);}
  else{S.screen=load('seen-onb',false)?'login':'onboarding';rend();}
 }
-function boot(){ applyTheme();S.screen='splash';rend();setTimeout(afterSplash,1600); }
+function capBoot(q){
+  var cap=q.get('cap');
+  if(q.get('theme')==='dark'){THEME='dark';applyTheme();}
+  if(q.get('lang')==='en'){LANG='en';}
+  var dp=document.querySelector('.demo-pill');if(dp)dp.style.display='none';
+  var authS=['splash','onboarding','login','signup','verify'];
+  if(authS.indexOf(cap)>=0){ if(cap==='onboarding')S.onb=+(q.get('step')||0); if(cap==='verify')S.draft.phone='(47) 9 9999-0000'; S.screen=cap; rend(); return; }
+  AUTH={name:'Leonardo Franco',email:'leo@leblon.app',phone:'(47) 9 9999-0000',verified:true};
+  PRO.online=true;PRO.onboarded=true;PRO.now=true;PRO.fixed=true;PRO.open=true;
+  S.mode=q.get('mode')||'user';
+  var ocat=q.get('cat')||'eletricista';var pr=PROS[ocat];
+  var o={id:99001,cat:ocat,type:q.get('type')||(cat(ocat).now?'now':'sched'),day:1,slot:'09:00',status:q.get('status')||'confirmed',proName:pr.name,_pro:pr,_pin:'1838',_total:104,_tip:10,_coupon:'LEBLON10',_discount:10,recur:false,createdAt:99001,
+    _msgs:[{t:'sys',b:'Pagamento protegido pelo Leblon'},{t:'them',b:'Oi! Recebi seu pedido de '+cat(ocat).name.toLowerCase()+'. Já estou a caminho 👍'},{t:'me',b:'Perfeito! Pode confirmar o endereço?'},{t:'them',kind:'loc',b:'Rua 234, Centro · Itapema'},{t:'them',b:'Chego no horário combinado.'}]};
+  ORDERS=[o];
+  S.draft.flow=q.get('flow')||(cat(ocat).now?'now':'sched');S.draft.cat=ocat;S.draft._pro=pr;S.draft.qa={};S.draft.day=1;S.draft.slot='09:00';
+  S.howSide=q.get('side')||'user';S.poStep=+(q.get('step')||0);if(q.get('q'))S.searchQ=q.get('q');
+  if(q.get('tour'))S.tour=0;
+  if(cap==='success'){go('success',{icon:q.get('icon')||'check',title:q.get('title')||'Pagamento concluído!',sub:'O valor fica protegido e é liberado ao prestador após a sua confirmação.',cta:'⭐ Avaliar prestador',act:'go-rate',cta2:'Ver comprovante',act2:'go-receipt',confetti:true},false);return;}
+  if(cap==='searching'){o.status='searching';}
+  go(cap,{id:o.id,cat:ocat},false);
+}
+function boot(){ applyTheme();var q=new URLSearchParams(location.search);if(q.get('cap')){return capBoot(q);} S.screen='splash';rend();setTimeout(afterSplash,1600); }
 boot();
 // PWA: registra o service worker só em produção (evita interferir no preview local)
 if('serviceWorker' in navigator && /github\.io$/.test(location.hostname)){
