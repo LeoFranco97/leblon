@@ -639,8 +639,8 @@ var THEME=load('theme','dark');
 var LANG=load('lang','pt');
 function persist(){save('orders',ORDERS);save('pro',PRO);save('favs',FAVS);save('notif',NOTIF);save('theme',THEME);save('lang',LANG);if(AUTH)save('auth',AUTH);}
 const DICT={
- pt:{greet:'Olá',sub:'O que você precisa hoje?',now:'Preciso agora',nowd:'Atendimento imediato, em até 10 min.',nowcta:'CHAMAR PRESTADOR ›',sched:'Agendar',schedd:'Escolha o dia e o horário do serviço.',schedcta:'MARCAR HORÁRIO ›',cats:'Categorias',n_home:'Início',n_order:'Pedir',n_orders:'Pedidos',n_acc:'Conta',n_status:'Status',n_jobs:'Trabalhos',n_agenda:'Agenda',refer:'Indique e ganhe R$ 20',referd:'Você e seu amigo ganham a cada primeiro serviço.',becomet:'Vire prestador no Leblon',becomed:'Tem tempo livre? Receba pedidos perto de você.',start:'Começar',inprog:'Em andamento',hist:'Histórico'},
- en:{greet:'Hi',sub:'What do you need today?',now:'Need it now',nowd:'Instant service, in up to 10 min.',nowcta:'CALL A PRO ›',sched:'Schedule',schedd:'Pick the day and time of the service.',schedcta:'BOOK A TIME ›',cats:'Categories',n_home:'Home',n_order:'Request',n_orders:'Orders',n_acc:'Account',n_status:'Status',n_jobs:'Jobs',n_agenda:'Calendar',refer:'Refer & earn R$ 20',referd:'You and your friend earn on the first service.',becomet:'Become a Leblon pro',becomed:'Got free time? Get requests near you.',start:'Start',inprog:'In progress',hist:'History'}
+ pt:{greet:'Olá',sub:'O que você precisa hoje?',now:'Preciso agora',nowd:'Atendimento imediato, em até 10 min.',nowcta:'CHAMAR PRESTADOR ›',sched:'Agendar',schedd:'Escolha o dia e o horário do serviço.',schedcta:'MARCAR HORÁRIO ›',cats:'Categorias',n_home:'Início',n_order:'Pedir',n_orders:'Pedidos',n_acc:'Conta',n_status:'Status',n_jobs:'Trabalhos',n_agenda:'Agenda',refer:'Indique e ganhe R$ 20',referd:'Você e seu amigo ganham a cada primeiro serviço.',becomet:'Vire prestador no Leblon',becomed:'Tem tempo livre? Receba pedidos perto de você.',start:'Começar',inprog:'Em andamento',hist:'Histórico',searchph:'Buscar serviço ou o que você precisa…',becomebtn:'Seja um prestador'},
+ en:{greet:'Hi',sub:'What do you need today?',now:'Need it now',nowd:'Instant service, in up to 10 min.',nowcta:'CALL A PRO ›',sched:'Schedule',schedd:'Pick the day and time of the service.',schedcta:'BOOK A TIME ›',cats:'Categories',n_home:'Home',n_order:'Request',n_orders:'Orders',n_acc:'Account',n_status:'Status',n_jobs:'Jobs',n_agenda:'Calendar',refer:'Refer & earn R$ 20',referd:'You and your friend earn on the first service.',becomet:'Become a Leblon pro',becomed:'Got free time? Get requests near you.',start:'Start',inprog:'In progress',hist:'History',searchph:'Search a service or what you need…',becomebtn:'Become a pro'}
 };
 function t(k){return (DICT[LANG]&&DICT[LANG][k])||DICT.pt[k]||k;}
 function applyTheme(){document.body.classList.toggle('dark',THEME==='dark');}
@@ -776,7 +776,7 @@ SCREENS.splash=function(){return '<div class="splash"><img class="splash-logo" s
 SCREENS.home=function(){
   var act=activeOrder();
   var fn=((AUTH&&AUTH.name)||'Leonardo').trim().split(' ')[0];
-  return '<div class="homehead"><div class="row between"><div class="row" style="gap:9px"><img class="home-logo" src="logo-mark-dark.png" alt="Leblon"><div class="loc">'+ic('pin')+' Itapema, SC · Centro</div></div><div class="hactions"><button class="hicon" data-go="search" aria-label="Buscar serviço">'+ic('search')+'</button><button class="hicon" data-act="toggle-theme" aria-label="Alternar tema claro e escuro">'+ic(THEME==='dark'?'sun':'moon')+'</button><button class="hbell" data-go="notifications" aria-label="Notificações">'+ic('bell')+'<span class="ndot"></span></button></div></div><h1>'+t('greet')+', '+fn+' 👋</h1><p>'+t('sub')+'</p></div>'+
+  return '<div class="homehead"><div class="row between"><div class="row" style="gap:9px"><img class="home-logo" src="logo-mark-dark.png" alt="Leblon"><div class="loc">'+ic('pin')+' Itapema, SC · Centro</div></div><div class="hactions"><button class="hicon" data-act="toggle-theme" aria-label="Alternar tema claro e escuro">'+ic(THEME==='dark'?'sun':'moon')+'</button><button class="hbell" data-go="notifications" aria-label="Notificações">'+ic('bell')+'<span class="ndot"></span></button></div></div><h1>'+t('greet')+', '+fn+' 👋</h1><div class="searchbar" data-go="search" style="margin-top:14px" aria-label="Buscar">'+ic('search')+'<span>'+t('searchph')+'</span></div><p style="margin-top:13px">'+t('sub')+'</p></div>'+
    '<div class="bigacts">'+
      '<button class="bigact now" data-go="request-cat" data-mode-now="now"><div class="ico">'+ic('bolt')+'</div><h3>'+t('now')+'</h3><p>'+t('nowd')+'</p><span class="tag">'+t('nowcta')+'</span></button>'+
      '<button class="bigact sched" data-go="request-cat" data-mode-now="sched"><div class="ico">'+ic('calendar')+'</div><h3>'+t('sched')+'</h3><p>'+t('schedd')+'</p><span class="tag">'+t('schedcta')+'</span></button>'+
@@ -788,7 +788,7 @@ SCREENS.home=function(){
      '<div class="promo" data-go="indicar"><div class="pico">'+ic('gift')+'</div><div style="flex:1"><div class="dp b" style="font-size:15px">'+t('refer')+'</div><div class="sm muted">'+t('referd')+'</div></div>'+ic('chevronR','color:var(--muted)')+'</div>'+
      '<div class="card" style="margin-top:12px;display:flex;gap:12px;align-items:center;background:#14104f;border:0;color:#fff">'+
        '<div class="av md b2">R$</div><div style="flex:1"><div class="dp b" style="color:#fff;font-size:15px">'+t('becomet')+'</div><div class="sm" style="color:rgba(255,255,255,.75)">'+t('becomed')+'</div></div>'+
-       '<button class="btn btn-sm" style="background:var(--brand);color:#fff" data-act="become-pro">'+t('start')+'</button></div>'+
+       '<button class="btn btn-sm" style="background:var(--brand);color:#fff" data-act="become-pro">'+t('becomebtn')+'</button></div>'+
    '</div>';
 };
 SCREENS.notifications=function(){
@@ -823,7 +823,7 @@ SCREENS['request-cat']=function(p){
    '<div class="pad">'+
    (flow==='now'?'<div class="banner ok">'+ic('bolt')+'<div><b>Atendimento imediato.</b> Mandamos sua chamada para os prestadores online por perto. Quem está livre confirma — geralmente em até 10 minutos.</div></div>':'')+
    (flow==='sched'?'<div class="banner info">'+ic('calendar')+'<div>Escolha o serviço. Em seguida você define o dia (e o horário, quando o prestador trabalha com hora marcada).</div></div>':'')+
-   '<div class="searchbar" style="margin-bottom:16px">'+ic('search')+'<input placeholder="Buscar serviço..."></div>'+
+   '<div class="searchbar" data-go="search" style="margin-bottom:16px">'+ic('search')+'<span>Buscar serviço ou o que você precisa…</span></div>'+
    list.map(function(c){var pr=PROS[c.id];
      return '<button class="opt" data-act="pickcat" data-cat="'+c.id+'"><div class="e">'+ic(c.ic)+'</div><div class="meta"><div class="t">'+c.name+'</div><div class="d">a partir de '+c.price+' · '+(c.sched==='fixed'?'hora marcada':'sob demanda')+'</div></div><div class="arr">'+ic('chevronR')+'</div></button>';
    }).join('')+
@@ -1608,12 +1608,23 @@ Object.assign(ACTIONS,{
 /* ============ ONDA 1: busca, comprovante, estimador ============ */
 SCREENS.search=function(){
  var q=(S.searchQ||'');
- return '<div class="searchhead"><button class="back" data-back>'+ic('chevronL')+'</button><div class="sb">'+ic('search')+'<input id="searchin" placeholder="Buscar serviço..." value="'+q.replace(/"/g,'&quot;')+'"></div></div>'+
+ return '<div class="searchhead"><button class="back" data-back>'+ic('chevronL')+'</button><div class="sb">'+ic('search')+'<input id="searchin" placeholder="O que você precisa? (ex.: luz, vazamento, corte)" value="'+q.replace(/"/g,'&quot;')+'"></div></div>'+
   '<div class="pad" id="sres-list">'+searchBody(q)+'</div>';
 };
+const SYN={
+ eletricista:['luz','tomada','disjuntor','chuveiro','fiacao','fiação','curto','energia','interruptor','lampada','lâmpada','eletrica','elétrica'],
+ faxina:['limpeza','faxina','diarista','faxineira','casa','passar roupa','pos obra','pós obra','limpar','domestica','doméstica'],
+ encanador:['vazamento','cano','pia','torneira','entupido','entupimento','esgoto','agua','água','hidraulica','hidráulica','encanamento'],
+ barbeiro:['cabelo','corte','barba','barbearia','barbeiro'],
+ manicure:['unha','unhas','manicure','pedicure','esmalte','alongamento'],
+ pet:['cachorro','cao','cão','dog','passeio','pet','gato','banho','passear'],
+ jardim:['grama','jardim','poda','planta','jardinagem','gramado'],
+ reparos:['montar','montagem','conserto','reparo','prateleira','furar','movel','móvel','quadro']
+};
+function smatch(c,q){if(!q)return true;if(c.name.toLowerCase().indexOf(q)>=0)return true;var ks=SYN[c.id]||[];for(var i=0;i<ks.length;i++){if(ks[i].indexOf(q)>=0||q.indexOf(ks[i])>=0)return true;}return false;}
 function searchBody(q){
  q=(q||'').toLowerCase().trim();
- var cats=CATS.filter(function(c){return !q||c.name.toLowerCase().indexOf(q)>=0;});
+ var cats=CATS.filter(function(c){return smatch(c,q);});
  var sugg=['Eletricista','Diarista','Barbeiro','Encanador','Manicure','Passeio pet','Jardinagem','Reparos'];
  return (!q?'<div class="b sm" style="margin:6px 0 10px">Mais buscados</div><div class="chiprow">'+sugg.map(function(s){return '<button class="c" data-act="search-pick" data-q="'+s+'">'+s+'</button>';}).join('')+'</div>':'')+
   '<div class="b sm" style="margin:16px 0 6px">'+(q?'Resultados':'Categorias')+'</div>'+
